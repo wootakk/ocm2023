@@ -1,0 +1,393 @@
+﻿@model ISFMOCM_Project.Models.FCVModel
+<link href="~/Content/Site.css" type="text/css" rel="stylesheet" />
+<link href="~/Content/assets/choosen/chosen.min.css" type="text/css" rel="stylesheet" />
+
+<style>
+    .inline_ocm {
+        display: inline-block;
+    }
+
+    #Acc_no_chosen {
+        width: 47% !important;
+    }
+
+    .fcv_no {
+        width: 60px;
+        padding: 6px;
+    }
+
+    .fcv_id {
+        width: 100px;
+        padding: 6px;
+    }
+
+    .form-control_ocm {
+        width: 168px;
+    }
+</style>
+@using ISFMOCM_Project.Models;
+@{
+    ViewBag.Title = "កែប្រែបញ្ជីសលាកប័ត្រចំណាយថវិកា";
+}
+<br />
+<br />
+<br />
+
+@using (Html.BeginForm("Edit", "FCV", FormMethod.Post, new { @onsubmit = "validateAllInputBoxes(event);" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <div class="bs-example">
+        <div class="panel panel-default">
+            <div class="row panel-heading">
+                <h3>កែប្រែបញ្ជីសលាកប័ត្រចំណាយថវិកា</h3>
+            </div>
+            @Html.HiddenFor(model=>model.created_date)
+            <div class="panel-body">
+
+                <div class="row border-home bgf">
+                    <div class="col-md-6">
+
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="col-md-12">
+                            <div class="col-md-6">
+
+                            </div>
+                            <div class="col-md-6">
+                                <div class="col-md-4"><label>លេខរៀង:<strong> </strong></label></div>
+                                <div class="col-md-8">@Html.EditorFor(model => model.FCV_Identity, new { htmlAttributes = new { @class = "fcv_id inline_ocm form-control", disabled = "disabled", placeholder = "ស្វ័យប្រវត្តិ" } })</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row border-home bgf">
+                    <div class="col-md-6">
+                        <div class="col-md-4">
+                            @Html.LabelFor(model => model.FCV_no, htmlAttributes: new { @class = "control-label " })<strong> :</strong>
+                        </div>
+                        <div class="col-md-8 inline_ocm">
+                            @Html.EditorFor(model => model.FCV_no, new { htmlAttributes = new { @class = "fcv_no inline_ocm form-control" } })
+                            @Html.ValidationMessageFor(model => model.FCV_no, "", new { @class = "text-danger" })
+                            @*@Html.LabelFor(model => model.Acc_no, htmlAttributes: new { @class = "control-label " })*@
+                            គណនី<strong> :</strong>
+                            <select class="form-control_ocm inline_ocm form-control required-seleect" id="Acc_no" name="Acc_no">
+                                @foreach (AccountModel acc in ViewBag.Acc_no)
+                                {
+                                    if (acc.Acc_no == Model.Acc_no)
+                                    {
+                                        @:
+                                        <option value="@acc.Acc_no" selected="selected"> @acc.CodeAndName </option>
+                                    }
+                                    else
+                                    {
+                                        @:
+                                        <option value="@acc.Acc_no"> @acc.CodeAndName </option>
+                                    }
+                                }
+                            </select>
+                            <span class="text-danger"></span>
+
+                            @*@Html.DropDownList("Acc_no", null, "ជ្រើសរើសគណនី", htmlAttributes: new { @class = "form-control_ocm inline_ocm form-control" })
+                                @Html.ValidationMessageFor(model => model.Acc_no, "", new { @class = "text-danger" })*@
+                        </div>
+
+                        <div class="col-md-4">
+                            @Html.LabelFor(model => model.FCVDate, htmlAttributes: new { @class = "control-label " })<strong> :</strong>
+                        </div>
+                        <div class="col-md-8">
+                            @Html.EditorFor(model => model.FCVDate, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.FCVDate, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(model => model.FCV_amount, htmlAttributes: new { @class = "control-label " })<strong> :</strong>
+                        </div>
+                        <div class="col-md-8">
+                            @Html.EditorFor(model => model.FCV_amount, new { htmlAttributes = new { @class = "form-control number" } })
+                        </div>
+
+                        <div class="col-md-4">
+                            @Html.LabelFor(model => model.Letter_no, htmlAttributes: new { @class = "control-label " })-
+                            @Html.LabelFor(model => model.Letter_date, htmlAttributes: new { @class = "control-label " })<strong> :</strong>
+                        </div>
+                        <div class="col-md-8">
+                            @Html.EditorFor(model => model.Letter_no, new { htmlAttributes = new { @class = "fcv_inline form-control form-control_ocm_date" } })
+                            @Html.ValidationMessageFor(model => model.Letter_no, "", new { @class = "text-danger" })
+                            @Html.EditorFor(model => model.Letter_date, new { htmlAttributes = new { @class = "fcv_inline form-control form-control_ocm_date" } })
+                            @Html.ValidationMessageFor(model => model.Letter_date, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(model => model.MEF_date, htmlAttributes: new { @class = "control-label " })<strong> :</strong>
+                        </div>
+                        <div class="col-md-8">
+                            @Html.EditorFor(model => model.MEF_date, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.MEF_date, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="col-md-4">
+                            @Html.LabelFor(model => model.MEF_amount, htmlAttributes: new { @class = "control-label " })<strong> :</strong>
+                        </div>
+                        <div class="col-md-8">
+                            @Html.EditorFor(model => model.MEF_amount, new { htmlAttributes = new { @class = "form-control number" } })
+                        </div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(model => model.AmountAfterProcurement, htmlAttributes: new { @class = "control-label " })<strong> :</strong>
+                        </div>
+                        <div class="col-md-8">
+                            @Html.EditorFor(model => model.AmountAfterProcurement, new { htmlAttributes = new { @class = "form-control number" } })
+                        </div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(model => model.Rate, htmlAttributes: new { @class = "control-label " })<strong> :</strong>
+                        </div>
+                        <div class="col-md-8">
+                            @Html.EditorFor(model => model.Rate, new { htmlAttributes = new { @class = "form-control number" } })
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="col-md-4">
+                            @Html.LabelFor(model => model.Initial_Budget, htmlAttributes: new { @class = "control-label " })<strong> :</strong>
+                        </div>
+                        <div class="col-md-8">
+                            @Html.EditorFor(model => model.Initial_Budget, new { htmlAttributes = new { @class = "form-control number", disabled = "disabled" } })
+                            @Html.ValidationMessageFor(model => model.Initial_Budget, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(model => model.Transfer_Budget, htmlAttributes: new { @class = "control-label " })<strong> :</strong>
+                        </div>
+                        <div class="col-md-8">
+                            @Html.EditorFor(model => model.Transfer_Budget, new { htmlAttributes = new { @class = "form-control number", disabled = "disabled" } })
+                            @Html.ValidationMessageFor(model => model.Transfer_Budget, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(model => model.Total_Budget, htmlAttributes: new { @class = "control-label " })<strong> :</strong>
+                        </div>
+                        <div class="col-md-8">
+                            @Html.EditorFor(model => model.Total_Budget, new { htmlAttributes = new { @class = "form-control number", disabled = "disabled" } })
+                            @Html.ValidationMessageFor(model => model.Total_Budget, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(model => model.Reference_Budget, htmlAttributes: new { @class = "control-label " })<strong> :</strong>
+                        </div>
+                        <div class="col-md-8">
+                            @Html.EditorFor(model => model.Reference_Budget, new { htmlAttributes = new { @class = "form-control number", disabled = "disabled" } })
+                            @Html.ValidationMessageFor(model => model.Reference_Budget, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(model => model.Available_Budget, htmlAttributes: new { @class = "control-label " })<strong> :</strong>
+                        </div>
+                        <div class="col-md-8">
+                            @Html.EditorFor(model => model.Available_Budget, new { htmlAttributes = new { @class = "form-control number", disabled = "disabled" } })
+                            @Html.ValidationMessageFor(model => model.Available_Budget, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row border-home bgf">
+                    <div class="row">
+                        <span id="CheckBoxValidation" class="text-danger"></span>
+                    </div>
+                    <div class="panel-group form-group">
+                        <div class="col-lg-12">
+                            <div class="col-md-3">
+                                @Html.CheckBoxFor(model => model.Salary, htmlAttributes: new { @class = "requiredCheckBoxes" })
+                                @Html.LabelFor(model => model.Salary, htmlAttributes: new { @class = "control-label " })
+                                @Html.ValidationMessageFor(model => model.Salary, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="col-md-3">
+                                @Html.CheckBoxFor(model => model.Electricity, htmlAttributes: new { @class = "requiredCheckBoxes" })
+                                @Html.LabelFor(model => model.Electricity, htmlAttributes: new { @class = "control-label " })
+                                @Html.ValidationMessageFor(model => model.Electricity, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="col-md-3">
+                                @Html.CheckBoxFor(model => model.Water, htmlAttributes: new { @class = "requiredCheckBoxes" })
+                                @Html.LabelFor(model => model.Water, htmlAttributes: new { @class = "control-label " })
+                                @Html.ValidationMessageFor(model => model.Water, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="col-md-3">
+                                @Html.CheckBoxFor(model => model.Advance, htmlAttributes: new { @class = "requiredCheckBoxes" })
+                                @Html.LabelFor(model => model.Advance, htmlAttributes: new { @class = "control-label " })
+                                @Html.ValidationMessageFor(model => model.Advance, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="col-lg-12">
+                            <div class="col-md-3">
+                                @Html.CheckBoxFor(model => model.Allowance, htmlAttributes: new { @class = "requiredCheckBoxes" })
+                                @Html.LabelFor(model => model.Allowance, htmlAttributes: new { @class = "control-label " })
+                                @Html.ValidationMessageFor(model => model.Allowance, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="col-md-3">
+                                @Html.CheckBoxFor(model => model.PettyCash, htmlAttributes: new { @class = "requiredCheckBoxes" })
+                                @Html.LabelFor(model => model.PettyCash, htmlAttributes: new { @class = "control-label " })
+                                @Html.ValidationMessageFor(model => model.PettyCash, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="col-md-3">
+                                @Html.CheckBoxFor(model => model.Contribution, htmlAttributes: new { @class = "requiredCheckBoxes" })
+                                @Html.LabelFor(model => model.Contribution, htmlAttributes: new { @class = "control-label " })
+                                @Html.ValidationMessageFor(model => model.Contribution, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="col-md-3">
+                                @Html.CheckBoxFor(model => model.Other, htmlAttributes: new { @class = "requiredCheckBoxes" })
+                                @Html.LabelFor(model => model.Other, htmlAttributes: new { @class = "control-label " })
+                                @Html.ValidationMessageFor(model => model.Other, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="col-md-3">
+                                @Html.CheckBoxFor(model => model.Telecom, htmlAttributes: new { @class = "requiredCheckBoxes" })
+                                @Html.LabelFor(model => model.Telecom, htmlAttributes: new { @class = "control-label " })
+                                @Html.ValidationMessageFor(model => model.Telecom, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2">
+                        @Html.LabelFor(model => model.Commitment_desc, htmlAttributes: new { @class = "fcv-lable control-label " })<strong> :</strong>
+                    </div>
+                    <div class="col-md-10">
+                        @Html.TextAreaFor(model => model.Commitment_desc, new { @class = "form-control width-control-full h60" })<strong> </strong>
+                        @Html.ValidationMessageFor(model => model.Commitment_desc, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-2">
+                        @Html.LabelFor(model => model.Dep_of_commitment, htmlAttributes: new { @class = "fcv-lable control-label " })<strong> </strong>
+                    </div>
+                    <div class="col-md-10">
+                        @*@Html.TextAreaFor(model => model.Dep_of_commitment, new { @class = "form-control width-control-full h35" })*@
+                        @Html.DropDownList("Department_of_commitment", null, "ជ្រើសរើសអង្គភាព", new { @class = " form-control required-select" })
+                        <span class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="row">
+
+                    <div class="col-md-2">
+                        @Html.LabelFor(model => model.Documentation, htmlAttributes: new { @class = "fcv-lable control-label " })<strong> :</strong>
+                    </div>
+                    <div class="col-md-10">
+                        @Html.TextAreaFor(model => model.Documentation, new { @class = "form-control width-control-full h120" })
+                        @Html.ValidationMessageFor(model => model.Documentation, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <br />
+                <div class="row">
+                    <div class="col-md-12">
+                        <input type="submit" id="btnSubmit" value="រក្សាទុក" class="btn btn-default" />
+
+                        @Html.ActionLink("បោះពុម្ពសលាកប័ត្រ", "viewReport", new { id = Model.FCV_Identity},new { @class = "btn btn-default" })
+                        @if (User.IsInRole("Admin"))
+                        {
+                            @Html.ActionLink("លុប", "Delete", new { id = Model.FCV_Identity },new { @class = "btn btn-default" , onclick = "return onDelete()" })
+                        }
+                        @Html.ActionLink("ត្រលប់", "ListFcv", "FCV", new { @class = "btn btn-default" })
+                    </div>
+                </div>
+                <input type="hidden" id="accountsBudget" data-value="@ViewBag.AccountsBudget" />
+            </div>
+        </div>
+    </div>
+}
+@section Scripts {
+    <script src="~/Scripts/jquery-1.12.4.min.js"></script>
+    <script src="~/Scripts/moment.min.js"></script>
+    <script src="~/Scripts/bootstrap-datetimepicker.js"></script>
+    <script src="~/Scripts/chosen.jquery.min.js"></script>
+    <script src="~/Content/assets/numeral/numeral.js"></script>
+    <script src="~/Scripts/FcvScript.js"></script>
+    
+}
+
+<script>
+
+    $(function () {
+        var FCVDate = @Html.Raw(Json.Encode(Model.FCVDate));
+        var Letter_date =@Html.Raw(Json.Encode(Model.Letter_date));
+        var MEF_date =@Html.Raw(Json.Encode(Model.MEF_date));
+        $("#FCVDate").val(moment(FCVDate).format("DD/MM/YYYY"));
+        $("#Letter_date").val(moment(Letter_date).format("DD/MM/YYYY"));
+        $("#MEF_date").val(moment(MEF_date).format("DD/MM/YYYY"));
+        /* Change the default jquery setting allow validate on the hidden fields*/
+        $.validator.setDefaults({
+            ignore: []
+        });
+        //This statement is for removing the date validation from date input
+        $("input[data-val-date]").removeAttr("data-val-date");
+
+        var dropDown = $("#Acc_no");
+        dropDown.change(function() {
+            var initialVal = $('#Initial_Budget');
+            var transferVal = $('#Transfer_Budget');
+            var total = $('#Total_Budget');
+            var ref = $('#Reference_Budget');
+            var available = $('#Available_Budget');
+            var unitId = $('#Department_of_commitment').val();
+            var createdDate=$('#created_date').val();
+            if (!unitId) unitId = -1;
+            var createdYear=GetYearFromDate(createdDate);
+            var selectedItem = dropDown.val();
+            if (selectedItem) {
+                $.ajax({
+                    type: "GET",
+                    url: '@Url.Action("GetAccountBudgetInformation")',
+                    contentType: "application/json; charset=utf-8",
+                    dataType: 'json',
+                    data: { accountNumber: selectedItem, fcvId: $("#FCV_Identity").val() ,unitId: unitId,year:createdYear },
+                    success: function (result) {
+                        initialVal.val(numeral( result.InitialBudget).format('0,0').split(',').join('.') + " ៛");
+                        transferVal.val(numeral(result.Transfer).format('0,0').split(',').join('.') + " ៛");
+                        total.val(numeral(result.TotalBudget).format('0,0').split(',').join('.') + " ៛");
+                        ref.val(numeral(result.AmountReference).format('0,0').split(',').join('.') + " ៛");
+                        available.val(numeral(result.TotalBudget - result.AmountReference).format('0,0').split(',').join('.') + " ៛");
+                    },
+                    error: function (result) {
+                        console.log("error" + result);
+                    }
+                });
+            } else {
+                initialVal.val("");
+                transferVal.val("");
+                total.val("");
+                ref.val("");
+                available.val("");
+            }
+        });
+
+        onLoad();
+        function onLoad() {
+            var initialVal = $('#Initial_Budget');
+            var transferVal = $('#Transfer_Budget');
+            var total = $('#Total_Budget');
+            var ref = $('#Reference_Budget');
+            var available = $('#Available_Budget');
+            var selectedItem = $("#Acc_no").val();
+            var unitId = $('#Department_of_commitment').val();
+            var createdDate=$('#created_date').val();
+            var createdYear=GetYearFromDate(createdDate);
+            
+            if (!unitId) unitId = -1;
+                $.ajax({
+                    type: "GET",
+                    url: '@Url.Action("GetAccountBudgetInformation")',
+                    contentType: "application/json; charset=utf-8",
+                    dataType: 'json',
+                    data: { accountNumber: selectedItem, fcvId: $("#FCV_Identity").val() ,unitId: unitId,year:createdYear },
+                    success: function (result) {
+                        initialVal.val(numeral( result.InitialBudget).format('0,0').split(',').join('.') + " ៛");
+                        transferVal.val(numeral(result.Transfer).format('0,0').split(',').join('.') + " ៛");
+                        total.val(numeral(result.TotalBudget).format('0,0').split(',').join('.') + " ៛");
+                        ref.val(numeral(result.AmountReference).format('0,0').split(',').join('.') + " ៛");
+                        available.val(numeral(result.AvailableBudget).format('0,0').split(',').join('.') + " ៛");
+                        console.log(result);
+                    },
+                    error: function (result) {
+                        console.log("error" + result);
+                    }
+                });
+        }
+        function GetYearFromDate(date) {
+            var splitDateTime = date.split(' ');
+            var splitDate = splitDateTime[0].split('/');
+            return splitDate[2];
+        }
+
+        $(".number").each(function(index,object){
+            this.value = numeral(this.value).format('0,0').split(',').join('.') + " ៛";
+        });
+    });
+</script>

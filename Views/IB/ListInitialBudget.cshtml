@@ -1,0 +1,245 @@
+﻿@using System.Linq
+@using ISFMOCM_Project.Entity
+@model ISFMOCM_Project.Models.InitialBudgetListModel
+    
+@using ISFMOCM_Project.Function
+@{
+    ISFMOCM_Project.Entity.ISFMOCM_DBEntities db = new ISFMOCM_Project.Entity.ISFMOCM_DBEntities();
+    ViewBag.Title = "ឥណទានអនុម័តដើមឆ្នាំ";
+    //string IBYear = DateTime.Now.Year.ToString() ;
+    string IBYear = db.tbl_year.OrderByDescending(o => o.year).Where(w => w.active == true).Select(s => s.year).FirstOrDefault().ToString();
+    string strMasterDescrption = "ឥណទានសរុប ";
+    decimal totalAmountAccountChapter = 0;
+}
+
+<h2>Index</h2>
+<div class="bs-example">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3>ឥណទានអនុម័តដើមឆ្នាំ</h3>
+        </div>
+        <div class="panel-body">
+
+            @if (User.IsInRole("Admin"))
+            {
+                @*@Html.ActionLink("កែប្រែឥណទានអនុម័តនៅឆ្នាំ " + DateTime.Now.Year, "EditBudgets", null, htmlAttributes: new { @class = "btn btn-primary pull-right" })<br /><br />*@
+                <div class="row form-group">
+                    <div class="col-lg-6 col-md-6"></div>
+                    <div class="col-lg-6 col-md-6">
+                        <div class="col-lg-5"></div>
+                        <div class="col-lg-4 col-md-4">
+                            @Html.ActionLink("កែប្រែឥណទានអនុម័ត ", "EditBudgets", new { @IBYear=IBYear }, htmlAttributes: new { @class = "btn btn-primary pull-right" })
+                        </div>
+                        <label class="control-label col-lg-1 col-md-1" style="text-align:center !important;vertical-align:middle !important;padding: 10px !important;">ឆ្នាំ</label>
+                        <div class="col-lg-2 col-md-2">
+                            <select class="form-control" id="IBYear" name="IBYear" disabled>
+                                @for (int i = 2018; i <= 2028; i++)
+                                {
+                                    if (Convert.ToInt32(IBYear) == i)
+                                    {
+                                        <option value="@i" selected>@i</option>
+                                    }
+                                    else
+                                    {
+                                    <option value="@i">@i</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            }
+            <br />
+            <table class="table table-bordered" id="table">
+                <tr>
+                    <th class="text-center">ជំពូក</th>
+                    <th class="text-center">គណនី</th>
+                    <th class="text-center">អនុគណនី</th>
+                    <th class="text-center">ឈ្មោះគណនី</th>
+                    <th class="text-center">ឆ្នាំ</th>
+                    <th class="text-center">ឥណទានអនុម័ត</th>
+                    <th class="text-center">ជម្រើស</th>
+                </tr>
+                <tbody>
+                    @{
+                        //var db = new ISFMOCM_DBEntities();
+                        int countChatper = 1;
+                        var chatpers = db.tbl_AccountChapter.OrderBy(a=>a.AccChapter_order);
+                        foreach (var chapter in chatpers)
+                        {
+                            if (countChatper == chatpers.Count())
+                            {
+                                strMasterDescrption = string.Format("{0}{1}", strMasterDescrption, chapter.AccChapter_code);
+                            }
+                            else
+                            {
+                                strMasterDescrption = string.Format("{0}{1}+", strMasterDescrption, chapter.AccChapter_code);
+                            }
+
+                            totalAmountAccountChapter = totalAmountAccountChapter + (decimal)CommonReportFunctions.GetInitaBudgetsByChpaterId(chapter.AccChapter_id, IBYear).Sum(b => b.Budget);
+
+                            <tr>
+                                <td class="text-center">@chapter.AccChapter_code</td>
+                                <td></td>
+                                <td></td>
+                                <td class="text-center"><strong>@chapter.AccChapter_name</strong></td>
+                                <td class="text-center">@IBYear</td>
+                                <td class="budgets number">@CommonReportFunctions.GetInitaBudgetsByChpaterId(chapter.AccChapter_id,IBYear).Sum(b => b.Budget)</td>
+                                <td></td>
+                            </tr>
+
+                            foreach (var account in db.tbl_Account.Where(acc => acc.Acc_no.Length == 4 && acc.AccChapter_id==chapter.AccChapter_id))
+                            {
+                                <tr>
+                                    <td></td>
+                                    <td class="text-center">@account.Acc_no</td>
+                                    <td></td>
+                                    <td>@account.Acc_name</td>
+                                    <td class="text-center">@IBYear</td>
+                                    <td class="budgets number">@CommonReportFunctions.GetTotalAccountInitialBudget(account.Acc_no,IBYear)
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                var subAccounts = db.tbl_Account.Where(acc => acc.Acc_code == account.Acc_no && acc.Status==true);
+                                foreach (var subAccount in subAccounts)
+                                {
+                                    <tr>
+                                        <td></td>
+                                        <td></td>
+                                        <td class="text-center">@subAccount.Acc_no</td>
+                                        <td>@subAccount.Acc_name</td>
+                                        <td class="text-center">@IBYear</td>
+                                        <td class="budgets number">@{ 
+                                            decimal subAccountInitailBudget = 0;
+                                            if (CommonReportFunctions.GetSubAccountInitialBudget(subAccount.Acc_no,IBYear) != null)
+                                            {
+                                                subAccountInitailBudget =Convert.ToDecimal(CommonReportFunctions.GetSubAccountInitialBudget(subAccount.Acc_no,IBYear).Budget);
+                                            }
+                                        }
+                                        @subAccountInitailBudget
+                                        </td>
+                                        <td class="text-center">
+                                            @if (User.IsInRole("Admin"))
+                                            {
+                                                if (CommonReportFunctions.GetSubAccountInitialBudget(subAccount.Acc_no,IBYear) != null)
+                                                {
+                                                @Html.ActionLink(" ", "Edit", new { @id = CommonReportFunctions.GetSubAccountInitialBudget(subAccount.Acc_no,IBYear).InitialBudget_id }, htmlAttributes: new { @class = "btn btn-warning glyphicon glyphicon-pencil" })
+                                                @:&nbsp;
+                                                @Html.ActionLink(" ", "Delete", new { @id = CommonReportFunctions.GetSubAccountInitialBudget(subAccount.Acc_no,IBYear).InitialBudget_id }, htmlAttributes: new { @class = "btn btn-danger glyphicon glyphicon-trash", onclick = "return onDelete()" })
+                                                }
+                                            }
+                                        </td>
+                                    </tr>
+                                    var units = db.tbl_Unit.Where(u => u.Acc_no == subAccount.Acc_no && u.Unit_code == 0 && u.status==false).OrderBy(o => o.Order_Number);
+                                    foreach (var unit in units)
+                                    {
+                                        <tr>
+                                            <td></td>
+                                            <td></td>
+                                            <td class="text-center">@unit.unit_number</td>
+                                            @if (unit.Order_Number == 0)
+                                            {
+                                                <td>@unit.Unit_name</td>
+                                            }
+                                            else
+                                            {
+                                                <td>@unit.Unit_name</td>
+                                            }
+                                            <td class="text-center">@IBYear</td>
+                                            <td class="budgets number">
+                                                @{ 
+                                                    decimal unitInitialBudget = 0;
+                                                    if(CommonReportFunctions.GetUnitInitialBudget(unit.Acc_no, unit.Unit_id,IBYear) != null)
+                                                    {
+                                                        unitInitialBudget =Convert.ToDecimal(CommonReportFunctions.GetUnitInitialBudget(unit.Acc_no, unit.Unit_id,IBYear).Budget);
+                                                    }
+                                                }
+                                                @unitInitialBudget
+                                            </td>
+                                            <td class="text-center">
+                                                
+                                                @if (User.IsInRole("Admin"))
+                                                {
+                                                    if (CommonReportFunctions.GetUnitInitialBudget(unit.Acc_no, unit.Unit_id,IBYear) != null)
+                                                    {
+                                                    @Html.ActionLink(" ", "Edit", new { @id = CommonReportFunctions.GetUnitInitialBudget(unit.Acc_no, unit.Unit_id,IBYear).InitialBudget_id }, htmlAttributes: new { @class = "btn btn-warning glyphicon glyphicon-pencil" })
+                                                    @:&nbsp;
+                                                    @Html.ActionLink(" ", "Delete", new { @id = CommonReportFunctions.GetUnitInitialBudget(unit.Acc_no, unit.Unit_id,IBYear).InitialBudget_id }, htmlAttributes: new { @class = "btn btn-danger glyphicon glyphicon-trash", onclick = "return onDelete()" })
+                                                    }
+                                                }
+                                            </td>
+                                        </tr>
+                                        var subUnits = db.tbl_Unit.Where(u => u.Unit_code == unit.Unit_id && u.status==false);
+                                        foreach (var subUnit in subUnits)
+                                        {
+                                            <tr>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td>@subUnit.Unit_name</td>
+                                                <td class="text-center">@DateTime.Now.Year</td>
+                                                <td class="budgets number">
+                                                    @{ 
+                                                        decimal subUnitInitialBudget = 0;
+                                                        if(CommonReportFunctions.GetUnitInitialBudget(subUnit.Acc_no, subUnit.Unit_id,IBYear) != null)
+                                                        {
+                                                            subUnitInitialBudget =Convert.ToDecimal(CommonReportFunctions.GetUnitInitialBudget(subUnit.Acc_no, subUnit.Unit_id,IBYear).Budget);
+                                                        }
+                                                    }
+                                                @subUnitInitialBudget
+                                                </td>
+                                                <td class="text-center">
+                                                    @if (User.IsInRole("Admin"))
+                                                    {
+                                                        if (CommonReportFunctions.GetUnitInitialBudget(subUnit.Acc_no, subUnit.Unit_id,IBYear) != null)
+                                                        {
+                                                        @Html.ActionLink(" ", "Edit", new { @id = CommonReportFunctions.GetUnitInitialBudget(subUnit.Acc_no, subUnit.Unit_id,IBYear).InitialBudget_id }, htmlAttributes: new { @class = "btn btn-warning glyphicon glyphicon-pencil" })
+                                                        @:&nbsp;
+                                                        @Html.ActionLink(" ", "Delete", new { @id = CommonReportFunctions.GetUnitInitialBudget(subUnit.Acc_no, subUnit.Unit_id,IBYear).InitialBudget_id }, htmlAttributes: new { @class = "btn btn-danger glyphicon glyphicon-trash", onclick = "return onDelete()" })
+                                                        }
+                                                    }
+                                                </td>
+                                            </tr>
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+
+                                                            countChatper++;
+
+                                                        }
+
+                    }
+
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="~/Content/assets/numeral/numeral.js"></script>
+    <script>
+        
+
+        $(function () {
+
+            $("#table tbody").append(""+
+                "<tr>"+
+                    "<td colspan='4' class='text-center'>@strMasterDescrption</td>" +
+                    "<td class='text-center'>@IBYear</td>" +
+                    "<td class='budgets number'>@totalAmountAccountChapter</td>" +
+                    "<td></td>" +
+                "</tr>"
+                );
+
+            var budgets = $(".budgets");
+            for (var i = 0; i < budgets.length; i++) {
+                budgets[i].textContent = numeral(budgets[i].textContent).format('0,0').split(',').join('.') + " ៛";
+            }
+
+        });
+
+    </script>
+}

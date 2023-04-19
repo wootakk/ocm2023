@@ -1,0 +1,161 @@
+﻿@using ISFMOCM_Project.Function
+@model ISFMOCM_Project.Models.ListTransfer
+
+
+<link href="~/Content/Site.css" type="text/css" rel="stylesheet" />
+<link href="~/Content/assets/choosen/chosen.min.css" rel="stylesheet" />
+
+@{
+    ViewBag.Title = "ការចុះបញ្ជីនិយ័តភាពថវិកា";
+    ISFMOCM_Project.Entity.ISFMOCM_DBEntities db = new ISFMOCM_Project.Entity.ISFMOCM_DBEntities();
+    string TransferYear = db.tbl_year.OrderByDescending(o => o.year).Where(w => w.active == true).Select(s => s.year).FirstOrDefault().ToString();
+}
+<style>
+    textarea {
+    width: 81% !important;
+}
+</style>
+
+<h2>AddTransfer</h2>
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken(){
+        @Html.ValidationSummary(true)
+        <div class="form-horizontal">
+            <div class="bs-example">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3>ការចុះបញ្ជីនិយ័តភាពថវិកា</h3>
+                    </div>
+
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-md-5">
+                                <div class="col-md-12">
+                                    <div class="col-md-3">
+                                        <label class="control-label">ឆ្នាំ:</label>
+                                        
+                                    </div>
+                                    <div class="col-md-9">
+                                        <select class="form-control" disabled>
+                                            @{
+                                                for (int i = 2018; i <= 2028; i++)
+                                                {
+                                                    if (Convert.ToInt32(TransferYear) == i)
+                                                    {
+                                                        <option value="@i" selected>@i</option>
+                                                    }
+                                                    else
+                                                    {
+                                                    <option value="@i">@i</option>
+                                                        }
+                                                    }
+                                                }
+                                        </select>
+                                        <input type="hidden" value="@TransferYear" name="Transfer_Year" id="Transfer_Year" />
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="col-md-3">
+                                        @Html.LabelFor(model => model.transfer_no, htmlAttributes: new { @class = "control-label" })<strong class="red"> *</strong>:
+                                    </div>
+                                    <div class="col-md-9">
+                                        @Html.EditorFor(model => model.transfer_no, new { htmlAttributes = new { @class = "form-control" } })
+                                        <br />
+                                        @Html.ValidationMessageFor(model => model.transfer_no, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="col-md-3">
+                                        @Html.LabelFor(model => model.transfer_date, htmlAttributes: new { @class = "control-label" }):
+                                    </div>
+                                    <div class="col-md-9">
+                                        @Html.EditorFor(model => model.transfer_date, new { htmlAttributes = new { @class = "form-control" } })
+                                        <br />
+                                        @Html.ValidationMessageFor(model => model.transfer_date, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="col-md-3">
+                                        @Html.LabelFor(model => model.transfer_desc, htmlAttributes: new { @class = "control-label col-md-2" }):
+                                    </div>
+                                    <div class="col-md-9">
+                                        @Html.TextAreaFor(model => model.transfer_desc, new { @class = "text-mds form-control" })
+                                        @Html.ValidationMessageFor(model => model.transfer_desc, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-7">
+                                <div id="container" class="bgf">
+                                    <div class="row">
+                                        <div class="col-md-10">
+                                            <div class="col-md-3">
+                                                គណនី <strong class="red"> *</strong>
+                                            </div>
+                                            <div class="col-md-3">
+                                                កើន
+                                            </div>
+                                            <div class="col-md-3">
+                                                ថយ
+                                            </div>
+                                            <div class="col-md-3">
+                                                បន្ថែម
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-10">
+                                            <div class="col-md-3">
+                                                @Html.DropDownList("Acc_no", new SelectList(CommonClass.GetSubAccountWithUnit(), "Value", "Display"), new { id = "Acc_no", @class = "form-control" })
+                                                @Html.ValidationMessageFor(model => model.Acc_no, "", new { @class = "text-danger" })
+                                            </div>
+                                            <div class="col-md-3">
+                                                @Html.TextBoxFor(model => model.transfer_increase, new { data_bind = "value: transfer_increase", @Value = 0, @class = "form-control Transfer_Increase number" })
+                                            </div>
+                                            <div class="col-md-3">
+                                                @Html.TextBoxFor(model => model.transfer_decrease, new { data_bind = "value: transfer_decrease", @Value = 0, @class = "form-control Transfer_Decrease number" })
+                                            </div>
+                                            <div class="col-md-3">
+                                                @Html.TextBoxFor(model => model.transfer_add, new { data_bind = "value: transfer_add", @Value = 0, @class = "form-control Transfer_Add number" })
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <a class="btn-grid btn btn-primary" id="add_transfer">+</a>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-10">
+                                        <div class="col-md-3"><label>សរុប:</label></div>
+                                        <div class="col-md-3"><input type="text" name="TotalIncrease" value="" id="TotalIncrease" class="form-control number" /></div>
+                                        <div class="col-md-3"><input type="text" name="TotalDecrease" value="" id="TotalDecrease" class="form-control number" /></div>
+                                        <div class="col-md-3"><input type="text" name="TotalAdd" value="" id="TotalAdd" class="form-control number" /></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><br />
+                        <div class="row">
+                            <div class="col-md-3">
+                                @Html.ActionLink("ត្រលប់", "TransferList", "Transfer", new { @class = "btn btn-default" })
+                                <input type="submit" value="រក្សាទុក" class="btn btn-default" id="btnSubmit"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+<script src="~/Scripts/moment.js"></script>
+<script src="~/Scripts/bootstrap-datetimepicker.js"></script>
+<script src="~/Scripts/chosen.jquery.min.js"></script>
+<script src="~/Scripts/TransferScript.js"></script>
+<script src="~/Content/assets/numeral/numeral.js"></script>
+}
+

@@ -1,0 +1,151 @@
+﻿@model IEnumerable<ISFMOCM_Project.Models.ListTransfer>
+
+@{
+    ViewBag.Title = "បញ្ជីនិយ័តភាពថវិកា";
+}
+<style>
+    p {
+        padding: 0;
+    }
+</style>
+<h2>TransferList</h2>
+<div class="bs-example">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+
+            <div class="row">
+
+                @using (Html.BeginForm("TransferList", "Transfer", FormMethod.Get))
+                {
+                    <div class="col-lg-12">
+                        <div class="col-lg-4">
+                            <h3>បញ្ជីនិយ័តភាពថវិកា</h3>
+                        </div>
+                        <div class="col-lg-8 right">
+                            <div class="col-md-4"></div>
+                            <div class="col-md-3"><input type="text" id="transfer_date" name="transfer_date" placeholder="កាលបរិច្ឋេទ" class="form-control" /></div>
+                            <div class="col-md-3"><input type="text" id="transfer_no" name="transfer_no" placeholder="លេខបង្វែរ" class="form-control" /></div>
+                            <div class="col-md-2"><button type="submit" class="btn-search btn btn-primary">Search</button></div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="panel-body">
+            <p class="pull-left">
+                @Html.ActionLink("បង្កើតថ្មី", "AddTransfer", "Transfer", new { @Class = "new" })
+            </p>
+            <div class="row">
+                <table class="table table-responsive table-bordered" id="transferTable">
+                    <thead>
+                    <tr>
+                        <td>លេខបង្វែរ</td>
+                        <td>កាលបរិច្ឆេទ</td>
+                        <td>បរិយាយ</td>
+                        <td>គណនី</td>
+                        <td>កើន</td>
+                        <td>ថយ</td>
+                        <td>បន្ថែម</td>
+                        <td>ជម្រើស</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.transfer_no</td>
+                                <td>@item.transfer_date.Value.ToString("dd-MM-yyyy")</td>
+                                <td>@item.transfer_desc</td>
+                                <td>
+                                    @foreach (var acc in item.Accounts)
+                                    {
+                                        @:@acc.Acc_no <br />
+                                    }
+                                </td>
+                                <td class="budget text-right">
+                                    @foreach (var inc in item.transfer_increase)
+                                    {
+                                        @:<span> @string.Format("{0:0,0}", @inc) ៛ </span> <br />
+                                    }
+                                </td>
+                                <td class="budget text-right"> 
+                                    @foreach (var dec in item.transfer_decrease)
+                                    {
+                                        @:<span> @string.Format("{0:0,0}", @dec) ៛ </span> <br />
+                                    }
+                                </td>
+                                <td class="budget text-right">
+                                    @foreach (var add in item.transfer_add)
+                                    {
+                                        @:<span> @string.Format("{0:0,0}", @add) ៛ </span> <br />
+                                    }
+                                </td>
+                                <td class="text-center">
+                                    @if (User.IsInRole("Admin") || User.IsInRole("Data Entry"))
+                                    {
+                                        @Html.ActionLink(" ","EditTransfer",new {id = item.transfer_id} ,new {@class= "glyphicon glyphicon-pencil"})
+                                        @:&nbsp; 
+                                        @Html.ActionLink(" ","DetailsTransfer",new {id = item.transfer_id} ,new {@class= "glyphicon glyphicon-eye-open"})
+                                        @:&nbsp; 
+                                    }
+                                    @if (User.IsInRole("Admin"))
+                                    {
+                                        @Html.ActionLink(" ","DeleteItemTransfer",new { id = item.transfer_id} , new {@class = "glyphicon glyphicon-trash" , onclick = "return onDelete()" })
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script src="~/Scripts/moment.js"></script>
+    <script src="~/Scripts/bootstrap-datetimepicker.js"></script>
+    <script src="~/Scripts/chosen.jquery.min.js"></script>
+    <script src="~/Scripts/TransferScript.js"></script>
+    <script src="~/Content/assets/numeral/numeral.js"></script>
+    <script>
+            var budgets = $(".budget span");
+            for (var i = 0; i < budgets.length; i++) {
+                budgets[i].textContent = numeral(budgets[i].textContent).format('0,0').split(',').join('.') + " ៛";
+            }
+            $(function() {
+                var table = $('#transferTable').DataTable(
+                    {
+                        "order": [[0, "desc"]],
+                        "bFilter": false,
+                        "oLanguage": {
+                            "sSearch": "ស្វែងរក"
+                        },
+                        sPaginationType: "full_numbers",
+                        "bLengthChange": false,
+                        "fnDrawCallback": function (oSettings) {
+                            var totalRows = parseInt(oSettings.aiDisplay.length);
+                            //var rowPerPage = parseInt(oSettings.nTBody.children.length);
+                            reversedPaginationNumbers(totalRows, 10);
+                        }
+                    }
+                );
+
+                function reversedPaginationNumbers(totalRowsParam, displayRowsParams) {
+                    var totalRows = totalRowsParam;
+                    var displayRows = displayRowsParams;
+                    var paginations = $(".paginate_button a");
+                    var totalPaginations = Math.ceil(totalRows / displayRows);
+                    for (var i = 0; i < paginations.length; i++) {
+                        var pageNumber = paginations[i].textContent;
+                        if (parseInt(pageNumber)) {
+                            paginations[i].textContent = totalPaginations + 1 - parseInt(pageNumber);
+                        }
+                    }
+
+                }
+            });
+    </script>
+
+}
+

@@ -1,0 +1,164 @@
+﻿@model IEnumerable<ISFMOCM_Project.Models.FCVModel>
+<link type="text/css" rel="stylesheet" href="~/Content/Site.css" />
+
+@{
+    ViewBag.Title = "បញ្ជីសលាកប័ត្រចំណាយថវិកា";
+}
+<br /><br /><br /><br />
+<div class="bs-example">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <div class="row">
+
+                @using (Html.BeginForm("ListFcv", "FCV", FormMethod.Get))
+                {
+                    <div class="col-lg-12">
+                        <div class="col-lg-4">
+                            <h3>បញ្ជីសលាកប័ត្រចំណាយថវិកា</h3>
+                        </div>
+                        <div class="col-lg-8 right">
+                            <div class="col-md-1"></div>
+                            <div class="col-md-3"><input type="text" id="fcv_id" name="fcv_id" placeholder="លេខកូដ" class="form-control" /></div>
+                            <div class="col-md-3"><input type="text" id="fcv_no" name="fcv_no" placeholder="លេខសាលាកប័ត្រ" class="form-control" /></div>
+                            <div class="col-md-3"><input type="text" id="letter_no" name="letter_no" placeholder="លេខលិខិត" class="form-control" /></div>
+                            <div class="col-md-2"><button type="submit" class="btn btn-primary btn-search">Search</button></div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="panel-body">
+            @if (User.IsInRole("Data Entry") || User.IsInRole("Admin"))
+            {
+                <p class="pull-left">
+                    @Html.ActionLink("បង្កើតថ្មី", "Create", "FCV", new { @Class = "new" })
+                </p>
+            }
+            
+            <div class="row">
+                <table class="table table-bordered" id="fcvTable">
+                    <thead>
+                    <tr>
+                        <td class="text-center">លរ</td>
+                        <td class="text-center">កាលបរិច្ឆេទ<br/>សលាកប័ត្រ</td>
+                        <td class="text-center">លេខលិខិត</td>
+                        <td class="text-center">លេខសលាកប័ត្រ</td>
+                        <td class="text-center">លេខអនុគណនី</td>
+                        <td class="text-center">បរិយាយ</td>
+                        <td class="text-center">ចំនួនទឹកប្រាក់</td>
+                        <td class="text-center">ជម្រើស</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var item in Model)
+                    {
+                        string []backgroundColor = { "#EF9A9A", "#CE93D8", "#69F0AE","#FFF"};
+                        int createdIndex=3;
+                        if (item.created_date.Year == DateTime.Now.Year && item.created_date.Month == DateTime.Now.Month)
+                        {
+                            if (item.created_date.Day == DateTime.Now.Day) { createdIndex = 0;}
+                            else if (item.created_date.Day == DateTime.Now.Day - 1) { createdIndex = 1; }
+                            else if (item.created_date.Day == DateTime.Now.Day - 2) { createdIndex = 2; }
+                            else { createdIndex = 3; }
+                        }
+
+                        <tr style="background-color: @backgroundColor[createdIndex]">
+                            <td>@item.FCV_Identity</td>
+                            <td>@(item.FCVDate != null ? Convert.ToDateTime(item.FCVDate).ToString("dd/MM/yyyy") : "")</td>
+                            <td>@item.Letter_no</td>
+                            <td>@item.FCV_no</td>
+                            <td class="text-right">@item.Acc_no</td>
+                            <td>@item.Commitment_desc</td>
+                            <td class="text-right budget">@(item.FCV_amount != null ? string.Format("{0:0,0}", item.FCV_amount) : " " + " ៛")</td>
+                            <td class="text-center">
+                                @if (User.IsInRole("Admin") || User.IsInRole("Data Entry"))
+                                {
+                                    @Html.ActionLink("    ", "Edit", new {id = item.FCV_Identity}, new {@class = "glyphicon glyphicon-pencil "}) @:&nbsp;
+                                }
+
+                                @Html.ActionLink("    ", "Details", new { id = item.FCV_Identity }, new { @class = "glyphicon glyphicon-eye-open " })
+
+                                @if (User.IsInRole("Admin"))
+                                {
+                                    @:&nbsp;
+                                    @Html.ActionLink("     ","Delete",new {id = item.FCV_Identity}, new {@class = "glyphicon glyphicon-trash ", onclick = "return onDelete()" })
+                                }
+
+                                @Html.ActionLink("បោះពុម្ពសលាកប័ត្រ", "viewReport",new { id = item.FCV_Identity} , new {@class = "btn"})
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script src="~/Content/assets/numeral/numeral.js"></script>
+    <script>
+        var budgets = $(".budget");
+        for (var i = 0; i < budgets.length; i++) {
+            budgets[i].textContent = numeral(budgets[i].textContent).format('0,0').split(',').join('.') + " ៛";
+        }
+    </script>
+
+}
+<script>
+    $(function () {
+        var today = $(".createdToday");
+        for (var i = 0; i < today.length; i++) {
+            var row = today[i].parentElement.parentElement;
+            row.style.backgroundColor = "#EF9A9A";
+            row.style.textColor = "white";
+        }
+
+        var yesterday = $(".createdYesterday");
+        for (var i = 0; i < yesterday.length ; i++) {
+            var row = yesterday[i].parentElement.parentElement;
+            row.style.backgroundColor = "#CE93D8";
+        }
+
+        var beforeYesterday = $(".createdBeforeYesterday");
+        for (var i = 0; i < beforeYesterday.length ; i++) {
+            var row = beforeYesterday[i].parentElement.parentElement;
+            row.style.backgroundColor = "#69F0AE";
+        }
+
+        var table = $('#fcvTable').DataTable(
+            {
+                "order": [[ 0, "desc" ]],
+                "bFilter": false,
+                "oLanguage": {
+                    "sSearch": "ស្វែងរក"
+                },
+                sPaginationType: "full_numbers",
+                "bLengthChange": false,
+                "fnDrawCallback": function (oSettings) {
+                    var totalRows = parseInt(oSettings.aiDisplay.length);
+                    //var rowPerPage = parseInt(oSettings.nTBody.children.length);
+                    reversedPaginationNumbers(totalRows, 10);
+                }
+            }
+        );
+
+        function reversedPaginationNumbers(totalRowsParam, displayRowsParams) {
+            var totalRows = totalRowsParam;
+            var displayRows = displayRowsParams;
+            console.log("===================================================");
+            console.log(displayRows);
+            console.log(totalRows);
+            var paginations = $(".paginate_button a");
+            var totalPaginations = Math.ceil(totalRows / displayRows);
+            for (var i = 0; i < paginations.length; i++) {
+                var pageNumber = paginations[i].textContent;
+                if (parseInt(pageNumber)) {
+                    paginations[i].textContent = totalPaginations + 1 - parseInt(pageNumber);
+                }
+            }
+
+        }
+
+    });
+</script>

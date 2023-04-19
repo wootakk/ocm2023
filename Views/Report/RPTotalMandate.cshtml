@@ -1,0 +1,24 @@
+﻿@using ReportViewerForMvc;
+@{
+    ViewBag.Title = "RPTotalMandate";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link rel="stylesheet" href="~/Content/style/ReportStyle.css" />
+<br /><br />
+<div class="form-horizontal">
+    <div class="bs-example">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="row">
+                    @Html.ActionLink("ត្រលប់", "ListReport", "Report", new { @class = "btn btn-primary pull-right btn-default" })
+
+                </div>
+            </div>
+            <div class="panel-body">
+                <div class="text-center">
+                    @Html.ReportViewer(ViewBag.ReportViewer as Microsoft.Reporting.WebForms.ReportViewer)
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

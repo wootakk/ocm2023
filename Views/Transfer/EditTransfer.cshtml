@@ -1,0 +1,170 @@
+﻿@model ISFMOCM_Project.Models.ListTransfer
+
+@{
+    ViewBag.Title = "ការកែប្រែនិយ័តភាពថវិកា";
+}
+<link href="~/Content/assets/choosen/chosen.min.css" rel="stylesheet" />
+
+<style>
+    textarea {
+        width: 81% !important;
+    }
+
+    .btn-grid {
+        display: inline-block;
+        padding: 0px 8px;
+        margin-left: 24px;
+        margin-top: 12px;
+    }
+</style>
+
+<h2>AddTransfer</h2>
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <div class="bs-example">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3>ការកែប្រែនិយ័តភាពថវិកា</h3>
+                </div>
+
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-5">
+                            <div class="col-md-12">
+                                <div class="col-md-3">
+                                    @Html.LabelFor(model => model.transfer_no, htmlAttributes: new { @class = "control-label" })<strong class="red"> *</strong>:
+                                </div>
+                                <div class="col-md-9">
+                                    @Html.EditorFor(model => model.transfer_no, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.transfer_no, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="col-md-3">
+                                    @Html.LabelFor(model => model.transfer_date, htmlAttributes: new { @class = "control-label" }):
+                                </div>
+                                <div class="col-md-9">
+                                    @Html.EditorFor(model => model.transfer_date, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.transfer_date, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="col-md-3">
+                                    @Html.LabelFor(model => model.transfer_desc, htmlAttributes: new { @class = "control-label col-md-2" }):
+                                </div>
+                                <div class="col-md-9">
+                                    @Html.TextAreaFor(model => model.transfer_desc, new { @class = "text-mds form-control" })
+                                    @Html.ValidationMessageFor(model => model.transfer_desc, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-7 bgf">
+
+
+                            <div id="container" class="bgf">
+                                <div class="row​">
+                                    <div class="col-md-10">
+                                        <div class="col-md-3">
+                                            គណនី<strong class="red"> *</strong>
+                                        </div>
+                                        <div class="col-md-3">
+                                            កើន
+                                        </div>
+                                        <div class="col-md-3">
+                                            ថយ
+                                        </div>
+                                        <div class="col-md-3">
+                                            បន្ថែម
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <a class="btn btn-grid btn-primary" id="add_transfer">+</a>
+                                    </div>
+                                </div>
+                                @{
+                                    for (var i = 0; i < Model.transfer_increase.Length; i++)
+                                    {
+                                        <div class="row​">
+                                            <div class="col-md-10">
+                                                <div class="form-group">
+                                                    <div class="col-md-3">
+                                                        <select class="form-control" data-val="true" data-val-required="The គណនី field is required." id="Acc_no" name="Acc_no">
+                                                            @foreach (ISFMOCM_Project.Models.AccountWithUnitModel acc in ViewBag.Acc_no)
+                                                            {
+                                                                if (acc.accNo == Model.Acc_no[i] && acc.unitId == Model.Unit_id[i])
+                                                                {
+                                                                    @:
+                                                                    <option value="@acc.accNo,@acc.unitId" selected="selected"> @acc.Dispaly </option>
+                                                                }
+                                                                else
+                                                                {
+                                                                    @:
+                                                                    <option value="@acc.accNo,@acc.unitId"> @acc.Dispaly </option>
+                                                                }
+                                                            }
+                                                        </select>
+                                                        @Html.ValidationMessageFor(model => model.Acc_no, "", new { @class = "text-danger" })
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        @Html.EditorFor(model => model.transfer_increase[i], new { htmlAttributes = new { @class = "form-control Transfer_Increase number", @Name = "transfer_increase" } })
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        @Html.EditorFor(model => model.transfer_decrease[i], new { htmlAttributes = new { @class = "form-control Transfer_Decrease number", @Name = "transfer_decrease" } })
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        @Html.EditorFor(model => model.transfer_add[i], new { htmlAttributes = new { @class = "form-control Transfer_Add number", @Name = "transfer_add" } })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2" id="remove"><a class="btn btn-grid btn-danger">-</a></div>
+                                        </div>
+                                    }
+                                }
+                            </div>
+                            <div class="row">
+                                <div class="col-md-10">
+                                    <div class="col-md-3"><label>សរុប:</label></div>
+                                    <div class="col-md-3"><input type="text" name="TotalIncrease" value="" id="TotalIncrease" class="form-control number" /></div>
+                                    <div class="col-md-3"><input type="text" name="TotalIncrease" value="" id="TotalDecrease" class="form-control number" /></div>
+                                    <div class="col-md-3"><input type="text" name="TotalIncrease" value="" id="TotalAdd" class="form-control number" /></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div><br />
+                    <div class="row">
+                        <div class="col-md-3">
+                            @Html.ActionLink("ត្រលប់", "TransferList", "Transfer", new { @class = "btn btn-default" })
+                            <input type="submit" value="រក្សាទុក" class="btn btn-default" id="btnSubmit" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+                                    }
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script src="~/Scripts/moment.js"></script>
+    <script src="~/Scripts/bootstrap-datetimepicker.js"></script>
+    <script src="~/Scripts/chosen.jquery.min.js"></script>
+    <script src="~/Content/assets/numeral/numeral.js"></script>
+    <script>
+        $(function () {
+            var transfer_date =@Html.Raw(Json.Encode(Model.transfer_date));
+            $("#transfer_date").val(moment(transfer_date).format("DD/MM/YYYY"));
+            $(".number").each(function(index,object){
+                this.value = numeral(this.value).format('0,0').split(',').join('.') + " ៛";
+            });
+
+        });
+    </script>
+    @* Dont Move this cript up *@
+    <script src="~/Scripts/TransferScript.js"></script>
+
+}
+
+

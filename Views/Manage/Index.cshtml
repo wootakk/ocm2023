@@ -1,0 +1,38 @@
+﻿@model ISFMOCM_Project.Models.IndexViewModel
+@{
+    ViewBag.Title = "Manage";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>@ViewBag.Title.</h2>
+
+<p class="text-success">@ViewBag.StatusMessage</p>
+
+<div class="form-horizontal">
+
+    <div class="bs-example">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="row">
+                    <h3>ផ្លាស់ប្តូរការកំណត់គណនីរបស់អ្នក</h3>
+                </div>
+            </div>
+            <div class="panel-body">
+                <div class="list">
+                    <div class="row">
+                        <h4>
+                            @if (Model.HasPassword)
+            {
+                              @Html.ActionLink("ផ្លាស់ប្តូរពាក្យសម្ងាត់របស់អ្នក", "ChangePassword")
+                            }
+                            else
+                            {
+                                @Html.ActionLink("Create", "SetPassword")
+                            }
+                        </h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

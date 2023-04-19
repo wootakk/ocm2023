@@ -1,0 +1,727 @@
+﻿@using ISFMOCM_Project.Function
+@using ISFMOCM_Project.Models
+@model ISFMOCM_Project.Models.ExpenseViewModel
+<link href="~/Content/assets/choosen/chosen.min.css" type="text/css" rel="stylesheet" />
+
+@{
+    ViewBag.Title = "កែប្រែ";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    string ExpenseYear = DateTime.Now.Year.ToString();
+}
+
+<br />
+<br />
+<br />
+<br />
+<style>
+    .form-control {
+        margin-top: 0px;
+    }
+
+    td {
+        vertical-align: middle !important;
+    }
+
+    .btn-primary, .btn-danger {
+        margin-top: 0px;
+        margin-left: 0;
+    }
+
+    input {
+        max-width: 100%;
+    }
+
+    .btn-success {
+        width: 100%;
+    }
+
+    td.number {
+        width: 180px !important;
+    }
+
+    .number-header {
+        width: 80px;
+    }
+
+    .number {
+        text-align: right;
+    }
+
+    .text-bold {
+        font-weight: bold;
+    }
+
+    .totalExpense, .totalBalance, .totalPercent, .totalRound, .totalInitialBudget, .totalPettycash {
+        font-weight: bold;
+    }
+
+    thead {
+        border: 3px double #e3e3e3;
+    }
+</style>
+
+@using (Html.BeginForm("EditExpense", "Expense", FormMethod.Post, new { @onsubmit = "validateAllInputBoxes(event);" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.id);
+    <div class="form-horizontal">
+        <div class="bs-example">
+            <div class="panel panel-default">
+                <div class="panel-heading text-center">
+                    <h3>កត់ត្រាចំណាយរជ្ជទេយ្យបុរេប្រទានរដ្ឋបាលរបស់ទីស្ដីការគណៈរដ្ឋមន្ត្រី ឆ្នាំ២០២១ (ជំពូក៦០​ និង​ជំពូក៦១)</h3>
+                </div>
+                <div class="panel-body">
+                    <div class="table-responsive">
+                        <input type="hidden" id="ExpenseYear" value="@ExpenseYear"/>
+                        <div class="row">
+                            <div class="col-md-2">
+                                <label>កាលបរិច្ឆេទ</label>
+                                @Html.EditorFor(model => model.ExpenseDate, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.ExpenseDate, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="pull-right">
+                                @Html.ActionLink("បង្ហាញតាមថ្ងៃនីមួយៗ", "ListExpense", "Expense", htmlAttributes: new { @class = "btn btn-primary" })
+                                @Html.ActionLink("របាយការណ៍", "DailyExpenseReport", "Expense", htmlAttributes: new { @class = "btn btn-primary" })
+                            </div>
+                        </div>
+                        <br />
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th class="">ជំពូក</th>
+                                    <th class="" style="width: 133px !important;">អនុគណនី</th>
+                                    <th class="col-md-3">ចំណាត់ថ្នាក់ចំណាយ</th>
+                                    <th class="number-header">ឥណទានរជ្ជទេយ្យ <br />ឆ្នាំ២០២០</th>
+                                    <th class="number-header">ឥណទាន១ជុំ<br />បង្វិលរជ្ជទេយ្យ</th>
+                                    <th class="number-header">ស្ថានភាព<br />ចំណាយប្រចាំថ្ងៃ</th>
+                                    <th class="number-header">ឥណទាន<br />នៅសល់</th>
+                                    <th class="">ចំនួនជុំ</th>
+                                    <th class="">ភាគរយ</th>
+                                    <th class="col-md-1 text-center">ជម្រើស</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td class="text-center text-bold">សរុបរួម</td>
+                                    <td class="totalInitialBudget number text-bold">
+                                        @(ExpenseFunctions.GetChapterPettycash("60",ExpenseYear) + ExpenseFunctions.GetChapterPettycash("61",ExpenseYear))
+                                    </td>
+                                    <td class="totalPettycash number text-bold">
+                                        @((ExpenseFunctions.GetChapterPettycash("60",ExpenseYear) + ExpenseFunctions.GetChapterPettycash("61",ExpenseYear)) / 4)
+                                    </td>
+                                    <td class="totalExpense number text-bold"></td>
+                                    <td class="totalBalance number text-bold"></td>
+                                    <td class="totalRound text-right text-bold"></td>
+                                    <td class="totalPercent text-right text-bold"></td>
+                                    <td></td>
+                                </tr>
+                            </tbody>
+
+                            <tbody class="chapterSixty">
+                                <tr>
+                                    <td class="text-center text-bold">60</td>
+                                    <td class="text-center text-bold"></td>
+                                    <td class="text-bold" style="font-family: khmer-moul">កាទិញ</td>
+                                    <td class="totalChapterInitialBudget number text-bold">@ExpenseFunctions.GetChapterPettycash("60",ExpenseYear)</td>
+                                    <td class="totalChapterPettycash number text-bold">@(ExpenseFunctions.GetChapterPettycash("60",ExpenseYear) / 4)</td>
+                                    <td class="totalChapterExpense number text-bold"></td>
+                                    <td class="totalChapterBalance number text-bold"></td>
+                                    <td class="totalChapterRound text-right text-bold"></td>
+                                    <td class="totalChapterPercent text-right text-bold"></td>
+                                    <td class="">
+                                        <button type="button"  class="btn btn-success btnAddSubAccount" id="btnAddSubAccountChapterSixty">បន្ថែម</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            @{
+                                var parentAccountNumber = "";
+                                var accounts = CommonClass.GetAllSubAccounts().Where(c => c.AccChapter.AccChapter_code == "60" || c.AccChapter.AccChapter_code == "61").ToList();
+                                var isReturnRow = false;
+                            }
+
+                            @{
+                                for (var index = 0; index < Model.Accounts.Length; index++)
+                                {
+                                    if (Model.Accounts[index] != parentAccountNumber && Model.Accounts[index].Substring(0, 2) == "60")
+                                    {
+                                        parentAccountNumber = Model.Accounts[index];
+                                        var rowNumber = 1;
+                                        <tbody class="subAccountNode chapterSixty">
+                                            <tr class="">
+                                                <td></td>
+                                                <td>
+                                                    <select class="form-control required-select Accounts" id="Accounts" name="Accounts">
+                                                        <option value="">ជ្រើសរើសគណនី</option>
+                                                        @foreach (var acc in accounts)
+                                                        {
+                                                            if (acc.Acc_no == Model.Accounts[index])
+                                                            {
+                                                                @:
+                                                                <option value="@acc.Acc_no" selected="selected"> @acc.Acc_no </option>
+                                                            }
+                                                            else
+                                                            {
+                                                                @:
+                                                                <option value="@acc.Acc_no"> @acc.Acc_no </option>
+                                                            }
+                                                        }
+                                                    </select>
+                                                    <span class="text-danger"></span>
+                                                </td>
+                                                <td></td>
+                                                <td class="totalSubInitialBudget number"></td>
+                                                <td class="totalSubPettycash number"></td>
+                                                <td class="totalSubExpense number"></td>
+                                                <td class="totalSubBalance number"></td>
+                                                <td class="totalSubRound text-right"></td>
+                                                <td class="totalSubPercent text-right"></td>
+                                                <td>
+                                                    <button type="button" class="btn btn-primary glyphicon glyphicon-plus btnAddDetail"></button>
+                                                    <button type="button" class="btn btn-danger glyphicon glyphicon-minus btnRemoveSubAccount"></button>
+                                                </td>
+                                            </tr>
+
+                                            @{DETAILS:}
+
+
+                                            <tr class="detailNode">
+                                                @if (isReturnRow)
+                                                {
+                                                    <td><input name="Accounts" value="" style="visibility: hidden; width: 0;" /></td>
+                                                }
+                                                else
+                                                {
+                                                    <td></td>
+                                                }
+                                                <td>@rowNumber</td>
+                                                <td>
+                                                    <input type="text" value="@Model.Description[index]" name="Description" class="form-control" />
+                                                </td>
+                                                <td></td>
+                                                <td></td>
+                                                <td>
+                                                    <input type="text" value="@Model.Amount[index]" name="Amount" class="form-control number" />
+                                                </td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td>
+                                                    <button type="button" class="btn btn-danger glyphicon glyphicon-trash btnRemoveDetail"></button>
+                                                </td>
+                                            </tr>
+                                            @if (Model.Accounts.Length != index + 1 && Model.Accounts[index + 1] == parentAccountNumber)
+                                            {
+                                                index = index + 1;
+                                                rowNumber++;
+                                                isReturnRow = true;
+                                                goto DETAILS;
+                                            }
+
+                                        </tbody>
+
+                                    }
+                                    isReturnRow = false;
+                                }
+                            }
+
+                            <tbody class="chapterSixtyOne" id="chapterSixtyOne">
+                                <tr>
+                                    <td class="text-center text-bold">61</td>
+                                    <td class="text-center text-bold"></td>
+                                    <td class="text-bold" style="font-family: khmer-moul">សេវាកម្ម</td>
+                                    <td class="totalChapterInitialBudget number text-bold">@ExpenseFunctions.GetChapterPettycash("61",ExpenseYear)</td>
+                                    <td class="totalChapterPettycash number text-bold">@(ExpenseFunctions.GetChapterPettycash("61",ExpenseYear) / 4)</td>
+                                    <td class="totalChapterExpense number text-bold"></td>
+                                    <td class="totalChapterBalance number text-bold"></td>
+                                    <td class="totalChapterRound text-right text-bold"></td>
+                                    <td class="totalChapterPercent text-right text-bold"></td>
+                                    <td class="">
+                                        <button type="button" class="btn btn-success btnAddSubAccount" id="btnAddSubAccountChapterSixtyOne">បន្ថែម</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+
+                            @{
+                                parentAccountNumber = "";
+                                isReturnRow = false;
+                            }
+
+                            @{
+                                for (int index = 0; index < Model.Accounts.Length; index++)
+                                {
+                                    if (Model.Accounts[index] != parentAccountNumber && Model.Accounts[index].Substring(0, 2) == "61")
+                                    {
+                                        parentAccountNumber = Model.Accounts[index];
+                                        var rowNumber = 1;
+                                        <tbody class="subAccountNode chapterSixtyOne">
+                                            <tr>
+                                                <td></td>
+                                                <td>
+                                                    <select class="form-control required-select Accounts" id="Accounts" name="Accounts">
+                                                        <option value="">ជ្រើសរើសគណនី</option>
+                                                        @foreach (var acc in accounts)
+                                                        {
+                                                            if (acc.Acc_no == Model.Accounts[index])
+                                                            {
+                                                                @:
+                                                                <option value="@acc.Acc_no" selected="selected"> @acc.Acc_no </option>
+                                                            }
+                                                            else
+                                                            {
+                                                                @:
+                                                                <option value="@acc.Acc_no"> @acc.Acc_no </option>
+                                                            }
+                                                        }
+                                                    </select>
+                                                </td>
+                                                <td></td>
+                                                <td class="totalSubInitialBudget number"></td>
+                                                <td class="totalSubPettycash number"></td>
+                                                <td class="totalSubExpense number"></td>
+                                                <td class="totalSubBalance number"></td>
+                                                <td class="totalSubRound text-right"></td>
+                                                <td class="totalSubPercent text-right"></td>
+                                                <td>
+                                                    <button type="button" class="btn btn-primary glyphicon glyphicon-plus btnAddDetail" id="btnAddDetail"></button>
+                                                    <button type="button" class="btn btn-danger glyphicon glyphicon-minus btnRemoveSubAccount"></button>
+                                                </td>
+                                            </tr>
+                                            @{DETIALS:}
+                                            <tr class="detailNode">
+                                                @if (isReturnRow)
+                                                {
+                                                    <td><input name="Accounts" value="" style="visibility: hidden; width: 0;" /></td>
+                                                }
+                                                else
+                                                {
+                                                    <td></td>
+                                                }
+                                                <td>@rowNumber</td>
+                                                <td>
+                                                    <input type="text" value="@Model.Description[index]" name="Description" class="form-control" />
+                                                </td>
+                                                <td></td>
+                                                <td></td>
+                                                <td>
+                                                    <input type="text" value="@Model.Amount[index]" name="Amount" class="form-control number" />
+                                                </td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td>
+                                                    <button type="button" class="btn btn-danger glyphicon glyphicon-trash btnRemoveDetail"></button>
+                                                </td>
+                                            </tr>
+
+                                            @if (Model.Accounts.Length != index + 1 && Model.Accounts[index + 1] == parentAccountNumber)
+                                            {
+                                                index = index + 1;
+                                                isReturnRow = true;
+                                                rowNumber++;
+                                                goto DETIALS;
+                                            }
+                                        </tbody>
+                                    }
+                                    isReturnRow = false;
+                                }
+                            }
+
+                        </table>
+
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-10">
+                            <input type="submit" value="រក្សាទុក" class="btn btn-default" id="btnSubmit" />
+@*                            @Html.ActionLink("ត្រលប់", "Index", null, new { @class = "btn btn-default" })*@
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section scripts{
+    <script src="~/Scripts/moment.min.js"></script>
+    <script src="~/Scripts/bootstrap-datetimepicker.js"></script>
+    <script src="~/Scripts/chosen.jquery.min.js"></script>
+    <script src="~/Content/assets/numeral/numeral.js"></script>
+}
+    <script>
+    $(function () {
+        $("input[data-val-date]").removeAttr("data-val-date");
+        $('#ExpenseDate').datetimepicker({ format: 'DD/MM/YYYY' });
+        $('select[name="Accounts"]').chosen({});
+        var dropDown = getDropdown();
+        dropDownEvent();
+
+        $('.subAccountNode').on('click', '.btnAddDetail', function () {
+            var indexNumber = $(this).parent().parent().siblings("tr:last").children(3)[1];
+            if (indexNumber) indexNumber = indexNumber.textContent;
+            else indexNumber = "0";
+            var detailNode = "";
+            if (indexNumber == "0") {
+                detailNode =
+                    '<tr class="detailNode"><td></td><td>' +
+                    (parseInt(indexNumber) + 1) +
+                    '</td><td><input type="text" value="" name="Description" class="form-control"></td><td></td><td></td><td><input type="text" value="" name="Amount" class="form-control number"><span class="text-danger"></span></td><td></td><td></td><td></td><td><button type="button" class="btn btn-danger glyphicon glyphicon-trash btnRemoveDetail"></buttton></td></tr>';
+            } else {
+                detailNode = '<tr class="detailNode"><td><input name="Accounts" value= "" style="visibility: hidden; width: 0;"/></td><td>' + (parseInt(indexNumber) + 1) + '</td><td><input type="text" value="" name="Description" class="form-control"></td><td></td><td></td><td><input type="text" value="" name="Amount" class="form-control number"><span class="text-danger"></span></td><td></td><td></td><td></td><td><button type="button" class="btn btn-danger glyphicon glyphicon-trash btnRemoveDetail"></buttton></td></tr>';
+            }
+            $(this).parent().parent().parent().append(detailNode);
+            addDetailEventListen();
+        });
+
+        $('.detailNode').on('click', '.btnRemoveDetail', function () {
+            $(this).parent().parent().remove();
+            var subAccNoodes = $('tbody.subAccountNode');
+            $(subAccNoodes).each(function (index, element) {
+                var rows = $(element).children('tr.detailNode');
+                if ($(rows).length === 0) $(element).remove(); // delete the parent node if it is the last childNode
+
+                $(rows).each(function (i, e) {
+                    if (e.childNodes.length > 10) {
+                        e.childNodes[3].textContent = i + 1;
+                        if (i === 0) e.childNodes[1].innerHTML = "";
+                    } else {
+                        e.childNodes[1].textContent = i + 1;
+                        if (i === 0) e.childNodes[0].innerHTML = "";
+                    }
+                });
+            });
+        });
+
+        $('.subAccountNode').on('focusout', '[name="Amount"]', function () {
+            removeAllKhmerCurrency();
+            var subInitialBudget = $(this).parents('.subAccountNode').find('td.totalSubInitialBudget');
+            var subPettycash = $(this).parents('.subAccountNode').find('td.totalSubPettycash');
+            var colTotalSubExpense = $(this).parents('.subAccountNode').find('td.totalSubExpense');
+            var colAvailableBalance = $(this).parents('.subAccountNode').find('td.totalSubBalance');
+            var colRound = $(this).parents('.subAccountNode').find('td.totalSubRound');
+            var colPercent = $(this).parents('.subAccountNode').find('td.totalSubPercent');
+
+            var amountInput = $(this).parents('.subAccountNode').find('[name="Amount"]');
+            var totalSubExpense = 0;
+            amountInput.each(function (index, elemnent) {
+                if (elemnent.value != "")
+                    totalSubExpense += parseFloat((elemnent.value));
+            });
+
+            colTotalSubExpense.html(totalSubExpense);
+            var balance = parseFloat((subInitialBudget[0].textContent)) - totalSubExpense;
+            colAvailableBalance.html(balance);
+            colRound.html((totalSubExpense / parseFloat(subPettycash.html())).toFixed(1));
+            colPercent.html(((totalSubExpense * 100) / parseFloat(subInitialBudget.html())).toFixed(1) + "%");
+            refreshViewBudgets();
+        });
+
+        $('.subAccountNode').on('focus', '[name="Amount"]', function () {
+            removeAllKhmerCurrency();
+        });
+
+        $(".btnRemoveSubAccount").click(function () {
+            if (confirm("តើអ្នកប្រាកដជាចង់លុបមែនទេ?")) {
+                $(this).parent().parent().parent().remove();
+            }
+            event.stopImmediatePropagation();
+        });
+
+
+        $("#btnAddSubAccountChapterSixty").click(function () {
+            var subAccountNode = '<tbody class="subAccountNode chapterSixty"><tr><td></td><td>' + dropDown + '<span class="text-danger"></span></td>/td><td></td><td class="totalSubInitialBudget number"></td><td class="totalSubPettycash number"></td><td class="totalSubExpense number"></td><td class="totalSubBalance number"></td><td class="totalSubRound text-right"></td><td class="totalSubPercent text-right"></td><td><button type="button" class="btn btn-primary glyphicon glyphicon-plus btnAddDetail" id="btnAddDetail" style="margin-right: 4px;"></button><button type="button" class="btn btn-danger glyphicon glyphicon-minus btnRemoveSubAccount"></button></td></tr><tr class="detailNode"><td></td><td>1</td><td><input type="text" value="" name="Description" class="form-control"></td><td></td><td></td><td><input type="text" value="" name="Amount" class="form-control number"><span class="text-danger"></span></td><td></td><td></td><td></td><td><button type="button" class="btn btn-danger glyphicon glyphicon-trash btnRemoveDetail"></button></td></tr></tbody>';
+            $('#chapterSixtyOne').before(subAccountNode);
+            $('select[name="Accounts"]').chosen({});
+            resetAndInitEvent();
+        });
+
+        $('#btnAddSubAccountChapterSixtyOne').click(function () {
+            var subAccountNode = '<tbody class="subAccountNode chapterSixtyOne"><tr class "detailNode"><td></td><td> ' + dropDown + '<span class="text-danger"></span></td><td></td><td class="totalSubInitialBudget number"></td><td class="totalSubPettycash number"></td><td class="totalSubExpense number"></td><td class="totalSubBalance number"></td><td class="totalSubRound text-right"></td><td class="totalSubPercent text-right" ></td><td><button type="button" class="btn btn-primary glyphicon glyphicon-plus btnAddDetail" id="btnAddDetail" style="margin-right: 4px;"></button><button type="button" class="btn btn-danger glyphicon glyphicon-minus btnRemoveSubAccount"></button></td></tr><tr class="detailNode"><td></td><td>1</td><td><input type="text" value="" name="Description" class="form-control"></td><td></td><td></td><td><input type="text" value="" name="Amount" class="form-control number"><span class="text-danger"></span></td><td></td><td></td><td></td><td><button type="button" class="btn btn-danger glyphicon glyphicon-trash btnRemoveDetail"></button></td></tr></tbody>';
+            $('.table-bordered').append(subAccountNode);
+            $('select[name="Accounts"]').chosen({});
+            resetAndInitEvent();
+        });
+
+
+        function dropDownEvent() {
+            $('.subAccountNode').on('change', '[name="Accounts"]', function () {
+                var accountName = $(this).parents('tr').children('td:eq(2)');
+                var initialBudget = $(this).parents('tr').children('td:eq(3)');
+                var pettyCash = $(this).parents('tr').children('td:eq(4)');
+                var accountNumber = ($(this).val());
+                var ExpenseYear = $('#ExpenseYear').val();
+                $.ajax({
+                    type: "GET",
+                    url: '@Url.Action("getAccountName")',
+                    contentType: "application/json; charset=utf-8",
+                    dataType: 'json',
+                    data: { accountNumber: accountNumber,Year:ExpenseYear },
+                    success: function (result) {
+                        accountName.html(result.name);
+                        initialBudget.html((result.pettyCash));
+                        pettyCash.html((result.pettyCash / 4));
+                        refreshViewBudgets();
+                    },
+                    error: function (error) {
+                        accountName.html("");
+                        initialBudget.html("");
+                        pettyCash.html("");
+                    }
+                });
+            });
+        }
+
+
+
+        function resetAndInitEvent() {
+            //Reset Event
+            $(".subAccountNode").off();
+            $('.subAccountNode').on('click',
+                '.btnAddDetail',
+                function() {
+                    var indexNumber = $(this).parent().parent().siblings("tr:last").children(3)[1];
+                    if (indexNumber) indexNumber = indexNumber.textContent;
+                    else indexNumber = "0";
+                    var detailNode =
+                        '<tr class="detailNode"><td><input name="Accounts" value= "" style="visibility: hidden; width: 0;"/></td><td>' +
+                            (parseInt(indexNumber) + 1) +
+                            '</td><td><input type="text" value="" name="Description" class="form-control"></td><td></td><td></td><td><input type="text" value="" name="Amount" class="form-control number"><span class="text-danger"></span></td><td></td><td></td><td></td><td><button type="button" class="btn btn-danger glyphicon glyphicon-trash btnRemoveDetail"></buttton></td></tr>';
+                    $(this).parent().parent().parent().append(detailNode);
+                    addDetailEventListen();
+                });
+            dropDownEvent();
+            addDetailEventListen();
+            $('.btnRemoveSubAccount').off();
+            $(".btnRemoveSubAccount").click(function () {
+                if (confirm("តើអ្នកប្រាកដជាចង់លុបមែនទេ?")) {
+                    $(this).parent().parent().parent().remove();
+                }
+                event.stopImmediatePropagation();
+            });
+        }
+
+        function addDetailEventListen() {
+            $('.detailNode').on('click', '.btnRemoveDetail', function () {
+                $(this).parent().parent().remove();
+                var subAccNoodes = $('tbody.subAccountNode');
+                $(subAccNoodes).each(function (index, element) {
+
+                    var rows = $(element).children('tr.detailNode');
+                    if ($(rows).length === 0) $(element).remove(); // delete the parent node if it is the last childNode
+                    $(rows).each(function (i, e) {
+                        //remove the hidden account in td
+                        if (e.childNodes.length > 10) {
+                            e.childNodes[3].textContent = i + 1;
+                            if (i === 0) e.childNodes[1].innerHTML = "";
+                        } else {
+                            e.childNodes[1].textContent = i + 1;
+                            if (i === 0) e.childNodes[0].innerHTML = "";
+                        }
+                    });
+                });
+            });
+
+            //Event for amount
+            $('.subAccountNode').on('focusout', '[name="Amount"]', function () {
+                removeAllKhmerCurrency();
+                var subInitialBudget = $(this).parents('.subAccountNode').find('td.totalSubInitialBudget');
+                var subPettycash = $(this).parents('.subAccountNode').find('td.totalSubPettycash');
+                var colTotalSubExpense = $(this).parents('.subAccountNode').find('td.totalSubExpense');
+                var colAvailableBalance = $(this).parents('.subAccountNode').find('td.totalSubBalance');
+                var colRound = $(this).parents('.subAccountNode').find('td.totalSubRound');
+                var colPercent = $(this).parents('.subAccountNode').find('td.totalSubPercent');
+
+                var amountInput = $(this).parents('.subAccountNode').find('[name="Amount"]');
+                var totalSubExpense = 0;
+                amountInput.each(function (index, elemnent) {
+                    if (elemnent.value != "")
+                        totalSubExpense += parseFloat((elemnent.value));
+                });
+
+                colTotalSubExpense.html(totalSubExpense);
+                var balance = parseFloat((subInitialBudget[0].textContent)) - totalSubExpense;
+                colAvailableBalance.html(balance);
+                colRound.html((totalSubExpense / parseFloat(subPettycash.html())).toFixed(1));
+                colPercent.html(((totalSubExpense * 100) / parseFloat(subInitialBudget.html())).toFixed(1) + "%");
+                refreshViewBudgets();
+            });
+            $('.subAccountNode').on('focus', '[name="Amount"]', function () {
+                removeAllKhmerCurrency();
+            });
+            $('.btnRemoveSubAccount').off();
+            $(".btnRemoveSubAccount").click(function () {
+                if (confirm("តើអ្នកប្រាកដជាចង់លុបមែនទេ?")) {
+                    $(this).parent().parent().parent().remove();
+                }
+                event.stopImmediatePropagation();
+            });
+
+        }
+
+        initForm();
+        function initForm() {
+
+            $('.subAccountNode [name="Accounts"]').each(function (index, element) {
+                var accountName = $(element).parents('tr').children('td:eq(2)');
+                var initialBudget = $(element).parents('tr').children('td:eq(3)');
+                var pettyCash = $(element).parents('tr').children('td:eq(4)');
+                var accountNumber = ($(element).val());
+                var ExpenseYear = $('#ExpenseYear').val();
+                $.ajax({
+                    type: "GET",
+                    url: '@Url.Action("getAccountName")',
+                    contentType: "application/json; charset=utf-8",
+                    dataType: 'json',
+                    async: false,
+                    data: { accountNumber: accountNumber,Year:ExpenseYear },
+                    success: function (result) {
+                        accountName.html(result.name);
+                        initialBudget.html(result.pettyCash);
+                        pettyCash.html(result.pettyCash / 4);
+                        refreshViewBudgets();
+                    },
+                    error: function (error) {}
+                });
+            });
+
+            $('.subAccountNode [name="Amount"]').each(function (index, element) {
+                removeAllKhmerCurrency();
+                var subInitialBudget = $(this).parents('.subAccountNode').find('td.totalSubInitialBudget');
+                var subPettycash = $(this).parents('.subAccountNode').find('td.totalSubPettycash');
+                var colTotalSubExpense = $(this).parents('.subAccountNode').find('td.totalSubExpense');
+                var colAvailableBalance = $(this).parents('.subAccountNode').find('td.totalSubBalance');
+                var colRound = $(this).parents('.subAccountNode').find('td.totalSubRound');
+                var colPercent = $(this).parents('.subAccountNode').find('td.totalSubPercent');
+
+                var amountInput = $(this).parents('.subAccountNode').find('[name="Amount"]');
+                var totalSubExpense = 0;
+                amountInput.each(function (index, elemnent) {
+                    if (elemnent.value != "")
+                        totalSubExpense += parseFloat((elemnent.value));
+                });
+
+                colTotalSubExpense.html(totalSubExpense);
+                var balance = parseFloat((subInitialBudget[0].textContent)) - totalSubExpense;
+                colAvailableBalance.html(balance);
+                colRound.html((totalSubExpense / parseFloat(subPettycash.html())).toFixed(1));
+                colPercent.html(((totalSubExpense * 100) / parseFloat(subInitialBudget.html())).toFixed(1) + "%");
+                refreshViewBudgets();
+            });
+            refreshViewBudgets();
+        }
+
+        function refreshViewBudgets() {
+            removeAllKhmerCurrency();
+            var totalExpense = $('.totalExpense');
+            var totalExpenseChapter60 = $('.chapterSixty').find('.totalChapterExpense');
+            var totalExpenseChapter61 = $('.chapterSixtyOne').find('.totalChapterExpense');
+            var balanceExpense = $('.totalBalance');
+            var balanceChapter60 = $('.chapterSixty').find('.totalChapterBalance');
+            var balanceChapter61 = $('.chapterSixtyOne').find('.totalChapterBalance');
+            var totalRound = $('.totalRound');
+            var totalRoundChapter60 = $('.chapterSixty').find('.totalChapterRound');
+            var totalRoundChapter61 = $('.chapterSixtyOne').find('.totalChapterRound');
+            var totalPercent = $('.totalPercent');
+            var totalPercentChapter60 = $('.chapterSixty').find('.totalChapterPercent');
+            var totalPercentChapter61 = $('.chapterSixtyOne').find('.totalChapterPercent');
+            var expenseChapter60 = 0;
+            var expenseChapter61 = 0;
+            var initialBudget = $('.totalInitialBudget');
+            var initialBudgetChapter60 = $('.totalChapterInitialBudget')[0];
+            var initialBudgetChapter61 = $('.totalChapterInitialBudget')[1];
+            var totalPettycash = $('.totalPettycash');
+            var initialPettycashChapter60 = $('.totalChapterPettycash')[0];
+            var initialPettycashChapter61 = $('.totalChapterPettycash')[1];
+
+            var chapter60 = $('.chapterSixty').find('.totalSubExpense');
+            chapter60.each(function (index, item) {
+                if (item.textContent != "")
+                    expenseChapter60 += parseFloat((item.textContent));
+            });
+
+            var chapter61 = $('.chapterSixtyOne').find('.totalSubExpense');
+            chapter61.each(function (index, item) {
+                if (item.textContent != "")
+                    expenseChapter61 += parseFloat((item.textContent));
+            });
+
+            totalExpense.html(expenseChapter60 + expenseChapter61);
+            totalExpenseChapter60.html(expenseChapter60);
+            totalExpenseChapter61.html(expenseChapter61);
+
+            balanceExpense.html((parseFloat((initialBudgetChapter60.textContent)) + parseFloat((initialBudgetChapter61.textContent))) - (expenseChapter60 + expenseChapter61));
+            balanceChapter60.html(parseFloat((initialBudgetChapter60.textContent)) - expenseChapter60);
+            balanceChapter61.html(parseFloat((initialBudgetChapter61.textContent)) - expenseChapter61);
+
+            totalRound.html(((expenseChapter60 + expenseChapter61) / (parseFloat(totalPettycash.html()))).toFixed(1));
+            totalRoundChapter60.html((expenseChapter60 / parseFloat(initialPettycashChapter60.textContent)).toFixed(1));
+            totalRoundChapter61.html((expenseChapter61 / parseFloat(initialPettycashChapter61.textContent)).toFixed(1));
+
+            totalPercent.html((((expenseChapter61 + expenseChapter60) * 100) / parseFloat(initialBudget.html())).toFixed(1) + "%");
+            totalPercentChapter60.html((expenseChapter60 * 100 / parseFloat(initialBudgetChapter60.textContent)).toFixed(1) + "%");
+            totalPercentChapter61.html((expenseChapter61 * 100 / parseFloat(initialBudgetChapter61.textContent)).toFixed(1) + "%");
+
+            formatKhmerCurrency();
+        }
+
+        function formatKhmerCurrency() {
+            var number = $(".number");
+            for (var i = 0; i < number.length; i++) {
+                if (number[i].textContent.indexOf(" ៛") !== -1)
+                    continue;
+                number[i].textContent = numeral(number[i].textContent).format('0,0').split(',').join('.') + " ៛";
+            }
+            var inputs = $('input[name="Amount"]');
+            for (var i = 0; i < inputs.length; i++) {
+                if (inputs[i].value.indexOf(" ៛") !== -1)
+                    continue;
+                inputs[i].value = numeral(inputs[i].value).format('0,0').split(',').join('.') + " ៛";
+            }
+        }
+
+        function removeAllKhmerCurrency() {
+            var number = $(".number");
+            for (var i = 0; i < number.length; i++) {
+                number[i].textContent = number[i].textContent.replace(" ៛", "").split('.').join('');
+            }
+            var inputs = $('input[name="Amount"]');
+            for (var i = 0; i < inputs.length; i++) {
+                inputs[i].value = inputs[i].value.replace(" ៛", "").split('.').join('');
+            }
+        }
+
+        function getDropdown() {
+            var subAccounts = new Array();
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("getAllSubAccountNumber")',
+                contentType: "application/json; charset=utf-8",
+                dataType: 'json',
+                data: {},
+                async: false,
+                success: function (result) {
+                    subAccounts = result.subAccounts;
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
+
+            var options = '<option value="">អនុគណនី</option>';
+
+            subAccounts.forEach(function(item, index) {
+                options += '<option value="'+item+'">'+item+'</option>';
+            });
+
+            var select = '<select class="form-control required-select" id="Accounts" name="Accounts">' + options + '</select>';
+            return select;
+        }
+
+        $("#btnSubmit").click(function () {
+            removeAllKhmerCurrency();
+        });
+
+
+    });
+    </script>

@@ -1,0 +1,179 @@
+﻿@model IEnumerable<ISFMOCM_Project.Models.FCVModel>
+<link type="text/css" rel="stylesheet" href="~/Content/Site.css" />
+<style>
+    table tr td:last-child {
+        width: 150px;
+    }
+
+    table tr td:nth-child(7) {
+        width: 150px;
+        text-align: right;
+    }
+
+    p {
+        padding: 0;
+    }
+</style>
+@{
+    ViewBag.Title = "បញ្ជីសលាកប័ត្រចំណាយថវិកា";
+}
+<h2>Index</h2>
+<div class="bs-example">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <div class="row">
+
+                @using (Html.BeginForm("Index", "FCV", FormMethod.Get))
+                {
+                    <div class="col-lg-12">
+                        <div class="col-lg-4">
+                            <h3>បញ្ជីសលាកប័ត្រចំណាយថវិកា</h3>
+                        </div>
+                        <div class="col-lg-8 right">
+                            <div class="col-md-1"></div>
+                            <div class="col-md-3"><input type="text" id="fcv_id" name="fcv_id" placeholder="លេខកូដ" class="form-control" /></div>
+                            <div class="col-md-3"><input type="text" id="fcv_no" name="fcv_no" placeholder="លេខសាលាកប័ត្រ" class="form-control" /></div>
+                            <div class="col-md-3"><input type="text" id="letter_no" name="letter_no" placeholder="លេខលិខិត" class="form-control" /></div>
+                            <div class="col-md-2"><button type="submit" class="btn btn-primary btn-search">Search</button></div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="panel-body">
+
+            @if (User.IsInRole("Data Entry") || User.IsInRole("Admin"))
+            {
+                <p class="pull-left">
+                    @Html.ActionLink("បង្កើតថ្មី", "Create", "FCV", new { @Class = "new" })
+                </p>
+            }
+            <div class="row">
+                @{
+                    WebGrid grid_FCV = new WebGrid(Model, rowsPerPage: 10);
+                }
+
+                @grid_FCV.GetHtml(
+
+                fillEmptyRows: false,
+                mode: WebGridPagerModes.All,
+                firstText: "<< First",
+                nextText: "Next >",
+                previousText: "< Previous",
+                lastText: "Last >>",
+                tableStyle: "table table-bordered table-responsive",
+                footerStyle: "text-center",
+                columns: new[]{
+             grid_FCV.Column("FCV_id","លរ",style:"width-20-per font-12",format:(item)=>
+             {
+                 int year =DateTime.Now.Year;
+                 int mdYear =item.created_date.Year;
+                 int month=DateTime.Now.Month;
+                 int mdMonth=item.created_date.Month;
+                 string new_item = string.Empty;
+                 if(year==mdYear)
+                 {
+                 if(item.created_date>=DateTime.Now.Date)
+                 {
+                     new_item += "<span class='createdToday '>" + item.FCV_Identity +"</span><span class='ms-newdocument-iconouter'><img class='ms-newdocument-icon' src='' alt='new' title='new'></span>";
+                 }
+                 if(item.created_date<DateTime.Now.Date)
+                 {
+                         if(month==mdMonth)
+                         {
+                             if(item.created_date.Day< DateTime.Now.Day && item.created_date.Day>= DateTime.Now.Day-1)
+                             {
+                                 new_item += "<span class='createdYesterday '>" + item.FCV_Identity +"</span><span class='ms-newdocument-iconouter'><img class='ms-newdocument-icon_old' src='' alt='new' title='new'></span>";
+                             }
+                             else if(item.created_date.Day< DateTime.Now.Day && item.created_date.Day>= DateTime.Now.Day-2)
+                             {
+                                 new_item += "<span class='createdBeforeYesterday '>" + item.FCV_Identity +"</span><span class='ms-newdocument-iconouter'><img class='ms-newdocument-icon_old1' src='' alt='new' title='new'></span>";
+                             }else
+                             {
+                            new_item += item.FCV_Identity;
+                             }
+                          }
+                         else
+                         {
+                            new_item += item.FCV_Identity;
+                         }
+                 }
+                 }else
+                 {
+                     new_item += item.FCV_Identity;
+                 }
+                 return new HtmlString(new_item);
+            }
+             ),
+             grid_FCV.Column("FCVDate","កាលបរិច្ឆេទ-សលាកប័ត្រ",style:"text-uppercase fs12",format:(item) => (item.FCVDate != null ? Convert.ToDateTime(item.FCVDate).ToString(@"dd/MM/yyyy") : "")),
+             grid_FCV.Column("Letter_no","លេខលិខិត",style:"width-20-per font-12"),
+             grid_FCV.Column("FCV_no","លេខសលាកប័ត្រ",style:"width-20-per font-12"),
+             grid_FCV.Column("Acc_no","លេខអនុគណនី",style:"number width-20-per font-12"),
+             grid_FCV.Column("Commitment_desc","បរិយាយ"),
+             grid_FCV.Column("FCV_amount","ចំនួនទឹកប្រាក់",style:"text-right budget",format:(item) => (item.FCV_amount !=null ?  string.Format("{0:0,0}", item.FCV_amount) : "")+" ៛"),
+             grid_FCV.Column(header:"ជម្រើស",style:"text-center option-list p0 width-10-per font-12",format:(item) =>  new HtmlString(
+                 (
+
+                   //((User.IsInRole("Admin") || User.IsInRole("Data Entry")) && item.created_date.Year == DateTime.Now.Year ? (Html.ActionLink("    ", "Edit", new { id = item.FCV_Identity}, new{@class="glyphicon glyphicon-pencil gray-icon" }).ToHtmlString()) : "" )
+                   ((User.IsInRole("Admin") || User.IsInRole("Data Entry")) ? (Html.ActionLink("    ", "Edit", new { id = item.FCV_Identity}, new{@class="glyphicon glyphicon-pencil gray-icon" }).ToHtmlString()) : "" )
+                     +" " + " " + " " +
+                     Html.ActionLink("    ", "Details", new { id = item.FCV_Identity}, new{@class="glyphicon glyphicon-eye-open gray-icon" }).ToHtmlString()
+
+                    +" " +
+
+                      ( User.IsInRole("Admin") ? " " + " " + Html.ActionLink("    ", "Delete", new { id = item.FCV_Identity}, new{@class="glyphicon glyphicon-trash gray-icon",onclick="return onDelete()" }).ToHtmlString() : "")
+                    +" " + "<br/>" + " " +
+                      Html.ActionLink("បោះពុម្ពសលាកប័ត្រ", "viewReport", new { id = item.FCV_Identity}, new{@class="" }).ToHtmlString()
+
+                )
+                )
+                )
+
+          }
+          )
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script src="~/Content/assets/numeral/numeral.js"></script>
+    <script>
+        var budgets = $(".budget");
+        for (var i = 0; i < budgets.length; i++) {
+            budgets[i].textContent = numeral(budgets[i].textContent).format('0,0').split(',').join('.') + " ៛";
+        }
+    </script>
+
+}
+<script>
+    $(function () {
+        var today = $(".createdToday");
+        for (var i = 0; i < today.length; i++) {
+            var row = today[i].parentElement.parentElement;
+            row.style.backgroundColor = "#EF9A9A";
+            row.style.textColor = "white";
+        }
+
+        var yesterday = $(".createdYesterday");
+        for (var i = 0; i < yesterday.length ; i++) {
+            var row = yesterday[i].parentElement.parentElement;
+            row.style.backgroundColor = "#CE93D8";
+        }
+
+        var beforeYesterday = $(".createdBeforeYesterday");
+        for (var i = 0; i < beforeYesterday.length ; i++) {
+            var row = beforeYesterday[i].parentElement.parentElement;
+            row.style.backgroundColor = "#69F0AE";
+        }
+
+        reversePagination();
+        //Reverse pagination
+
+        function reversePagination() {
+            var paginates = $("tfoot td");
+            console.log(paginates[0]);
+
+        };
+    });
+</script>

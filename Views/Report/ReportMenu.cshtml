@@ -1,0 +1,124 @@
+﻿@using ISFMOCM_Project.Function
+@model ISFMOCM_Project.Models.ReportMenuViewModel
+<link href="~/Content/Site.css" type="text/css" rel="stylesheet" />
+<link href="~/Content/assets/choosen/chosen.min.css" type="text/css" rel="stylesheet" />
+
+@{
+    ViewBag.Title = "តារាងរបាយការណ៍";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<br />
+<br />
+@using (Html.BeginForm("ReportMenu", "Report", FormMethod.Post))
+{
+    <div class="form-horizontal">
+        <div class="bs-example">
+            <h3 class="col-md-12 text-center"></h3>
+            <div class="row">
+                <div class="panel panel-default">
+                    <div class="panel-heading text-center">
+                        <h3>ពិនិត្យរបាយការណ៍</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-md-5 col-md-offset-3" style="margin-left: 425px;">
+                                @if (User.IsInRole("Admin") || User.IsInRole("Cabinate"))
+                                {
+                                    <label>@Html.RadioButtonFor(m => m.OptionNumber, 1) របាយការណ៍តាមដាន ឥណទានរជ្ជទេយ្យបុរេប្រទាន និងឥណទានធម្មតា</label> <br />
+                                }
+                                <label>@Html.RadioButtonFor(m => m.OptionNumber, 2) របាយការណ៍អាណត្តិបើកប្រាក់បៀវត្ស</label> <br/>
+                                <label>@Html.RadioButtonFor(m => m.OptionNumber, 3) របាយការណ៍ប្រៀបធៀបសលាកប័ត្រចំណាយ និងអាណត្តិបើកប្រាក់ (តាមជំពូក នៃមាតិកាថវិកា)</label> <br/>
+                                <label>@Html.RadioButtonFor(m => m.OptionNumber, 4) របាយការណ៍ប្រៀបធៀបសលាកប័ត្រចំណាយ និងអាណត្តិបើកប្រាក់ (តាមអនុគណនី នៃមាតិកាថវិកា)</label>
+                                @if (User.IsInRole("Cabinate") && User.Identity.Name == "Sanset")
+                                {
+                                    <label>@Html.RadioButtonFor(m => m.OptionNumber, 13) តារាងឧបសម្ព័នរជ្ជទេយ្យបុរេប្រទានថវិកាកម្មវិធីតាមចំណាត់ថ្នាក់សេដ្ឋកិច្ចឆ្នាំ២០២១</label>
+                                }
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 col-md-offset-3 well" style="margin-top: 30px;">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="panel-default" style="padding: 0 40px;">
+                                            <div class="panel-heading">
+                                                របាយការណ៍
+                                            </div>
+                                            <div class="panel-body">
+                                                <label>@Html.RadioButtonFor(m => m.OptionNumber, 5) សលាកប័ត្រចំណាយ</label> <br/>
+                                                <label>@Html.RadioButtonFor(m => m.OptionNumber, 6) អាណត្តិបើកប្រាក់</label> <br/>
+                                                <label>@Html.RadioButtonFor(m => m.OptionNumber, 7) បុរេប្រទាន</label> <br/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="panel-default " style="padding: 0 40px;">
+                                            <div class="panel-heading">
+                                                របាយការណ៍ចំណាយ
+                                            </div>
+                                            <div class="panel-body">
+                                                <div class="col-md-6">
+                                                    <label>@Html.RadioButtonFor(m => m.OptionNumber, 8) រជ្ជទេយ្យបុរេប្រទាន</label> <br/>
+                                                    <label>@Html.RadioButtonFor(m => m.OptionNumber, 9) ថ្លៃទឹក</label> <br/>
+                                                    <label>@Html.RadioButtonFor(m => m.OptionNumber, 10) ថ្លៃភ្លើង</label> <br/>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label>@Html.RadioButtonFor(m => m.OptionNumber, 11) ប្រាក់ឧបត្ថម្ភ</label> <br/>
+                                                    <label>@Html.RadioButtonFor(m => m.OptionNumber, 12) បង់វិភាគទាន</label> <br/>
+                                                    <label>@Html.RadioButtonFor(m => m.OptionNumber, 14) ទូរគមនាគមន៍</label> <br/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                               
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 col-md-offset-3">
+                                <div class="well">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            @Html.LabelFor(m => m.StartDate, "ថ្ងៃចាប់ផ្ដើម", htmlAttributes: new {@class = "control-label"})
+                                            @Html.EditorFor(m => m.StartDate, new {htmlAttributes = new {@class = "form-control"}}) <br/>
+                                            @Html.LabelFor(m => m.EndDate, "ថ្ងៃបញ្ចប់", htmlAttributes: new {@class = "control-label"})
+                                            @Html.EditorFor(m => m.EndDate, new {htmlAttributes = new {@class = "form-control"}})
+                                        </div>
+                                        <div class="col-md-5" style="margin-left: 10px;">
+                                            @Html.LabelFor(m => m.AccountNumber, "អនុគណនី", htmlAttributes: new {@class = "control-label"})
+                                            @Html.DropDownList("AccountNumber", null,"ជ្រើសរើសអនុគណនី", htmlAttributes: new {@class = "form-control"}) <br/>
+                                            @Html.LabelFor(m => m.UnitId, "អង្គភាព", htmlAttributes: new {@class = "control-label"})
+                                            @Html.DropDownList("UnitId", null,"ជ្រើសរើសអង្គភាព", htmlAttributes: new {@class = "form-control"})
+                                        </div>
+                                        <div class="col-md-2">
+                                            <button class="btn btn-primary form-control" type="submit" style="margin-top: 96px;" >បើក</button>
+                                            @*                                                <input class="btn btn-primary form-control" type="submit" style="margin-top: 96px;" value="បើក" />*@
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+@section Scripts {
+    <script src="~/Scripts/chosen.jquery.min.js"></script>
+    <script src="~/Scripts/moment.js"></script>
+    <script src="~/Scripts/bootstrap-datetimepicker.js"></script>
+@*    <script src="~/Scripts/report-validation.js"></script>*@
+    <script>
+        $(function () {
+            $('#AccountNumber').chosen({});
+            $('#UnitId').chosen({});
+            $('#StartDate').datetimepicker({
+                format: 'DD-MM-YYYY'
+            });
+            $('#EndDate').datetimepicker({
+                format: 'DD-MM-YYYY'
+            });
+        });
+    </script>
+}
+

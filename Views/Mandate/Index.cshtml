@@ -1,0 +1,231 @@
+﻿@model IEnumerable<ISFMOCM_Project.Models.MandateModel>
+
+<link type="text/css" rel="stylesheet" href="~/Content/Site.css" />
+@{
+    ViewBag.Title = "បញ្ជីអាណត្តិបើកប្រាក់";
+}
+<style>
+    table tr td:last-child {
+        width: 115px;
+    }
+
+    table tr td:nth-child(4) {
+        width: 150px;
+    }
+
+    table tr td:nth-child(7) {
+        width: 150px;
+        text-align: right;
+    }
+
+    p {
+        padding: 0;
+    }
+</style>
+<h2>Index</h2>
+<div class="bs-example">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+
+            <div class="row">
+
+                @using (Html.BeginForm("Index", "Mandate", FormMethod.Get))
+                {
+                    <div class="col-lg-12">
+                        <div class="col-lg-4">
+                            <h3>បញ្ជីអាណត្តិបើកប្រាក់</h3>
+                        </div>
+                        <div class="col-lg-8 right">
+                            <div class="col-md-4"></div>
+                            <div class="col-md-3"><input type="text" id="s_id" name="s_id" placeholder="លេខកូដអាណត្តិ" class="form-control" /></div>
+                            <div class="col-md-3"><input type="text" id="s_no" name="s_no" placeholder="លេខអាណត្តិ" class="form-control" /></div>
+                            <div class="col-md-2"><button type="submit" class="btn-search btn btn-primary">Search</button></div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+        </div>
+
+        <div class="panel-body">
+
+            <div class="row">
+                <div class="col-lg-12">
+
+                    @if (User.IsInRole("Admin") || User.IsInRole("Data Entry"))
+                    {
+                        <p class="pull-left">
+                            @Html.ActionLink("បង្កើតថ្មី", "Create","Mandate",new {@Class= "new" })
+                        </p>
+                    }
+                    @{ WebGrid grid_Mandate = new WebGrid(Model, rowsPerPage: 10);}
+
+                    @grid_Mandate.GetHtml(
+                        fillEmptyRows: false,
+                        mode: WebGridPagerModes.All,
+                        firstText: "<< First",
+                        nextText: "Next >",
+                        previousText: "< Previous",
+                        lastText: "Last >>",
+                        tableStyle: "mandate table table-bordered table-responsive",
+                        footerStyle: "text-center",
+                        columns: new[]{
+                            grid_Mandate.Column("Mandate_id","លរ",style:"",format:(item)=>
+                            {
+                                int year =DateTime.Now.Year;
+                                int mdYear =item.created_date.Year;
+                                int month=DateTime.Now.Month;
+                                int mdMonth=item.created_date.Month;
+                                string new_item = string.Empty;
+                                if(year==mdYear)
+                                {
+                                    if(item.created_date>=DateTime.Now.Date)
+                                    {
+                                        new_item += "<span class='createdToday '>" + item.Mandate_id +"</span><span class='ms-newdocument-iconouter'><img class='ms-newdocument-icon' src='' alt='new' title='new'></span>";
+                                    }
+                                    if(item.created_date<DateTime.Now.Date)
+                                    {
+                                        if(month==mdMonth)
+                                        {
+                                            if(item.created_date.Day< DateTime.Now.Day && item.created_date.Day>= DateTime.Now.Day-1)
+                                            {
+                                                new_item += "<span class='createdYesterday '>" + item.Mandate_id +"</span><span class='ms-newdocument-iconouter'><img class='ms-newdocument-icon_old' src='' alt='new' title='new'></span>";
+                                            }
+                                            else if(item.created_date.Day< DateTime.Now.Day && item.created_date.Day>= DateTime.Now.Day-2)
+                                            {
+                                                new_item += "<span class='createdBeforeYesterday '>" + item.Mandate_id +"</span><span class='ms-newdocument-iconouter'><img class='ms-newdocument-icon_old1' src='' alt='new' title='new'></span>";
+                                            }else
+                                            {
+                                                new_item += item.Mandate_id;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            new_item += item.Mandate_id;
+                                        }
+                                    }
+                                }else
+                                {
+                                    new_item += item.Mandate_id;
+                                }
+                                return new HtmlString(new_item);
+                            }),
+                            grid_Mandate.Column("Mandate_date","កាលបរិច្ឆេទអាណត្តិ",style:"text-uppercase fs12",format:(item) => (item.Mandate_date != null ? Convert.ToDateTime(item.Mandate_date).ToString(@"dd/MM/yyyy") : "")),
+                            grid_Mandate.Column("Mandate_no","លេខអាណត្តិ",style:"width-20-per font-12"),
+                            grid_Mandate.Column("tbl_Unit.Unit_name","អង្គភាព ឬអាជ្ញាធរ",style:"width-20-per font-12"),
+                            grid_Mandate.Column("Acc_no","អនុគណនី",style:"number",format:(item)=>
+                            {
+                                string temp2 = string.Empty;
+                                for (var i = 0; i < item.Acc_no.Length; i++)
+                                {
+                                    temp2 += item.Acc_no[i]+"<br/>";
+                                }
+                                return new HtmlString(temp2);
+
+
+                            }),
+                            grid_Mandate.Column("Mandate_desc","បរិយាយ",style:"width-20-per font-12"),
+                            grid_Mandate.Column("Mandate_amount","ចំនួនទឹកប្រាក់",style: "budget",format:(item)=>
+                            {
+                                string temp2 = string.Empty;
+                                for (var i = 0; i < item.Mandate_amount.Length; i++)
+                                {
+                                    temp2 += "<span>"+item.Mandate_amount[i].ToString("0,0")+"</span>"+"<br/>";
+                                }
+                                return new HtmlString(temp2);
+
+
+                            }),
+                            //grid_Mandate.Column("Reciever","អត្ថគាហកៈ",style:"width-20-per font-12"),
+                            //grid_Mandate.Column("BankAcc_address","អាស័យដ្ខានរតនាគារ",style:"width-20-per font-12"),
+                            //grid_Mandate.Column("BankAcc_no","គណនី",style:"width-20-per font-12"),
+
+                            //grid_Mandate.Column("Mandate_date","កាលបរិច្ឆេទអាណត្តិ	",style:"width-20-per font-12"),
+                            //grid_Mandate.Column("AmountInWord","ទឹកប្រាក់ជាអក្សរ",style:"width-20-per font-12"),
+                            //grid_Mandate.Column("USD","រូបិយប័ណ្ណ",style:"width-20-per font-12"),
+                            //grid_Mandate.Column("MEF_date","កាលបរិច្ឆេទ-សហវ",style:"width-20-per font-12"),
+                            //grid_Mandate.Column("MEF_date","កាលបរិច្ឆេទ-សហវ",style:"text-uppercase fs12",format:(item) => (item.MEF_date != null ? Convert.ToDateTime(item.MEF_date).ToString(@"dd/MM/yyyy") : "")),
+
+                            //     grid_Mandate.Column("FCV_no","លេខលិខិត",format:(item)=>
+                            //     {
+                            //                        string temp2 = string.Empty;
+                            //                        for (var i = 0; i < item.FCV_no.Length; i++)
+                            //                        {
+                            //                            temp2 += item.FCV_no[i]+" <br/>";
+                            //                        }
+                            //                        return new HtmlString(temp2);
+
+
+                            //}),
+
+                            grid_Mandate.Column(header:"ជម្រើស",style:"text-center option-list p0 width-10-per font-12",format:(item) =>  new HtmlString(
+                                (
+                                    (
+                                        Html.ActionLink(" ", "Details", new { id = item.Mandate_id}, new {@class="glyphicon glyphicon-eye-open"}).ToHtmlString()
+
+                                        +" " + " " + " "
+
+                                    )+
+                                    //( (User.IsInRole("Admin") || User.IsInRole("Data Entry")) && item.created_date.Year == DateTime.Now.Year ? (Html.ActionLink("    ", "Edit", new { id = item.Mandate_id}, new{@class="glyphicon glyphicon-pencil gray-icon" }).ToHtmlString())  : "" )
+                                    ( (User.IsInRole("Admin") || User.IsInRole("Data Entry")) ? (Html.ActionLink("    ", "Edit", new { id = item.Mandate_id}, new{@class="glyphicon glyphicon-pencil gray-icon" }).ToHtmlString())  : "" )
+                                    +
+
+                                    (User.IsInRole("Admin") ?(
+                                        Html.ActionLink("    ", "DeleteConfirmed", new { id = item.Mandate_id}, new{@class="glyphicon glyphicon-trash gray-icon",onclick="return onDelete()" }).ToHtmlString()
+
+                                        )
+                                        : "" ) + "<br/>" +
+
+
+                                    (
+                                        Html.ActionLink("បោះពុម្ពដីកា", "PublishedMandate", new { id = item.Mandate_id}).ToHtmlString()
+
+                                        +" " + "<br/>" + " " +
+
+                                        Html.ActionLink("បោះពុម្ពអាណត្តិ", "MandatePayment", new { id = item.Mandate_id}).ToHtmlString()
+
+                                        )
+                                    )
+                                )
+
+                                )
+                        }
+                        )
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/Content/assets/numeral/numeral.js"></script>
+    <script>
+        var budgets = $(".budget span");
+        for (var i = 0; i < budgets.length; i++) {
+            budgets[i].textContent = numeral(budgets[i].textContent).format('0,0').split(',').join('.') + " ៛";
+        }
+    </script>
+
+}
+<script>
+    $(function () {
+        var today = $(".createdToday");
+        for (var i = 0; i < today.length; i++) {
+            var row = today[i].parentElement.parentElement;
+            row.style.backgroundColor = "#EF9A9A";
+            row.style.textColor = "white";
+        }
+
+        var yesterday = $(".createdYesterday");
+        for (var i = 0; i < yesterday.length ; i++) {
+            var row = yesterday[i].parentElement.parentElement;
+            row.style.backgroundColor = "#CE93D8";
+        }
+
+        var beforeYesterday = $(".createdBeforeYesterday");
+        for (var i = 0; i < beforeYesterday.length ; i++) {
+            var row = beforeYesterday[i].parentElement.parentElement;
+            row.style.backgroundColor = "#69F0AE";
+        }
+    });
+</script>

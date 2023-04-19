@@ -1,0 +1,53 @@
+﻿@model ISFMOCM_Project.Models.AccountModel
+@using ReportViewerForMvc;
+@{
+    <link href="~/Content/style/ReportStyle.css" type="text/css" rel="stylesheet" />
+    <link href="~/Content/assets/choosen/chosen.min.css" type="text/css" rel="stylesheet" />
+    ViewBag.Title = "RPAccountMandate";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+<h2>RPAccountMandate</h2>
+@using (Html.BeginForm("RPAccountMandate", "Report", FormMethod.Get))
+{
+    <div class="form-horizontal">
+        <div class="bs-example">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="form-group">
+                            <div class="col-lg-12">
+                                <div class="col-lg-4">
+                                </div>
+                                <div class="col-lg-8 right">
+                                    <div class="col-md-4"></div>
+                                    <div class="col-md-4">@Html.DropDownList("Acc_no", null, "សូមជ្រើសរើសអនុគណនី", htmlAttributes: new { @class = "form-control" })</div>
+                                    <div class="col-md-2"><button type="submit" class="btn-search btn btn-primary">Search</button></div>
+                                    <div class="col-md-2">@*@Html.ActionLink("ត្រលប់", "ListReport", "Report", new { @class = "btn-search btn btn-primary pull-left btn btn-default" })*@</div>
+                                    <div class="col-md-2">@Html.ActionLink("ត្រលប់", "AdvancedCreditAndNormalCreditReport", new { st = "", et = "" },htmlAttributes: new { @class= "btn btn-primary"})</div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel-body">
+                    <div class="text-center">
+                        @Html.ReportViewer(ViewBag.ReportViewer as Microsoft.Reporting.WebForms.ReportViewer, htmlAttributes: new { @style = "border: inset; padding: 0; margin: 0; height: 8.27in !important; width: 11.69in !important; " })
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+}
+
+@section Scripts {
+    <script src="~/Scripts/chosen.jquery.min.js"></script>
+    <script>
+        $('#Acc_no').chosen({
+
+        });
+    </script>
+}

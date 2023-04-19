@@ -1,0 +1,575 @@
+﻿@model ISFMOCM_Project.Models.MandateModel
+@using ISFMOCM_Project.Models;
+<link href="~/Content/Site.css" type="text/css" rel="stylesheet" />
+<link rel="stylesheet" href="~/Content/assets/choosen/chosen.min.css" />
+@{
+    ViewBag.Title = "អាណត្តិបើកប្រាក់";
+}
+
+<h2>Edit</h2>
+<style>
+    .input-group .form-control {
+        width: 114%;
+    }
+
+    .top-m {
+        top: 0;
+    }
+    input, select {
+        max-width: 220px;
+    }
+</style>
+@using (Html.BeginForm("Edit", "Mandate", FormMethod.Post, new { @onsubmit = "validateAllInputBoxes(event);" }))
+{
+    @Html.AntiForgeryToken()
+    <div class="form-horizontal">
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <div class="bs-example">
+    <div class="panel panel-default">
+    <div class="panel-heading">
+        <div class="row">
+            <h4>អាណត្តិបើកប្រាក់</h4>
+        </div>
+    </div>
+    <div class="panel-body">
+
+    <div class="row border-home bgf">
+        <div class="col-md-6">
+
+        </div>
+        <div class="col-lg-6">
+            <div class="col-md-12">
+                <div class="col-md-8">
+
+                </div>
+                <div class="col-md-4">
+                    <div class="col-md-4"><label>លេខរៀង:<strong> </strong></label></div>
+                    <div class="col-md-8">
+                        @Html.EditorFor(model => model.Mandate_id, new { htmlAttributes = new { @class = "fcv_id inline_ocm form-control", disabled = "disabled", placeholder = "ស្វ័យប្រវត្តិ" } })
+                        @Html.HiddenFor(model => model.Mandate_id)
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row bgf border-home">
+        <div class="col-md-4">
+            @Html.LabelFor(model => model.Mandate_no, htmlAttributes: new { @class = "control-label " }):
+            @Html.EditorFor(model => model.Mandate_no, new { htmlAttributes = new { @class = "form-right md form-control", placeholder = "XXXX" } })
+            @Html.ValidationMessageFor(model => model.Mandate_no, "", new { @class = "text-danger" })
+        </div>
+        <div class="col-md-4">
+            @Html.LabelFor(model => model.Mandate_date, htmlAttributes: new { @class = "control-label " }):
+            @Html.EditorFor(model => model.Mandate_date, new { htmlAttributes = new { @class = "form-right md form-control" } })
+            @Html.ValidationMessageFor(model => model.Mandate_date, "", new { @class = "text-danger" })
+        </div>
+        <div class="col-md-4">
+            @Html.LabelFor(model => model.MEF_date, htmlAttributes: new { @class = "control-label " }):
+            @Html.EditorFor(model => model.MEF_date, new { htmlAttributes = new { @class = "form-right md form-control" } })
+            @Html.ValidationMessageFor(model => model.MEF_date, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="row bgg border-home">
+        <div class="col-md-4">
+            @Html.LabelFor(model => model.Unit_id, "អង្គភាព ឬអាជ្ញាធរ", htmlAttributes: new { @class = "control-label " }):
+            @Html.DropDownList("Unit_id", null, "ជ្រើសរើសអង្គភាព ឬអាជ្ញាធរ", htmlAttributes: new { @class = "form-right md  form-control required-select" })
+            <span class="text-danger"></span>
+        </div>
+        <div class="col-md-4">
+            @Html.LabelFor(model => model.AdvanceNumber, htmlAttributes: new { @class = "control-label " }):
+            @Html.EditorFor(model => model.AdvanceNumber, new { htmlAttributes = new { @class = "form-right md form-control" } })
+            @Html.ValidationMessageFor(model => model.AdvanceNumber, "", new { @class = "text-danger" })
+        </div>
+        <div class="col-md-4">
+            @Html.LabelFor(model => model.Advance_date, htmlAttributes: new { @class = "control-label " }):
+            @Html.EditorFor(model => model.Advance_date, new { htmlAttributes = new { @class = "form-right md form-control" } })
+            @Html.ValidationMessageFor(model => model.Advance_date, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="row">
+            <div class="row">
+                <span id="CheckBoxValidation" class="text-danger"></span>
+            </div>
+            <div class="panel-group form-group">
+                <div class="col-lg-12">
+                    <div class="col-md-3">
+                        @Html.CheckBoxFor(model => model.Salary , htmlAttributes: new { @class = "requiredCheckBoxes" })
+                        @Html.LabelFor(model => model.Salary, htmlAttributes: new { @class = "control-label " })
+                        @Html.ValidationMessageFor(model => model.Salary, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-3">
+                        @Html.CheckBoxFor(model => model.Electricity, htmlAttributes: new { @class = "requiredCheckBoxes" })
+                        @Html.LabelFor(model => model.Electricity, htmlAttributes: new { @class = "control-label " })
+                        @Html.ValidationMessageFor(model => model.Electricity, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-3">
+                        @Html.CheckBoxFor(model => model.Water, htmlAttributes: new { @class = "requiredCheckBoxes" })
+                        @Html.LabelFor(model => model.Water, htmlAttributes: new { @class = "control-label " })
+                        @Html.ValidationMessageFor(model => model.Water, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-3">
+                        @Html.CheckBoxFor(model => model.Advance, htmlAttributes: new { @class = "requiredCheckBoxes" })
+                        @Html.LabelFor(model => model.Advance, htmlAttributes: new { @class = "control-label " })
+                        @Html.ValidationMessageFor(model => model.Advance, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="col-lg-12">
+                    <div class="col-md-3">
+                        @Html.CheckBoxFor(model => model.Allowance, htmlAttributes: new { @class = "requiredCheckBoxes" })
+                        @Html.LabelFor(model => model.Allowance, htmlAttributes: new { @class = "control-label " })
+                        @Html.ValidationMessageFor(model => model.Allowance, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-3">
+                        @Html.CheckBoxFor(model => model.PettyCash, htmlAttributes: new { @class = "requiredCheckBoxes" })
+                        @Html.LabelFor(model => model.PettyCash, htmlAttributes: new { @class = "control-label " })
+                        @Html.ValidationMessageFor(model => model.PettyCash, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-3">
+                        @Html.CheckBoxFor(model => model.Contribution, htmlAttributes: new { @class = "requiredCheckBoxes" })
+                        @Html.LabelFor(model => model.Contribution, htmlAttributes: new { @class = "control-label " })
+                        @Html.ValidationMessageFor(model => model.Contribution, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-3">
+                        @Html.CheckBoxFor(model => model.Other, htmlAttributes: new { @class = "requiredCheckBoxes" })
+                        @Html.LabelFor(model => model.Other, htmlAttributes: new { @class = "control-label " })
+                        @Html.ValidationMessageFor(model => model.Other, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-3">
+                        @Html.CheckBoxFor(model => model.Telecom, htmlAttributes: new { @class = "requiredCheckBoxes" })
+                        @Html.LabelFor(model => model.Telecom, htmlAttributes: new { @class = "control-label " })
+                        @Html.ValidationMessageFor(model => model.Telecom, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row  border-home bgg-md col-lg-12">
+        <div id="container">
+            <div class="row">
+                <div class="grid-form form-group">
+                    <div class="col-md-4">
+                        @Html.LabelFor(model => model.Acc_no, "គណនី", htmlAttributes: new { @class = "control-label" })
+                    </div>
+                    <div class="col-md-2 ">
+                        <Label class="control-label">លេខកូដសលាកប័ត្រ</Label>
+                    </div>
+                    <div class="col-md-2">
+                        @Html.LabelFor(model => model.FCV_no, "លេខសលាកប័ត្រ", htmlAttributes: new { @class = "control-label" })
+                    </div>
+                    <div class="col-md-2">
+                        @Html.LabelFor(model => model.Mandate_amount, "ទឹកប្រាក់", htmlAttributes: new { @class = "control-label" })
+                    </div>
+                    @*<div class="col-md-2">
+                                            <Label class="control-label">អត្រា​ប្តូ​រ​ប្រាក់</Label>
+                                        </div>*@
+                    <div class="col-md-1">
+                        <a id="add_mandate" class="btn btn-grid btn-primary">+</a>
+                    </div>
+                    <div class="col-md-1"></div>
+                </div>
+            </div>
+            @for (var i = 0; i < Model.Mandate_amount.Length; i++)
+            {
+                <div class="row">
+                    <div class="grid-form form-group">
+                        <div class="col-md-4">
+                            <select class="form-control required-select" id="Acc_no" name="Acc_no">
+                                <option value="">ជ្រើសរើសគណនី</option>
+                                @foreach (AccountModel acc in ViewBag.Accounts)
+                                {
+                                    if (acc.Acc_no == Model.Acc_no[i])
+                                    {
+                                        @:
+                                        <option value="@acc.Acc_no" selected="selected"> @acc.CodeAndName </option>
+                                    }
+                                    else
+                                    {
+                                        @:
+                                        <option value="@acc.Acc_no"> @acc.CodeAndName </option>
+                                    }
+
+                                }
+                            </select>
+                            @Html.ValidationMessageFor(model => model.Acc_no, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="col-md-2">
+                            @Html.EditorFor(model => model.FCV_Identity[i], new { htmlAttributes = new { @class = "mds form-control FCV_no required-input form-control FCV_id required-input", @id = "FCV_id", @Name = "FCV_id" } })
+                            <span class="text-danger"></span>
+                        </div>
+                        <div class="col-md-2">
+                            @Html.EditorFor(model => model.FCV_no[i], new { htmlAttributes = new { @class = "mds form-control FCV_no required-input form-control FCV_no required-input", @id = "FCV_no", @Name = "FCV_no" } })
+                            <span class="text-danger"></span>
+                        </div>
+                        <div class="col-md-2">
+                            @Html.EditorFor(model => model.Mandate_amount[i], new { htmlAttributes = new { @class = "mds form-control FCV_no required-input form-control number required-input", @id = "Mandate_amount", @Name = "Mandate_amount" } })
+                            <span class="text-danger"></span>
+                        </div>
+                        @*<div class="col-md-2">
+                                                <input type="text" value="" class="mds form-control" />
+                                            </div>*@
+                        <div class="col-md-1" id="remove">
+                            <a class="btn-grid btn btn-danger">-</a>
+                        </div>
+                        <div class="col-md-1"></div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <div class="row">
+            <div class="grid-form form-group">
+                <div class="col-md-8">
+                </div>
+                <div class="col-md-2">
+                    <input type="text" class="col-md-3 mds number form-control" disabled="disabled" id="totalMandate" value="" />
+                </div>
+                <div class="col-md-1">
+                </div>
+                <div class="col-md-1">
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                @Html.LabelFor(model => model.Mandate_desc, htmlAttributes: new { @class = "control-label " }):
+                @Html.TextAreaFor(model => model.Mandate_desc, new { @class = "text-mds form-control" })
+                @Html.ValidationMessageFor(model => model.Mandate_desc, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    </div>
+
+    <div class="border-home bgf">
+        <div class="row">
+            <div class="col-lg-7">
+                <div class="col-md-2">
+                    @Html.LabelFor(model => model.Reciever, htmlAttributes: new { @class = "control-label " }):
+                </div>
+                <div class="row col-md-10">
+                    @Html.TextAreaFor(model => model.Reciever, new { @class = "text-mds form-control" })
+                    @Html.ValidationMessageFor(model => model.Reciever, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <div class="col-md-12">
+                    <div class="col-md-2">
+                        @Html.LabelFor(model => model.BankAcc_address, htmlAttributes: new { @class = "control-label " }):
+                    </div>
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.BankAcc_address, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.BankAcc_address, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="col-md-2">
+                        @Html.LabelFor(model => model.BankAcc_no, htmlAttributes: new { @class = "control-label " }):
+                    </div>
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.BankAcc_no, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.BankAcc_no, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="col-md-12 home-relative">
+                    <div class="col-md-2">
+                        @Html.LabelFor(model => model.USD, htmlAttributes: new { @class = "control-label " }):
+                    </div>
+                    <div class="col-md-5">
+                        @Html.EditorFor(model => model.USD, new { htmlAttributes = new { @class = "form-control numbers" } })
+                        @Html.ValidationMessageFor(model => model.USD, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-3">
+                        <select class="form-control" id="CurrencyType" name="CurrencyType">
+                            <option>ជ្រើសរើសរូបិយប័ណ្ណ</option>
+                            <option value="USD">USD</option>
+                            <option value="EUR">EUR</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2"></div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                @Html.LabelFor(model => model.AmountInWord, htmlAttributes: new { @class = "control-label " }):
+                @Html.TextAreaFor(model => model.AmountInWord, new { @class = "text-mds h35 form-control" })
+                @Html.ValidationMessageFor(model => model.AmountInWord, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <div class="row">
+        @Html.ActionLink("បោះពុម្ពដីកា", "PublishedMandate", new { id = Model.Mandate_id}, new { @class = "btn btn-default" })
+        @Html.ActionLink("បោះពុម្ពអាណត្តិ", "MandatePayment", new { id = Model.Mandate_id}, new { @class = "btn btn-default" })
+        @Html.ActionLink("ត្រលប់", "ListMandate", "Mandate", new { @class = "btn btn-default" })
+    </div>
+    <br />
+    </div>
+    </div>
+    </div>
+}
+@section Scripts {
+    <script src="~/Scripts/moment.js"></script>
+    <script src="~/Scripts/bootstrap-datetimepicker.min.js"></script>
+    <script src="~/Scripts/chosen.jquery.min.js"></script>
+    <script src="~/Scripts/MandateScript.js"></script>
+    <script src="~/Content/assets/numeral/numeral.js"></script>
+}
+<script>
+    $(document).ready(function () {
+        AddCurrencyFormat(".number");
+        $(".number").each(function(index,object){
+            this.value = numeral(this.value).format('0,0').split(',').join('.') + " ៛";
+        });
+
+        var Mandate_date =@Html.Raw(Json.Encode(Model.Mandate_date));
+        var MEF_date =@Html.Raw(Json.Encode(Model.MEF_date));
+        var Advance_date =@Html.Raw(Json.Encode(Model.Advance_date));
+
+        $("#Mandate_date").val(moment(Mandate_date).format("DD/MM/YYYY"));
+        $("#MEF_date").val(moment(MEF_date).format("DD/MM/YYYY"));
+        $("#Advance_date").val(moment(Advance_date).format("DD/MM/YYYY"));
+        $('#CurrencyType').val('@Model.CurrencyType');
+
+        //This statement is for removing the date validation from date input
+        $("input[data-val-date]").removeAttr("data-val-date");
+
+        DynamicRow();
+        QueryFCVNumber();
+        QueryFCVID();
+        addEventToMandateAmount();
+        refreshMoneyLetter();
+
+        function QueryFCVID() {
+            var FI = $('.FCV_id');
+            FI.keyup(function () {
+                var FcvID = $(this);
+
+                $.ajax({
+                    type: "GET",
+                    url: '@Url.Action("GetFCVByFCVID")',
+                    contentType: "application/json; charset=utf-8",
+                    dataType: 'json',
+                    data: { id: this.value},
+                    success: function (result) {
+                        var select = $(FcvID[0].parentNode.parentNode.childNodes[1].childNodes[1]);
+                        var fcvno = FcvID[0].parentNode.parentNode.childNodes[5].childNodes[1];
+                        var rate, amount;
+                        if (fcvno == null) {
+                            select = $(FcvID[0].parentNode.parentNode.childNodes[0].childNodes[0]);
+                            fcvno = FcvID[0].parentNode.parentNode.childNodes[2].childNodes[0];
+                            amount = FcvID[0].parentNode.parentNode.childNodes[3].childNodes[0];
+                            rate = FcvID[0].parentNode.parentNode.childNodes[4].childNodes[0];
+                        } else {
+                            amount = FcvID[0].parentNode.parentNode.childNodes[7].childNodes[1];
+                            rate = FcvID[0].parentNode.parentNode.childNodes[9].childNodes[1];
+                        }
+
+                        $(select).val(result.Acc_no).trigger("chosen:updated");
+                        fcvno.value = result.FCV_no;
+                        amount.value = numeral(result.FCV_Amount).format('0,0').split(',').join('.') + " ៛";
+                        rate.value = result.FCV_rate;
+                        //$('#Mandate_desc').val(result.Desc);
+                        var desc = result.Desc!=null ? result.Desc : "";
+                        //$('#Mandate_desc').val("សក្ខីប័ត្រភ្ជាប់មានៈ  \n\n-លិខិតលេខ \t លស.ផហ ចុះថ្ងៃទី \n" + desc);
+                        if (FcvID[0].parentNode.parentNode == $(".grid-form")[1]) {
+                            $("#Unit_id").val(result.Unit_id).trigger("chosen:updated");
+                            $('#Mandate_desc').val(desc + "\nសក្ខីប័ត្រភ្ជាប់មានៈ \n-លិខិតលេខ \t\t លស.ផហ ចុះថ្ងៃទី​​  \t\t\t របស់ទីស្ដីការគណៈរដ្ឋមន្ត្រី");
+
+                        }
+
+
+                        refreshMoneyLetter();
+                    },
+                    error: function (result) {
+                        var select = $(FcvID[0].parentNode.parentNode.childNodes[1].childNodes[1]);
+                        var fcvno = FcvID[0].parentNode.parentNode.childNodes[5].childNodes[1];
+                        var rate, amount;
+                        if (fcvno == null) {
+                            select = $(FcvID[0].parentNode.parentNode.childNodes[0].childNodes[0]);
+                            fcvno = FcvID[0].parentNode.parentNode.childNodes[2].childNodes[0];
+                            amount = FcvID[0].parentNode.parentNode.childNodes[3].childNodes[0];
+                            rate = FcvID[0].parentNode.parentNode.childNodes[4].childNodes[0];
+                        } else {
+                            amount = FcvID[0].parentNode.parentNode.childNodes[7].childNodes[1];
+                            rate = FcvID[0].parentNode.parentNode.childNodes[9].childNodes[1];
+                        }
+
+                        $(select).val(result.Acc_no).trigger("chosen:updated");
+                        fcvno.value = "";
+                        amount.value = "";
+                        rate.value = "";
+                        refreshMoneyLetter();
+                    }
+                });
+            });
+        }
+
+        function QueryFCVNumber() {
+            var F = $('.FCV_no');
+            F.keyup(function () {
+                var fcvNo = $(this);
+                $.ajax({
+                    type: "GET",
+                    url: '@Url.Action("GetFCVByFCVNo")',
+                    contentType: "application/json; charset=utf-8",
+                    dataType: 'json',
+                    data: { no: this.value },
+                    success: function (result) {
+                        var input = fcvNo[0].parentNode.nextElementSibling.childNodes[1];
+                        var select = $(fcvNo[0].parentNode.parentNode.childNodes[1].childNodes[1]);
+                        var desc = $("#Mandate_desc");
+                        var id;
+                        var rate;
+                        if (input.id == "Mandate_amount" || select.id == "Acc_no") {
+                            //rate = fcvNo[0].parentNode.parentNode.childNodes[9].childNodes[1];
+                            id = fcvNo[0].parentNode.previousElementSibling.childNodes[1];
+                        } else {
+                            input = fcvNo[0].parentNode.nextElementSibling.childNodes[0];
+                            select = $(fcvNo[0].parentNode.parentNode.childNodes[0].childNodes[0]);
+                            //rate = fcvNo[0].parentNode.parentNode.childNodes[4].childNodes[0];
+                            id = fcvNo[0].parentNode.parentNode.childNodes[1].childNodes[0];
+
+                        }
+                        //$(select).find('option[value="' + result.Acc_no + '"]').attr("selected", true);
+                        $(select).val(result.Acc_no).trigger("chosen:updated");
+                        input.value = numeral(result.FCV_Amount).format('0,0').split(',').join('.') + " ៛";
+                        id.value = result.FCV_id;
+                        //rate.value = result.FCV_rate;
+                        //$('#Mandate_desc').val(result.Desc);
+                        var desc = result.Desc!=null ? result.Desc : "";
+                        if (fcvNo[0].parentNode.parentNode == $(".grid-form")[1]) {
+                            $("#Unit_id").val(result.Unit_id).trigger("chosen:updated");
+                            $('#Mandate_desc').val(desc + "\nសក្ខីប័ត្រភ្ជាប់មានៈ \n-លិខិតលេខ \t\t លស.ផហ ចុះថ្ងៃទី​​  \t\t\t របស់ទីស្ដីការគណៈរដ្ឋមន្ត្រី");
+                        }
+
+                        refreshMoneyLetter();
+                    },
+                    error: function (result) {
+                        var input = fcvNo[0].parentNode.nextElementSibling.childNodes[1];
+                        var select = $(fcvNo[0].parentNode.parentNode.childNodes[1].childNodes[1]);
+                        var desc = $("#Mandate_desc");
+                        var id;
+                        var rate;
+                        if (input.id == "Mandate_amount" || select.id == "Acc_no") {
+                            //rate = fcvNo[0].parentNode.parentNode.childNodes[9].childNodes[1];
+                            id = fcvNo[0].parentNode.previousElementSibling.childNodes[1];
+                        } else {
+                            input = fcvNo[0].parentNode.nextElementSibling.childNodes[0];
+                            select = $(fcvNo[0].parentNode.parentNode.childNodes[0].childNodes[0]);
+                            //rate = fcvNo[0].parentNode.parentNode.childNodes[4].childNodes[0];
+                            id = fcvNo[0].parentNode.parentNode.childNodes[1].childNodes[0];
+
+                        }
+                        //$(select).find('option[value="' + result.Acc_no + '"]').attr("selected", true);
+                        $(select).val(result.Acc_no).trigger("chosen:updated");
+                        input.value = "";
+                        id.value = "";
+                        //rate.value = "";
+                        refreshMoneyLetter();
+                    }
+                });
+            });
+            $('[name="Acc_no"]').chosen({
+
+            });
+        }
+
+        function DynamicRow() {
+            var header = '<select class="form-control required-select" id="Acc_no" name="Acc_no">';
+            var body = "";
+            var options = document.getElementById("Acc_no");
+            if (options != null) {
+                options = options.options;
+                for (var i = 0; i < options.length; i++) {
+                    body = body + '<option value=' + options[i].value + '>' + options[i].textContent + '</option> ';
+                }
+            }
+            var footer = '</select>';
+            var dropDown = header + body + footer;
+            var HTML_Mandate = '<div class="row"><div class="grid-form form-group"><div class="col-md-4">' + dropDown + '<span class="text-danger"></span></div><div class="col-md-2"><input type="text" name="FCV_FCV_Identity" id="FCV_Identity" value="" class="mds form-control FCV_id required-input"><span class="text-danger"></span></div><div class="col-md-2"><input type="text" name="FCV_no" id="FCV_no" value="" class="mds form-control FCV_no required-input" /><span class="text-danger"></span></div><div class="col-md-2"><input type="text" name="Mandate_amount" value="" class="mds number am_width form-control Mandate_amount required-input" id="Mandate_amount"><span class="text-danger" ></span></div><div class="col-md-1" id="remove"><a class="btn btn-grid btn-danger">-</a></div><div class="col-md-1"></div></div></div>';
+            //var HTML_Mandate = '<div class="row"><div class="grid-form form-group"><div class="col-md-3">' + dropDown + '<span class="field-validation-valid text-danger" data-valmsg-for="Acc_no" data-valmsg-replace="true"></span></div><div class="col-md-2"><input type="text" name="FCV_id" id="FCV_id" value="" class="mds form-control FCV_id" /><span class="field-validation-valid text-danger" data-valmsg-for="Mandate_id" data-valmsg-replace="true"></span></div><div class="col-md-2"><input type="text" name="FCV_no" id="FCV_no" value="" class="mds form-control FCV_no" /><span class="field-validation-valid text-danger" data-valmsg-for="FCV_no" data-valmsg-replace="true"></span></div><div class="col-md-2"><input type="text" name="Mandate_amount" value="" class="mds form-control Mandate_amount" id="Mandate_amount"><span class="field-validation-valid text-danger" data-valmsg-for="Mandate_amount" data-valmsg-replace="true"></span></div><div class="col-md-2"><input type="text" name="Rate" value="" class="mds form-control Mandate_amount" id="Rate"><span class="field-validation-valid text-danger" data-valmsg-for="Mandate_amount" data-valmsg-replace="true"></span> </div> <div class="col-md-1" id="remove"><a class="btn btn-grid btn-danger">-</a></div></div></div>';
+            //Mandate
+            $('#add_mandate').click(function (e) {
+                $("#container").append(HTML_Mandate);
+                QueryFCVNumber();
+                QueryFCVID();
+                addEventToMandateAmount();
+
+            });
+            //Remove
+            $("#container").on('click', '#remove', function () {
+                $(this).parent('div').remove();
+                QueryFCVNumber();
+                QueryFCVID();
+                addEventToMandateAmount();
+                refreshMoneyLetter();
+            });
+        }
+    });
+
+
+    function addEventToMandateAmount() {
+        var Mandate_amount = $("input[name='Mandate_amount']");
+        Mandate_amount.focusout(function () {
+            var total = 0;
+            for (var i = 0; i < Mandate_amount.length; i++) {
+                if (Mandate_amount[i].value)
+                    total = total + parseFloat(Mandate_amount[i].value.replace(" ៛", "").split('.').join(''));
+            }
+            $("#totalMandate").val(numeral(total).format('0,0').split(',').join('.') + " ៛");
+            $("#AmountInWord").val(toWords(total.toString().replace(" ៛", "").split('.').join('')));
+        });
+        AddCurrencyFormat(".number");
+    }
+
+    function refreshMoneyLetter() {
+        var Mandate_amount = $("input[name='Mandate_amount']");
+        var total = 0;
+        for (var i = 0; i < Mandate_amount.length; i++) {
+            if (Mandate_amount[i].value)
+                total = total + parseFloat(Mandate_amount[i].value.replace(" ៛", "").split('.').join(''));
+        }
+        $("#totalMandate").val(numeral(total).format('0,0').split(',').join('.') + " ៛");
+        $("#AmountInWord").val(toWords(total.toString()).replace(" ៛", "").split('.').join(''));
+    }
+
+    function toWords(s) {
+        var moneyletter;
+        $.ajax({
+            type: "GET",
+            async: false,
+            url: '@Url.Action("GetKhmerMoneyLetter")',
+            contentType: "application/json; charset=utf-8",
+            dataType: 'json',
+            data: { money: s },
+            success: function (result) {
+                moneyletter = result.MoneyLetter;
+            },
+            error: function (result) {
+
+            }
+        });
+        return moneyletter;
+
+    }
+
+
+    function AddCurrencyFormat(className) {
+        $(className).focusout(function () {
+            if (this.value.indexOf('.') === -1)
+                this.value = numeral(this.value).format('0,0').split(',').join('.') + " ៛";
+        });
+        $(className).click(function () {
+            this.value = this.value.replace(" ៛", "").split('.').join('');
+        });
+    }
+
+    $("#btnSubmit").click(function () {
+        var data = $(".number");
+        data.each(function (index, obj) {
+            obj.value = obj.value.replace(" ៛", "").split('.').join('');
+        });
+    });
+</script>

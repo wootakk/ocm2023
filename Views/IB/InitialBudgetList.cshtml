@@ -1,0 +1,176 @@
+﻿@model List<List<List<ISFMOCM_Project.Models.InitialBudgetTableViewModel>>>
+@using ISFMOCM_Project.Entity
+@using ISFMOCM_Project.Function
+@{
+    ViewBag.Title = "ឥណទានអនុម័តដើមឆ្នាំ";
+}
+<h2>Index</h2>
+<div class="bs-example">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3>ឥណទានអនុម័តដើមឆ្នាំ</h3>
+        </div>
+        <div class="panel-body">
+
+            @*<p​ class="pull-left">
+                    @Html.ActionLink("បង្កើតថ្មី", "Create")
+                </p​>*@
+            @*@Html.ActionLink("ឥណទានអនុម័តនៅឆ្នាំបន្ទាប់", "CreateBudgets", null, htmlAttributes: new { @class = "btn btn-primary pull-right" })*@
+            @Html.ActionLink("កែប្រែឥណទានអនុម័តនៅឆ្នាំ " + DateTime.Now.Year, "EditBudgets", null, htmlAttributes: new { @class = "btn btn-primary pull-right" })<br /><br />
+            <br />
+            <table class="table table-bordered">
+                <tr>
+                    <th class="text-center">ជំពូក</th>
+                    <th class="text-center">គណនី</th>
+                    <th class="text-center">អនុគណនី</th>
+                    <th class="text-center">ឈ្មោះគណនី</th>
+                    <th class="text-center">ឆ្នាំ</th>
+                    <th class="text-center">ឥណទានអនុម័ត</th>
+                    <th class="text-center">ជម្រើស</th>
+                </tr>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr class="text-center">
+                            <td>@item.First().First().chapter_no</td>
+                            <td></td>
+                            <td></td>
+                            <td><strong>@item.First().First().chapter_name</strong></td>
+                            <td class="text-center">@item.First().First().budget_date.Year</td>
+                            <td class="budgets number">@item.Sum(a => a.Where(u => u.unit_id == 0).Sum(b => b.budget))</td>
+                            <td></td>
+                        </tr>
+                        foreach (var acc in item)
+                        {
+                            <tr>
+                                <td></td>
+                                <td class="text-center">@acc.First().account_no</td>
+                                <td></td>
+                                <td>@acc.First().account_name</td>
+                                <td class="text-center">@acc.First().budget_date.Year</td>
+                                <td class="budgets number">@acc.Where(u => u.unit_id == 0).Sum(a => a.budget)</td>
+                                <td></td>
+                            </tr>
+                            @* Details Section  *@
+                    var previouseSubNo = "";
+                            foreach (var row in acc.OrderBy(a => a.sub_account_no)) 
+                    {
+                        if (previouseSubNo != row.sub_account_no)
+                        {
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td class="text-center">@row.sub_account_no</td>
+                                <td>@row.sub_account_name</td>
+                                <td class="text-center">@row.budget_date.Year</td>
+                                @if (row.unit_id != 0)
+                                {
+                                    var db = new ISFMOCM_DBEntities();
+                                    var ib = db.tbl_InitialBudget.Where(id => id.Acc_no == row.sub_account_no).Sum(b => b.Budget);
+                                    <td class="budgets number">@ib</td>
+                                }
+                                else
+                                {
+                                    <td class="budgets number">@row.budget</td>
+                                }
+                                <td class="text-center">
+                                    @Html.ActionLink(" ", "Edit", new { @id = row.id }, htmlAttributes: new { @class = "btn btn-warning glyphicon glyphicon-pencil" })
+                                    &nbsp;
+                                    @if (User.IsInRole("Admin"))
+                                    {
+                                        @Html.ActionLink(" ", "Delete", new { @id = row.id }, htmlAttributes: new { @class = "btn btn-danger glyphicon glyphicon-trash", onclick = "return onDelete()" })
+                                    }
+                                </td>
+                            </tr>
+                                }
+
+                                if (row.unit_id != 0)
+                                {
+                                    var db = new ISFMOCM_DBEntities();
+                                    var unit_acc = db.tbl_InitialBudget.SingleOrDefault(i => i.Unit_id == row.unit_id && i.Acc_no == row.account_no && i.status == false);
+                                    var unit = db.tbl_Unit.SingleOrDefault(u => u.Unit_id == row.unit_id);
+
+                                    var subUnit = db.tbl_Unit.Where(u => u.Unit_code == unit.Unit_id);
+                                    //Parent Unit
+                                    <tr>
+                                        <td></td>
+                                        <td></td>
+                                        <td class="text-center"></td>
+                                        @if (unit.Order_Number != 0)
+                                        {
+                                            <td>@unit.Order_Number @unit.Unit_name</td>
+                                        }
+                                        else
+                                        {
+                                            <td>@unit.Unit_name</td>
+                                        }
+                                        <td class="text-center"></td>
+                                        <td class="budgets number">@row.budget</td>
+                                        <td class="text-center">
+                                            @Html.ActionLink(" ", "Edit", new { @id = row.id }, htmlAttributes: new { @class = "btn btn-warning glyphicon glyphicon-pencil" })
+                                            &nbsp;
+                                            @if (User.IsInRole("Admin"))
+                                            {
+                                                @Html.ActionLink(" ", "Delete", new { @id = row.id }, htmlAttributes: new { @class = "btn btn-danger glyphicon glyphicon-trash", onclick = "return onDelete()" })
+                                            }
+                                        </td>
+                                    </tr>
+
+                                    //SubUnit
+
+                                    if (subUnit != null && subUnit.Any())
+                                    {
+                                        @*foreach (var u in subUnit)
+                                        {
+                                            var ib = db.tbl_InitialBudget.Where(b =>
+                                                b.status == false &&
+                                                b.Acc_no == u.Acc_no &&
+                                                b.InitialBudget_date.Value.Year == DateTime.Now.Year &&
+                                                b.Unit_id == u.Unit_id);
+                                            <tr>
+                                                <td></td>
+                                                <td></td>
+                                                <td class="text-center"></td>
+                                                @if (u.Order_Number != 0)
+                                                {
+                                                    <td>@u.Order_Number @u.Unit_name</td>
+                                                }
+                                                else
+                                                {
+                                                    <td>@u.Unit_name</td>
+                                                }
+                                                <td class="text-center"></td>
+                                                <td class="budgets number">@ib.FirstOrDefault().Budget</td>
+                                                <td class="text-center">
+                                                    @Html.ActionLink(" ", "Edit", new { @id = row.id }, htmlAttributes: new { @class = "btn btn-warning glyphicon glyphicon-pencil" })
+                                                    &nbsp;
+                                                    @if (User.IsInRole("Admin"))
+                                                    {
+                                                        @Html.ActionLink(" ", "Delete", new { @id = row.id }, htmlAttributes: new { @class = "btn btn-danger glyphicon glyphicon-trash", onclick = "return onDelete()" })
+                                                    }
+                                                </td>
+                                            </tr>
+                                        }*@
+                                    }
+
+                                }
+                                previouseSubNo = row.sub_account_no;
+
+                            }
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="~/Content/assets/numeral/numeral.js"></script>
+    <script>
+        var budgets = $(".budgets");
+        for (var i = 0; i < budgets.length; i++) {
+            budgets[i].textContent = numeral(budgets[i].textContent).format('0,0').split(',').join('.') + " ៛";
+        }
+    </script>
+}

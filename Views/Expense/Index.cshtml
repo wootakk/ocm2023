@@ -1,0 +1,141 @@
+﻿@using Microsoft.AspNet.Identity
+@model IEnumerable<ISFMOCM_Project.Models.ExpenseModel>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+
+<h2>Index</h2>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3>ចំណាយរជ្ជទេយ្យបុរេប្រទានរដ្ឋបាល</h3>
+    </div>
+    <div class="panel-body">
+        <p class="pull-left">
+            @if (User.Identity.GetUserName() == "Sanset")
+            {
+                @Html.ActionLink("បង្កើតថ្មី", "CreateExpense", null, htmlAttributes: new { @Class = "new" })
+            }
+        </p>
+        <div class="row">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="tableExpense">
+                    <thead>
+                    <tr>
+                        <th>លរ</th>
+                        <th class="col-md-1">កាលបរិច្ឆេទ</th>
+                        <th>អនុគណនី</th>
+                        <th>សេចក្ដីពិពណ៌នា</th>
+                        <th style="width: 125px;">ចំនួនទឹកប្រាក់</th>
+                        <th>ជម្រើស</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @{
+                        var orderNumber = (from index in Model.ToList()
+                            select index.ExpenseDetail).ToList().Count;
+                    }
+                    @foreach (var expense in Model)
+                    {
+                        foreach (var expenseDetail in expense.ExpenseDetail)
+                        {
+                            <tr>
+                                <td>@orderNumber</td>
+                                <td class="text-center">@expense.ExpenseDate.ToString("dd-MM-yyyy")</td>
+                                <td class="text-center">@expenseDetail.Account</td>
+                                <td>@expenseDetail.Description</td>
+                                <td class="number">@expenseDetail.Amount</td>
+                                @if (User.Identity.GetUserName() == "Sanset")
+                                {
+                                    <td style="visibility: hidden;">
+                                        @Html.ActionLink(" ", "EditExpense", new {id = expense.ExpenseId}, new {@class = "glyphicon glyphicon-pencil"})
+                                        @Html.ActionLink(" ", "Details", new {id = expense.ExpenseId}, new {@class = "glyphicon glyphicon-eye-open"})
+                                        @Html.ActionLink(" ", "Delete", new {id = expense.ExpenseId}, new {@class = "glyphicon glyphicon-trash", onclick = "return onDelete()"})
+                                    </td>
+                                }
+                                else
+                                {
+                                    <td style="visibility: hidden;">
+                                        @Html.ActionLink(" ", "Details", new { id = expense.ExpenseId }, new { @class = "glyphicon glyphicon-eye-open" })
+                                    </td>
+                                }
+                            </tr>
+                        }
+                        orderNumber--;
+                    }
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script src="~/Scripts/moment.min.js"></script>
+    <script src="~/Scripts/bootstrap-datetimepicker.js"></script>
+    <script src="~/Scripts/chosen.jquery.min.js"></script>
+    <script src="~/Content/assets/numeral/numeral.js"></script>
+}
+
+<script>
+    $(function () {
+
+        var number = $(".number");
+        for (var i = 0; i < number.length; i++) {
+            number[i].textContent = numeral(number[i].textContent).format('0,0').split(',').join('.') + " ៛";
+        }
+
+        $('#tableExpense').DataTable(
+            {
+                sPaginationType: "full_numbers",
+                "bLengthChange": false,
+                "oLanguage": {
+                    "sSearch": "ស្វែងរក"
+                },
+                "bFilter": false,
+                "columnDefs": [
+                    { "visible": false, "targets": 0 }
+                ],
+                "order": [[1, 'desc']],
+                "displayLength": 10,
+                "drawCallback": function (settings) {
+                    //Grouping Elements
+                    var api = this.api();
+                    var rows = api.rows({ page: 'current' }).nodes();
+                    var last = null;
+                    api.column(0, { page: 'current' }).data().each(function (group, i) {
+                        if (last !== group) {
+                            var editLink = $(rows).eq(i)[0].childNodes[10].innerHTML;
+                            $(rows).eq(i).before(
+                                '<tr class="group"><td colspan="4"></td><td colspan="1" class="text-center"> '+editLink+' </td></tr>'
+                            );
+                            console.log($(rows).eq(i));
+                            last = group;
+                        }
+                    });
+
+                    //Reversed paginatin
+                    var totalRows = parseInt(settings.aiDisplay.length);
+                    //var rowPerPage = parseInt(oSettings.nTBody.children.length);
+                    reversedPaginationNumbers(totalRows, 10);
+                }
+            }
+        );
+
+        function reversedPaginationNumbers(totalRowsParam, displayRowsParams) {
+            var totalRows = totalRowsParam;
+            var displayRows = displayRowsParams;
+            var paginations = $(".paginate_button a");
+            var totalPaginations = Math.ceil(totalRows / displayRows);
+            for (var i = 0; i < paginations.length; i++) {
+                var pageNumber = paginations[i].textContent;
+                if (parseInt(pageNumber)) {
+                    paginations[i].textContent = totalPaginations + 1 - parseInt(pageNumber);
+                }
+            }
+
+        }
+    });
+</script>

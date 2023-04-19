@@ -1,0 +1,135 @@
+﻿@model ISFMOCM_Project.Models.InitialBudgetModel
+@using ISFMOCM_Project.Models;
+<link href="~/Content/assets/choosen/chosen.min.css" type="text/css" rel="stylesheet" />
+<style>
+    .btn-primary {
+        margin-left: 50px;
+        margin-top: -60px;
+    }
+
+    #totalBudget {
+        margin-top: -20px;
+        margin-left: 10px;
+        text-align:right;
+    }
+    .btib{
+        margin-left: 35px;
+    }
+    .Budget{
+        text-align:right;
+    }
+</style>
+@{
+    ViewBag.Title = "ឥណទានអនុម័តនៅឆ្នាំបច្ចុប្បន្ន";
+}
+<br />
+<br />
+<br />
+<div class="bs-example">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+
+            <div class="row">
+                <h3>ឥណទានអនុម័តនៅឆ្នាំបច្ចុប្បន្ន</h3>
+            </div>
+        </div>
+
+        <div class="panel-body">
+            @using (Html.BeginForm())
+            {    @Html.AntiForgeryToken()
+                <div id="container">
+                    @for (var i = 0; i < Model.AccoutBudgets.Count; i++)
+                    {
+                        <div class="row">
+                            @Html.HiddenFor(m => m.AccoutBudgets[i].ID, htmlAttributes: new { @Name = "IDs" })
+                            @Html.DropDownListFor(m => m.AccoutBudgets[i].Acc_no, new SelectList(ViewBag.Accounts, "Acc_no", "CodeAndName", Model.AccoutBudgets[i].Acc_no)
+                                      , htmlAttributes: new { @class = "form-control Acc_no", @Name = "ACCs" })
+                            @Html.TextBoxFor(m => m.AccoutBudgets[i].Budget, htmlAttributes: new { @type = "number", @class = "form-control Budget number ", @Name = "BUDGETs" })
+                            <a class="btn btn-danger" id="removeRow">-</a>
+                        </div>
+                    }
+                </div>
+                <div class="row">
+                    <div class="col-md-6"></div>
+                    <div class="col-md-1">
+                        <a id="addRow" class="btn btn-primary">+</a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                    </div>
+                    <div class="col-md-3">
+                        <input type="number" class="form-control" id="totalBudget" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-5">
+                    </div>
+                    <div class="col-md-2">
+                        <input type="submit" value="រក្សាទុក" class="btn btib btn-success" />
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/jqueryui")
+    <script src="~/Scripts/chosen.jquery.min.js"></script>
+}
+
+<script>
+    $(document).ready(function () {
+        $('.Acc_no').chosen({
+        });
+        RefreshTotalBudget();
+
+        function RefreshTotalBudget() {
+            var budgets = $(".Budget");
+            var total = 0;
+            if (budgets) {
+                for (var i = 0; i < budgets.length; i++) {
+                    var val = budgets[i].value ? parseFloat(budgets[i].value) : 0;
+                    total += val;
+                }
+
+            }
+            $("#totalBudget").val(total);
+        }
+
+        $("#addRow").click(function () {
+            var header = '<select class="form-control Acc_no" id="NewAcc" name="ACCs">'
+            var body = "";
+            var options = $(".Acc_no")[0];
+            if (options != null) {
+                options = options.options;
+                for (var i = 0; i < options.length; i++) {
+                    body = body + '<option value=' + options[i].value + '>' + options[i].textContent + '</option> ';
+                }
+            }
+            var footer = '</select>';
+            var dropDown = header + body + footer;
+
+            var newRow = '<div class="row"> <input name="IDs" data-val="true" data-val-number="The field ID must be a number." data-val-required="The ID field is required." id="" type="hidden" value="0"> ' + dropDown + ' <input name="BUDGETs" class="form-control Budget" data-val="true" data-val-number="The field Budget must be a number." id="" type="text" value="0"> <a class="btn btn-danger" id="removeRow">-</a></div>';
+
+            $("#container").append(newRow);
+            $('.Acc_no').chosen({
+            });
+
+            $(".Budget").keyup(function () {
+                RefreshTotalBudget();
+            });
+        });
+
+        $("#container").on('click', '#removeRow', function () {
+            $(this).parent('div').remove();
+        });
+
+        $(".Budget").keyup(function () {
+            RefreshTotalBudget();
+        });
+
+    });
+</script>

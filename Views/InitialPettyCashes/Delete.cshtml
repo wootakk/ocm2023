@@ -1,0 +1,52 @@
+﻿@model ISFMOCM_Project.Models.InitialPettyCashViewModel
+@using ISFMOCM_Project.Models;
+
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h2>Delete</h2>
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>InitialPettyCash</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            <label>ឈ្មោះអង្គភាព ឬ អាជ្ញាធរ</label>
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Unit.Unit_name)
+        </dd>
+        @{
+            for (var i = 0; i < Model.Budget.Length; i++)
+            {
+                <dt>
+                    <label>លេខគណនី</label>
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.Acc_no[i])
+                </dd>
+                <dt>
+                    <label>ទឹកប្រាក់</label>
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.Budget[i])
+                </dd>
+            }
+        }
+    </dl>
+</div>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.InitialPettyCashID)
+    <div class="form-actions no-color">
+        <input type="submit" value="Delete" class="btn btn-default" /> |
+        @Html.ActionLink("Back to List", "Index")
+    </div>
+}

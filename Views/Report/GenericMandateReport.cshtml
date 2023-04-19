@@ -1,0 +1,88 @@
+﻿@using ISFMOCM_Project.Function
+@using ReportViewerForMvc;
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/Content/Site.css" type="text/css" rel="stylesheet" />
+<link href="~/Content/assets/choosen/chosen.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="~/Content/style/ReportStyle.css" />
+<br />
+<br />
+<br />
+@using (Html.BeginForm("GenericMandateReport", "Report", FormMethod.Get, new { id = "myForm" }))
+{
+    <div class="form-horizontal">
+        <div class="bs-example">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="form-group">
+                            <div class="col-lg-12">
+                                <input type="hidden" value="@Request.Params["type"]" name="type" />
+                                <div class="col-md-2">@Html.DropDownList("accountNumber", null, "សូមជ្រើសរើសអនុគណនី", htmlAttributes: new { @class = "form-control" })</div>
+                                @*@if (!Request.Params["unitId"].Equals("-1"))
+                                    {
+                                        <div class="col-md-2">@Html.DropDownList("unitId", null,"សូមជ្រើសរើសអង្គភាព", htmlAttributes: new { @class = "form-control" })</div>
+                                    }
+                                    else
+                                    {
+                                        <input type="hidden" value="-1" name="unitId" />
+                                    }*@
+                                <div class="col-md-2">@Html.DropDownList("unitId", CommonDataModelFunction.GetUnitSelectList(), htmlAttributes: new { @class = "form-control" })</div>
+                                <div class="col-lg-8 right">
+                                    <div class="col-md-1 text-center">
+                                        <label> ចាប់ពីថ្ងៃទី </label>
+                                    </div>
+                                    <div class="col-md-3">
+                                        @Html.Editor("st", new { htmlAttributes = new { @class = "form-control" } })
+                                        <span id="startDateError" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-md-1 text-center">
+                                        <label> ដល់ ថ្ងៃទី </label>
+                                    </div>
+                                    <div class="col-md-3">
+                                        @Html.Editor("et", new { htmlAttributes = new { @class = "form-control" } })
+                                        <span id="endDateError" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <input type="submit" class="btn-search btn btn-primary" value="ស្វែងរក" id="btnSubmit" />
+                                    </div>
+
+                                    <div class="col-md-2">@Html.ActionLink("ត្រលប់", "ReportMenu", null, new { @class = "btn-search btn btn-primary pull-left btn btn-default" })</div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel-body">
+                    <div class="text-center">
+                        @Html.ReportViewer(ViewBag.ReportViewer as Microsoft.Reporting.WebForms.ReportViewer)
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+}
+
+@section Scripts {
+    <script src="~/Scripts/moment.js"></script>
+    <script src="~/Scripts/chosen.jquery.min.js"></script>
+    <script src="~/Scripts/bootstrap-datetimepicker.js"></script>
+    <script src="~/Scripts/report-validation.js"></script>
+    <script>
+        $('#st').datetimepicker({
+            format: 'DD-MM-YYYY'
+        });
+        $('#et').datetimepicker({
+            format: 'DD-MM-YYYY'
+        });
+
+        $('#accountNumber').chosen({});
+        $('#unitId').chosen({});
+
+    </script>
+}

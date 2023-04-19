@@ -1,0 +1,164 @@
+﻿@model IEnumerable<ISFMOCM_Project.Models.MandateModel>
+@{
+    ViewBag.Title = "បញ្ជីអាណត្តិបើកប្រាក់";
+    ISFMOCM_Project.Entity.ISFMOCM_DBEntities db = new ISFMOCM_Project.Entity.ISFMOCM_DBEntities();
+}
+
+<h2>Index</h2>
+<div class="bs-example">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+
+            <div class="row">
+
+                @using (Html.BeginForm("ListMandate", "Mandate", FormMethod.Get))
+                {
+                    <div class="col-lg-12">
+                        <div class="col-lg-4">
+                            <h3>បញ្ជីអាណត្តិបើកប្រាក់</h3>
+                        </div>
+                        <div class="col-lg-8 right">
+                            <div class="col-md-4"></div>
+                            <div class="col-md-3"><input type="text" id="s_id" name="s_id" placeholder="លេខកូដអាណត្តិ" class="form-control" /></div>
+                            <div class="col-md-3"><input type="text" id="s_no" name="s_no" placeholder="លេខអាណត្តិ" class="form-control" /></div>
+                            <div class="col-md-2"><button type="submit" class="btn-search btn btn-primary">Search</button></div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+        </div>
+
+        <div class="panel-body">
+            @if (User.IsInRole("Admin") || User.IsInRole("Data Entry"))
+            {
+                <p class="pull-left">
+                    @Html.ActionLink("បង្កើតថ្មី", "Create", "Mandate", new { @Class = "new" })
+                </p>
+            }
+            <div class="row">
+                <table class="table table-responsive table-bordered" id="mandateTable">
+                    <thead>
+                        <tr>
+                            <td>លរ</td>
+                            <td>កាលបរិច្ឆេទ<br/>អាណត្តិ</td>
+                            <td>លេខអាណត្តិ</td>
+                            <td style="width: 10% !important;">អង្គភាព ឬអាជ្ញាធរ</td>
+                            <td>អនុគណនី</td>
+                            <td>បរិយាយ</td>
+                            <td>ចំនួនទឹកប្រាក់</td>
+                            <td>ជម្រើស</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @{
+                        foreach (var item in Model)
+                        {
+                            string []backgroundColor = { "#EF9A9A", "#CE93D8", "#69F0AE","#FFF"};
+                            int createdIndex=3;
+                            if (item.created_date.Year == DateTime.Now.Year && item.created_date.Month == DateTime.Now.Month)
+                            {
+                                if (item.created_date.Day == DateTime.Now.Day) { createdIndex = 0;}
+                                else if (item.created_date.Day == DateTime.Now.Day - 1) { createdIndex = 1; }
+                                else if (item.created_date.Day == DateTime.Now.Day - 2) { createdIndex = 2; }
+                                else { createdIndex = 3; }
+                            }
+
+                            <tr style="background-color: @backgroundColor[createdIndex]">
+                                <td>@item.Mandate_id</td>
+                                <td style="width: 80px !important;">
+                                    @(item.Mandate_date != null ? item.Mandate_date.Value.ToString("dd-MM-yyyy") : "")
+                                </td>
+                                <td>@item.Mandate_no</td>
+                                @*<td>@item.tbl_Unit.Unit_name</td>*@
+                                <td>@db.tbl_Responsible_Unit.Find(item.Unit_id).responsible_unit_name</td>
+                                <td class="text-right">
+                                    @{
+                                        foreach (var acccount in item.Acc_no)
+                                        {
+                                            @:@acccount <br />
+                                        }
+                                    }
+                                </td>
+                                <td>@item.Mandate_desc</td>
+                                <td class="text-right budget">
+                                    @{
+                                        foreach (var amount in item.Mandate_amount)
+                                        {
+                                            @:<span> @string.Format("{0:0,0}", @amount) ៛ </span> <br />
+                                        }
+                                    }
+                                </td>
+                                <td class="text-center">
+                                    @{
+                                        if (User.IsInRole("Admin") || User.IsInRole("Data Entry"))
+                                        {
+                                            @Html.ActionLink(" ", "Edit", new { id = item.Mandate_id }, new { @class = "glyphicon glyphicon-pencil" })
+                                            @:&nbsp;
+                                        }
+                                        @Html.ActionLink(" ", "Details", new { @id = item.Mandate_id }, new { @class = "glyphicon glyphicon-eye-open" })@:&nbsp;
+                                        if (User.IsInRole("Admin"))
+                                        {
+                                            @Html.ActionLink(" ", "DeleteConfirmed", new { id = item.Mandate_id }, new { @class = "glyphicon glyphicon-trash", onclick = "return onDelete()" })
+                                        }
+                                        @Html.ActionLink("បោះពុម្ពដីកា", "PublishedMandate", new { id = item.Mandate_id })
+                                        <br />
+                                        @Html.ActionLink("បោះពុម្ពអាណត្តិ", "MandatePayment", new { id = item.Mandate_id })
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/Content/assets/numeral/numeral.js"></script>
+    <script>
+        var budgets = $(".budget span");
+        for (var i = 0; i < budgets.length; i++) {
+            budgets[i].textContent = numeral(budgets[i].textContent).format('0,0').split(',').join('.') + " ៛";
+        }
+
+
+        $(function () {
+            var table = $('#mandateTable').DataTable(
+                {
+                    "order": [[0, "desc"]],
+                    "bFilter": false,
+                    "oLanguage": {
+                        "sSearch": "ស្វែងរក"
+                    },
+                    sPaginationType: "full_numbers",
+                    "bLengthChange": false,
+                    "fnDrawCallback": function (oSettings) {
+                        var totalRows = parseInt(oSettings.aiDisplay.length);
+                        //var rowPerPage = parseInt(oSettings.nTBody.children.length);
+                        reversedPaginationNumbers(totalRows, 10);
+                    }
+                }
+            );
+
+            function reversedPaginationNumbers(totalRowsParam, displayRowsParams) {
+                var totalRows = totalRowsParam;
+                var displayRows = displayRowsParams;
+                var paginations = $(".paginate_button a");
+                var totalPaginations = Math.ceil(totalRows / displayRows);
+                for (var i = 0; i < paginations.length; i++) {
+                    var pageNumber = paginations[i].textContent;
+                    if (parseInt(pageNumber)) {
+                        paginations[i].textContent = totalPaginations + 1 - parseInt(pageNumber);
+                    }
+                }
+
+            }
+        });
+
+    </script>
+
+}
+

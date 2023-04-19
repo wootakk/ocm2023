@@ -1,0 +1,488 @@
+﻿@model ISFMOCM_Project.Models.ReportMasterModel
+@{
+    ViewBag.Title = "MasterReport";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/Content/Site.css" type="text/css" rel="stylesheet" />
+<h2>MasterReport</h2>
+@using (Html.BeginForm("MasterReport", "Report",FormMethod.Post))
+{
+    <div class="bs-example">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="row">
+                    <h4 class="pull-left">ReportMaster</h4>
+                    @Html.ActionLink("ត្រលប់", "ListReport", "Report", new { @class = "pull-right btn btn-default" })
+                </div>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h3 class="text-center">Expand</h3>
+                                <input type="radio" value="1" name="selectedOption" /> សរុបធានាចំណាយតាមជំពូក<br />
+                                <input type="radio" value="2" name="selectedOption" /> ធានាចំណាយលំអិត<br />
+                                <input type="radio" value="3" name="selectedOption" /> បញ្ជីលំអិតនៃសលាកប័ត្រ<br />
+                                <input type="radio" value="4" name="selectedOption" /> លំអិតសលាកប័ត្រតាមអនុគណនី
+                                <input type="text" name="AccFCV" /><br />
+                                <input type="radio" value="5" name="selectedOption" /> លំអិតសលាកប័ត្រតាមខែ<br />
+                            </div>
+                            <div class="col-md-6">
+                                <h3 class="text-center">Mandate</h3>
+                                <input type="radio" value="6" name="selectedOption" /> សរុបអាណត្តិតាមជំពូក<br />
+                                <input type="radio" value="7" name="selectedOption" /> ចំណាយលំអិតនៃអាណត្តិកិច្ច<br />
+                                <input type="radio" value="8" name="selectedOption" /> បញ្ជីលំអិតនៃអាណត្តិកិច្ច<br />
+                                <input type="radio" value="9" name="selectedOption" /> លំអិតអាណត្តិតាមអនុគណនី
+                                <input type="text" name="AccMandate" /><br />
+                                <input type="radio" value="10" name="selectedOption" /> លំអិតអាណត្តិតាមខែ<br />
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4"></div>
+                            <div class="col-md-4">
+                                <input type="radio" value="11" name="selectedOption" /> ប្រៀបធៀបធានាចំណាយ និងអាណត្តិបើកប្រាក់លំអិតតាមអនុគណនី<br />
+                                <input type="radio" value="12" name="selectedOption" /> ប្រៀបធៀបធានាចំណាយ និងអាណត្តិបើកប្រាក់តាមជំពូក<br />
+                                <input type="radio" value="13" name="selectedOption" /> របាយការណ៍អាណត្តិបើកប្រាក់តាម អាជ្ញាធរ ឬគ្រឹះស្ថាននានា<br />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="col-md-6">
+                                    <input type="radio" value="14" name="selectedOption" /> ប្រាក់បៀវត្សរិ៍<br />
+                                    <input type="radio" value="15" name="selectedOption" /> ប្រាក់ឧបត្ថម្ភ<br />
+                                    <input type="radio" value="16" name="selectedOption" /> បង់វិភាគទាន<br />
+                                </div>
+                                <div class="col-md-6">
+                                    <input type="radio" value="17" name="selectedOption" /> អគ្គិសនី<br />
+                                    <input type="radio" value="18" name="selectedOption" /> ទឹក<br />
+                                    <input type="radio" value="19" name="selectedOption" /> បុរេប្រទាន<br />
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <input type="radio" value="20" name="selectedOption" /> រជ្ជទេយ្យបុរេប្រទាន<br />
+                                <label class="control-label col-md-2">Unit</label>
+                                <div class="col-md-10">
+                                    @Html.DropDownList("Unit_id", null, htmlAttributes: new { @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                @Html.LabelFor(model => model.StartDate, htmlAttributes: new { @class = "control-label " })
+                            </div>
+                            <div class="col-md-8">
+                                @Html.EditorFor(model => model.StartDate, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.StartDate, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                @Html.LabelFor(model => model.EndDate, htmlAttributes: new { @class = "control-label " })
+                            </div>
+                            <div class="col-md-8">
+                                @Html.EditorFor(model => model.EndDate, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.EndDate, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="row">
+                            <label class="control-label col-md-2">Sub Account</label>
+                            <div class="col-md-10">
+                                @Html.DropDownList("SubAccount_id", null,"Choose SubAccount", htmlAttributes: new { @class = "form-control" })
+                            </div>
+                            <label class="control-label col-md-2">Chapter</label>
+                            <div class="col-md-10">
+                                @Html.DropDownList("Chapter_id", null,"Choose Chapter", htmlAttributes: new { @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-7">
+                                <div class="col-md-4">
+                                    @Html.LabelFor(model => model.AccTotalBudget, htmlAttributes: new { @class = "control-label " })
+                                </div>
+                                <div class="col-md-8">
+                                    @Html.EditorFor(model => model.AccTotalBudget, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.AccTotalBudget, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="col-md-4">
+                                    @Html.LabelFor(model => model.AccTotalTransfer, htmlAttributes: new { @class = "control-label " })
+                                </div>
+                                <div class="col-md-8">
+                                    @Html.EditorFor(model => model.AccTotalTransfer, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.AccTotalTransfer, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="col-md-4">
+                                    @Html.LabelFor(model => model.AccNewBudget, htmlAttributes: new { @class = "control-label " })
+                                </div>
+                                <div class="col-md-8">
+                                    @Html.EditorFor(model => model.AccNewBudget, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.AccNewBudget, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="col-md-4">
+                                    @Html.LabelFor(model => model.AccFCVLM, htmlAttributes: new { @class = "control-label " })
+                                </div>
+                                <div class="col-md-8">
+                                    @Html.EditorFor(model => model.AccFCVLM, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.AccFCVLM, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="col-md-4">
+                                    @Html.LabelFor(model => model.AccFCVLMPercent, htmlAttributes: new { @class = "control-label " })
+                                </div>
+                                <div class="col-md-8">
+                                    @Html.EditorFor(model => model.AccFCVLMPercent, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.AccFCVLMPercent, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="col-md-4">
+                                    @Html.LabelFor(model => model.AccFCVLMAvailable, htmlAttributes: new { @class = "control-label " })
+                                </div>
+                                <div class="col-md-8">
+                                    @Html.EditorFor(model => model.AccFCVLMAvailable, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.AccFCVLMAvailable, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="col-md-4">
+                                    @Html.LabelFor(model => model.AccTotalFCVMEF, htmlAttributes: new { @class = "control-label " })
+                                </div>
+                                <div class="col-md-8">
+                                    @Html.EditorFor(model => model.AccTotalFCVMEF, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.AccTotalFCVMEF, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="col-md-4">
+                                    @Html.LabelFor(model => model.AccTotalFCVMEFPercent, htmlAttributes: new { @class = "control-label " })
+                                </div>
+                                <div class="col-md-8">
+                                    @Html.EditorFor(model => model.AccTotalFCVMEFPercent, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.AccTotalFCVMEFPercent, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="col-md-4">
+                                    @Html.LabelFor(model => model.AccTotalFCVMEFAvailable, htmlAttributes: new { @class = "control-label " })
+                                </div>
+                                <div class="col-md-8">
+                                    @Html.EditorFor(model => model.AccTotalFCVMEFAvailable, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.AccTotalFCVMEFAvailable, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="col-md-4">
+                                    @Html.LabelFor(model => model.AccTotalMandateLM, htmlAttributes: new { @class = "control-label " })
+                                </div>
+                                <div class="col-md-8">
+                                    @Html.EditorFor(model => model.AccTotalMandateLM, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.AccTotalMandateLM, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="col-md-4">
+                                    @Html.LabelFor(model => model.AccTotalMandateLMPercent, htmlAttributes: new { @class = "control-label " })
+                                </div>
+                                <div class="col-md-8">
+                                    @Html.EditorFor(model => model.AccTotalMandateLMPercent, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.AccTotalMandateLMPercent, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="col-md-4">
+                                    @Html.LabelFor(model => model.AccTotalMandateLMAvailable, htmlAttributes: new { @class = "control-label " })
+                                </div>
+                                <div class="col-md-8">
+                                    @Html.EditorFor(model => model.AccTotalMandateLMAvailable, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.AccTotalMandateLMAvailable, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="col-md-4">
+                                    @Html.LabelFor(model => model.AccTotalMandateMEF, htmlAttributes: new { @class = "control-label " })
+                                </div>
+                                <div class="col-md-8">
+                                    @Html.EditorFor(model => model.AccTotalMandateMEF, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.AccTotalMandateMEF, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="col-md-4">
+                                    @Html.LabelFor(model => model.AccTotalMandateMEFPercent, htmlAttributes: new { @class = "control-label " })
+                                </div>
+                                <div class="col-md-8">
+                                    @Html.EditorFor(model => model.AccTotalMandateMEFPercent, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.AccTotalMandateMEFPercent, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="col-md-4">
+                                    @Html.LabelFor(model => model.AccTotalMandateMEFAvailable, htmlAttributes: new { @class = "control-label " })
+                                </div>
+                                <div class="col-md-8">
+                                    @Html.EditorFor(model => model.AccTotalMandateMEFAvailable, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.AccTotalMandateMEFAvailable, "", new { @class = "text-danger" })
+                                </div>
+
+
+                            </div>
+
+                            <div class="col-md-5">
+
+                                <div class="col-md-8">
+                                    @Html.EditorFor(model => model.ChapterTotalBudget, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.ChapterTotalBudget, "", new { @class = "text-danger" })
+                                </div>
+
+                                <div class="col-md-8">
+                                    @Html.EditorFor(model => model.ChapterTotalTransfer, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.ChapterTotalTransfer, "", new { @class = "text-danger" })
+                                </div>
+
+                                <div class="col-md-8">
+                                    @Html.EditorFor(model => model.ChapterNewBudget, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.ChapterNewBudget, "", new { @class = "text-danger" })
+                                </div>
+
+                                <div class="col-md-8">
+                                    @Html.EditorFor(model => model.ChapterFCVLM, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.ChapterFCVLM, "", new { @class = "text-danger" })
+                                </div>
+
+                                <div class="col-md-8">
+                                    @Html.EditorFor(model => model.ChapterFCVLMPercent, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.ChapterFCVLMPercent, "", new { @class = "text-danger" })
+                                </div>
+
+                                <div class="col-md-8">
+                                    @Html.EditorFor(model => model.ChapterFCVLMAvailable, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.ChapterFCVLMAvailable, "", new { @class = "text-danger" })
+                                </div>
+
+                                <div class="col-md-8">
+                                    @Html.EditorFor(model => model.ChapterTotalFCVMEF, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.ChapterTotalFCVMEF, "", new { @class = "text-danger" })
+                                </div>
+
+                                <div class="col-md-8">
+                                    @Html.EditorFor(model => model.ChapterTotalFCVMEFPercent, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.ChapterTotalFCVMEFPercent, "", new { @class = "text-danger" })
+                                </div>
+
+                                <div class="col-md-8">
+                                    @Html.EditorFor(model => model.ChapterTotalFCVMEFAvailable, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.ChapterTotalFCVMEFAvailable, "", new { @class = "text-danger" })
+                                </div>
+
+                                <div class="col-md-8">
+                                    @Html.EditorFor(model => model.ChapterTotalMandateLM, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.ChapterTotalMandateLM, "", new { @class = "text-danger" })
+                                </div>
+
+                                <div class="col-md-8">
+                                    @Html.EditorFor(model => model.ChapterTotalMandateLMPercent, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.ChapterTotalMandateLMPercent, "", new { @class = "text-danger" })
+                                </div>
+
+                                <div class="col-md-8">
+                                    @Html.EditorFor(model => model.ChapterTotalMandateLMAvailable, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.ChapterTotalMandateLMAvailable, "", new { @class = "text-danger" })
+                                </div>
+
+                                <div class="col-md-8">
+                                    @Html.EditorFor(model => model.ChapterTotalMandateMEF, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.ChapterTotalMandateMEF, "", new { @class = "text-danger" })
+                                </div>
+
+                                <div class="col-md-8">
+                                    @Html.EditorFor(model => model.ChapterTotalMandateMEFPercent, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.ChapterTotalMandateMEFPercent, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="col-md-8">
+                                    @Html.EditorFor(model => model.ChapterTotalMandateMEFAvailable, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.ChapterTotalMandateMEFAvailable, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <button type="submit" class="btn btn-primary">Open</button>
+            </div>
+        </div>
+    </div>
+}
+
+
+<script src="~/Scripts/jquery-1.12.4.js"></script>
+@Scripts.Render("~/bundles/jqueryui")
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.1/moment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.7.14/js/bootstrap-datetimepicker.min.js"></script>
+<script src="~/Scripts/ReportScript.js"></script>
+<script>
+
+    $("#SubAccount_id").change(function () {
+        QueryAccountByAccount(this.value);
+    });
+
+    $("#Chapter_id").change(function () {
+        QueryAccountByChapter(this.value);
+    });
+
+    function QueryAccountByAccount(AccNO) {
+        var AccFCVLMPercent;
+        var AccTotalFCVMEFPercent;
+        var AccTotalMandateLMPercent;
+        var AccTotalMandateMEFPercent;
+
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("GetReportMasterInfomationByAccount")',
+            contentType: "application/json; charset=utf-8",
+            dataType: 'json',
+            data: { AccNO: AccNO },
+            success: function (result) {
+                $("#AccTotalBudget").val(result.AccTotalBudget);
+                $("#AccTotalTransfer").val(result.AccTotalTransfer);
+                $("#AccNewBudget").val(result.AccNewBudget);
+                $("#AccFCVLM").val(result.AccFCVLM);
+                $("#AccFCVLMPercent").val(ConverToPercentage(result.AccFCVLMPercent));
+                $("#AccFCVLMAvailable").val(result.AccFCVLMAvailable);
+                $("#AccTotalFCVMEF").val(result.AccTotalFCVMEF);
+                $("#AccTotalFCVMEFPercent").val(ConverToPercentage(result.AccTotalFCVMEFPercent));
+                $("#AccTotalFCVMEFAvailable").val(result.AccTotalFCVMEFAvailable);
+                $("#AccTotalMandateLM").val(result.AccTotalMandateLM);
+                $("#AccTotalMandateLMPercent").val(ConverToPercentage(result.AccTotalMandateLMPercent));
+                $("#AccTotalMandateLMAvailable").val(result.AccTotalMandateLMAvailable);
+                $("#AccTotalMandateMEF").val(result.AccTotalMandateMEF);
+                $("#AccTotalMandateMEFPercent").val(ConverToPercentage(result.AccTotalMandateMEFPercent));
+                $("#AccTotalMandateMEFAvailable").val(result.AccTotalMandateMEFAvailable);
+
+                AccFCVLMPercent = result.AccFCVLMPercent;
+                AccTotalFCVMEFPercent = result.AccTotalFCVMEFPercent;
+                AccTotalMandateLMPercent = result.AccTotalMandateLMPercent;
+                AccTotalMandateMEFPercent = result.AccTotalMandateMEFPercent;
+            },
+            error: function (result) {
+                $("#AccTotalBudget").val("");
+                $("#AccTotalTransfer").val("");
+                $("#AccNewBudget").val("");
+                $("#AccFCVLM").val("");
+                $("#AccFCVLMPercent").val("");
+                $("#AccFCVLMAvailable").val("");
+                $("#AccTotalFCVMEF").val("");
+                $("#AccTotalFCVMEFPercent").val("");
+                $("#AccTotalFCVMEFAvailable").val("");
+                $("#AccTotalMandateLM").val("");
+                $("#AccTotalMandateLMPercent").val("");
+                $("#AccTotalMandateLMAvailable").val("");
+                $("#AccTotalMandateMEF").val("");
+                $("#AccTotalMandateMEFPercent").val("");
+                $("#AccTotalMandateMEFAvailable").val("");
+            }
+        });
+
+        $("#AccFCVLMPercent").click(function () {
+            this.value = AccFCVLMPercent;
+        });
+        $("#AccFCVLMPercent").focusout(function(){
+            this.value = ConverToPercentage(AccFCVLMPercent);
+        });
+
+        $("#AccTotalFCVMEFPercent").click(function(){
+            this.value = AccTotalFCVMEFPercent;
+        });
+        $("#AccTotalFCVMEFPercent").focusout(function(){
+            this.value = ConverToPercentage(AccTotalFCVMEFPercent);
+        });
+
+        $("#AccTotalMandateLMPercent").click(function () {
+            this.value = AccTotalMandateLMPercent;
+        });
+        $("#AccTotalMandateLMPercent").focusout(function () {
+            this.value = ConverToPercentage(AccTotalMandateLMPercent);
+        });
+
+        $("#AccTotalMandateMEFPercent").click(function(){
+            this.value = AccTotalMandateMEFPercent;
+        });
+        $("#AccTotalMandateMEFPercent").focusout(function(){
+            this.value = ConverToPercentage(AccTotalMandateMEFPercent);
+        });
+
+
+    }
+
+    function QueryAccountByChapter(ChapterNO) {
+        var ChapterFCVLMPercent;
+        var ChapterTotalFCVMEFPercent;
+        var ChapterTotalMandateLMPercent;
+        var ChapterTotalMandateMEFPercent;
+
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("GetReportMasterInfomationByChapter")',
+            contentType: "application/json; charset=utf-8",
+            dataType: 'json',
+            data: { ChapterNO: ChapterNO },
+            success: function (result) {
+                $("#ChapterTotalBudget").val(result.ChapterTotalBudget);
+                $("#ChapterTotalTransfer").val(result.ChapterTotalTransfer);
+                $("#ChapterNewBudget").val(result.ChapterNewBudget);
+                $("#ChapterFCVLM").val(result.ChapterFCVLM);
+                $("#ChapterFCVLMPercent").val(ConverToPercentage(result.ChapterFCVLMPercent));
+                $("#ChapterFCVLMAvailable").val(result.ChapterFCVLMAvailable);
+                $("#ChapterTotalFCVMEF").val(result.ChapterTotalFCVMEF);
+                $("#ChapterTotalFCVMEFPercent").val(ConverToPercentage(result.ChapterTotalFCVMEFPercent));
+                $("#ChapterTotalFCVMEFAvailable").val(result.ChapterTotalFCVMEFAvailable);
+                $("#ChapterTotalMandateLM").val(result.ChapterTotalMandateLM);
+                $("#ChapterTotalMandateLMPercent").val(ConverToPercentage(result.ChapterTotalMandateLMPercent));
+                $("#ChapterTotalMandateLMAvailable").val(result.ChapterTotalMandateLMAvailable);
+                $("#ChapterTotalMandateMEF").val(result.ChapterTotalMandateMEF);
+                $("#ChapterTotalMandateMEFPercent").val(ConverToPercentage(result.ChapterTotalMandateMEFPercent));
+                $("#ChapterTotalMandateMEFAvailable").val(result.ChapterTotalMandateMEFAvailable);
+
+                ChapterFCVLMPercent = result.ChapterFCVLMPercent;
+                ChapterTotalFCVMEFPercent = result.ChapterTotalFCVMEFPercent;
+                ChapterTotalMandateLMPercent = result.ChapterTotalMandateLMPercent;
+                ChapterTotalMandateMEFPercent = result.ChapterTotalMandateMEFPercent;
+            },
+            error: function (result) {
+                $("#ChapterTotalBudget").val("");
+                $("#ChapterTotalTransfer").val("");
+                $("#ChapterNewBudget").val("");
+                $("#ChapterFCVLM").val("");
+                $("#ChapterFCVLMPercent").val("");
+                $("#ChapterFCVLMAvailable").val("");
+                $("#ChapterTotalFCVMEF").val("");
+                $("#ChapterTotalFCVMEFPercent").val("");
+                $("#ChapterTotalFCVMEFAvailable").val("");
+                $("#ChapterTotalMandateLM").val("");
+                $("#ChapterTotalMandateLMPercent").val("");
+                $("#ChapterTotalMandateLMAvailable").val("");
+                $("#ChapterTotalMandateMEF").val("");
+                $("#ChapterTotalMandateMEFPercent").val("");
+                $("#ChapterTotalMandateMEFAvailable").val("");
+            }   
+        });
+
+        $("#ChapterFCVLMPercent").click(function () {
+            this.value = ChapterFCVLMPercent;
+        });
+        $("#ChapterFCVLMPercent").focusout(function () {
+            this.value = ConverToPercentage(ChapterFCVLMPercent);
+        });
+
+        $("#ChapterTotalFCVMEFPercent").click(function () {
+            this.value = ChapterTotalFCVMEFPercent;
+        });
+        $("#ChapterTotalFCVMEFPercent").focusout(function () {
+            this.value = ConverToPercentage(ChapterTotalFCVMEFPercent);
+        });
+
+        $("#ChapterTotalMandateLMPercent").click(function () {
+            this.value = ChapterTotalMandateLMPercent;
+        });
+        $("#ChapterTotalMandateLMPercent").focusout(function () {
+            this.value = ConverToPercentage(ChapterTotalMandateLMPercent);
+        });
+
+        $("#ChapterTotalMandateMEFPercent").click(function () {
+            this.value = ChapterTotalMandateMEFPercent;
+        });
+        $("#ChapterTotalMandateMEFPercent").focusout(function () {
+            this.value = ConverToPercentage(ChapterTotalMandateMEFPercent);
+        });
+
+    }
+
+    function ConverToPercentage(number) {
+        return ((Math.round(number * 100)) + "%");
+    }
+</script>

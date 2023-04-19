@@ -1,0 +1,73 @@
+﻿@using ReportViewerForMvc;
+@{
+    ViewBag.Title = "RPToalFCVCompareToMandate";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+<style>
+    .container {
+        padding-right: 0;
+        padding-left: 0;
+        margin-right: auto;
+        margin-left: auto;
+        width: 100% !important;
+    }
+</style>
+<br />
+<br />
+<div class="form-horizontal">
+    <div class="bs-example">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="row">
+
+                    @using (Html.BeginForm("RPToalFCVCompareToMandate", "Report", FormMethod.Get))
+                    {
+                        <div class="col-lg-12">
+                            <div class="col-lg-4">
+                            </div>
+                            <div class="col-lg-8 right">
+                                <div class="col-md-4"></div>
+                                @*<div class="col-md-3"><input type="text" id="date" name="date" placeholder="កាលបរិច្ឋេទ" class="form-control" /></div>*@
+                                <select name="date" class="form-control col-md-3">
+                                    <option>ជ្រើសរើសខែ</option>
+                                    <option value="1">មករា</option>
+                                    <option value="2">កុម្ភះ</option>
+                                    <option value="3">មិនា</option>
+                                    <option value="4">មេសា</option>
+                                    <option value="5">ឧសភា</option>
+                                    <option value="6">មិថុនា</option>
+                                    <option value="7">កក្កដា</option>
+                                    <option value="8">សីហា</option>
+                                    <option value="9">កញ្ញា</option>
+                                    <option value="10">តុលា</option>
+                                    <option value="11">វិច្ឆិកា</option>
+                                    <option value="12">ធ្នូ</option>
+                                </select>
+                                <div class="col-md-2"><button type="submit" class="btn-search btn btn-primary">Search</button></div>
+                                @Html.ActionLink("ត្រលប់", "ListReport", "Report", new { @class = "btn btn-primary pull-right btn-default" })
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="panel-body">
+                <div class="text-center">
+                    @Html.ReportViewer(ViewBag.ReportViewer as Microsoft.Reporting.WebForms.ReportViewer, htmlAttributes: new { @style = "border: inset; padding: 0; margin: 0; height: 8.27in !important; width: 11.69in !important; " })
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script src="~/Scripts/moment.js"></script>
+    <script src="~/Scripts/bootstrap-datetimepicker.js"></script>
+    <script src="~/Scripts/chosen.jquery.min.js"></script>
+    <script>
+        $('#date').datetimepicker({
+            format: 'DD-MM-YYYY'
+        });
+    </script>
+}

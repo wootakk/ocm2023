@@ -1,0 +1,98 @@
+﻿@model IEnumerable<ISFMOCM_Project.Models.UnitModel>
+
+@{
+    ViewBag.Title = "អង្គភាព ឬអាជ្ញាធរ";
+}
+<style>
+    table tr td:last-child {
+        width: 85px;
+    }
+
+    p {
+        padding: 0;
+    }
+</style>
+<h2>Index</h2>
+<div class="bs-example">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4>អង្គភាព ឬអាជ្ញាធរ</h4>
+        </div>
+
+        <div class="panel-body">
+
+            <p class="pull-left">
+                @Html.ActionLink("បង្កើតថ្មី", "Create","Unit",new {@Class="new"})
+            </p>
+
+            @{ WebGrid gridProjects = new WebGrid(Model, rowsPerPage: 250);}
+
+            @gridProjects.GetHtml(
+          fillEmptyRows: false,
+          mode: WebGridPagerModes.All,
+          firstText: "<< First",
+          nextText: "Next >",
+          previousText: "< Previous",
+          lastText: "Last >>",
+          tableStyle: "table table-bordered",
+          footerStyle: "text-center",
+          columns: new[]{
+             gridProjects.Column("Unit_id","លរ",style:"width-20-per font-12"),
+             gridProjects.Column("Unit_name","ឈ្មោះអង្គភាព ឬអាជ្ញាធរ",style:"width-20-per font-12"),
+             gridProjects.Column("Unit_desc","ពណ៌នា",style:"width-10-per font-12"),
+             gridProjects.Column(header:"ជម្រើស",style:"text-center p0 width-10-per font-12",format:(item) =>  new HtmlString(
+                 (
+                 (User.IsInRole("Admin") ?  Html.ActionLink("    ", "Edit", new { id = item.Unit_id}, new{@class="glyphicon glyphicon-pencil gray-icon" }).ToHtmlString()
+
+                                         +" " + "|" + " " +
+                                           Html.ActionLink("    ", "Details", new { id = item.Unit_id}, new{@class="glyphicon glyphicon-eye-open gray-icon" }).ToHtmlString()
+
+                                         +" " + "|" + " " +
+
+                                         Html.ActionLink("    ", "Delete", new { id = item.Unit_id}, new{@class="glyphicon glyphicon-trash gray-icon",onclick="return onDelete()" }).ToHtmlString()
+                                         :
+                                          Html.ActionLink("    ", "Edit", new { id = item.Unit_id}, new{@class="glyphicon glyphicon-pencil gray-icon" }).ToHtmlString()
+
+                                         +" " + "|" + " " +
+                                           Html.ActionLink("    ", "Details", new { id = item.Unit_id}, new{@class="glyphicon glyphicon-eye-open gray-icon" }).ToHtmlString()
+                )
+                )
+                )
+                 )
+
+          }
+          )
+
+
+        </div>
+    </div>
+</div>
+
+@*<table class="table table-bordered">
+        <tr class="bg-warning">
+            <th>
+                @Html.DisplayNameFor(model => model.unit_name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.unit_desc)
+            </th>
+            <th>ជម្រើស</th>
+        </tr>
+
+    @foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.unit_name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.unit_desc)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id=item.unit_id }) |
+                @Html.ActionLink("Details", "Details", new { id=item.unit_id }) |
+                @Html.ActionLink("Delete", "Delete", new { id=item.unit_id })
+            </td>
+        </tr>
+    }
+
+    </table>*@

@@ -1,0 +1,22 @@
+﻿/*iframe{
+    border: inset;
+    padding: 0;
+    margin: 0;
+    width: 8.27in !important; 
+    height: 11.69in !important; 
+}*/
+
+iframe #vertical{
+    border: inset;
+    padding: 0;
+    margin: 0;
+    width: 8.27in !important; 
+    height: 11.69in !important; 
+}
+iframe #horizontal{    
+    border: inset;
+    padding: 0;
+    margin: 0;
+    height: 8.27in !important; 
+    width: 11.69in !important;
+}

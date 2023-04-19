@@ -1,0 +1,61 @@
+﻿@model ISFMOCM_Project.Models.InitialBudgetModel
+
+<link href="~/Content/Site.css" type="text/css" rel="stylesheet" />
+@{
+    ViewBag.Title = "បង្កើតឥណទានអនុម័តដើមឆ្នាំ";
+}
+<link href="~/Content/assets/choosen/chosen.min.css" rel="stylesheet" />
+
+<h2>Create</h2>
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <div class="form-horizontal">
+        <div class="bs-example">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4>បង្កើតឥណទានអនុម័តដើមឆ្នាំ</h4>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-2">
+                            @Html.LabelFor(model => model.acc_no, htmlAttributes: new { @class = "control-label" })<strong class="red"> *</strong>:
+                        </div>
+                        <div class="col-md-10">
+                            @* @Html.DropDownList("acc_no", (IEnumerable<SelectListItem>)ViewData["AccountList"], new { id = "acc_no", @class = "form-control" })*@
+                            @Html.DropDownListFor(model => model.acc_no, null,"Select", new { id = "acc_no", @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.acc_no, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-2">
+
+                            @Html.LabelFor(model => model.IB_budget, htmlAttributes: new { @class = "control-label" })<strong class="red"> *</strong>:
+                        </div>
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.IB_budget, new { htmlAttributes = new { @class = "form-control number " } })
+                            @Html.ValidationMessageFor(model => model.IB_budget, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            @Html.ActionLink("ត្រលប់", "Index", "IB", new { @class = "btn btn-default" })
+                            <input type="submit" value="រក្សាទុក" class="btn btn-default" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    <script src="~/Scripts/chosen.jquery.min.js"></script>
+    <script src="~/Scripts/IB.js"></script>
+    <script>
+        $('#acc_no').chosen({
+
+        });
+    </script>
+}

@@ -1,0 +1,118 @@
+﻿@using ISFMOCM_Project.Function
+
+<link href="~/Content/Site.css" type="text/css" rel="stylesheet" />
+<link href="~/Content/assets/choosen/chosen.min.css" type="text/css" rel="stylesheet" />
+
+@{
+    ViewBag.Title = "តារាងរបាយការណ៍";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<br />
+<br />
+<br />
+<style>
+    ul.list li {
+        float: none !important;
+        text-align: center;
+        border: 1px solid #4896b9;
+        margin: 1px;
+        border-radius: 5px;
+    }
+
+        ul.list li a {
+            padding-top: 15px;
+            padding-bottom: 15px;
+            font-size: 20px !important;
+            text-align: center;
+            line-height: 28px;
+        }
+
+    .navbar-nav > li > a {
+        text-align: center;
+    }
+
+    p {
+        padding: 20px 0 0 0;
+    }
+    /*.list{
+        padding-top:28px;
+    }*/
+</style>
+<div class="form-horizontal">
+
+    <div class="bs-example">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="row">
+                    <h3 class="report">ត្រួតពិនិត្យរបាយការណ៍</h3>
+                </div>
+            </div>
+            <div class="panel-body">
+                <h3 class=" col-md-12 text-center"></h3>
+                <div class="list">
+                    <div class="row">
+                        <div class="col-md-6 col-md-offset-3">
+                            <ul class="list nav navbar-nav">
+                                    @if (User.IsInRole("Admin") || User.IsInRole("Cabinate"))
+                                    {
+                                        <li>@Html.ActionLink("របាយការណ៍តាមដាន ឥណទានរជ្ជទេយ្យបុរេប្រទាន និងឥណទានធម្មតា", "AdvancedCreditAndNormalCreditReport", new { st = "", et = "" })</li>
+
+                                        <li>@Html.ActionLink("របាយការណ៍អាណត្តិបើកប្រាក់បៀវត្ស", "SalaryReport", new { st = "", et = "" })</li>
+                                        <li>@Html.ActionLink("របាយការណ៍ប្រៀបធៀបសលាកប័ត្រចំណាយ និងអាណត្តិបើកប្រាក់ (តាមជំពូក នៃមាតិកាថវិកា)", "FcvCompareMandateByChapter", new { st = "", et = "" })</li>
+                                        <li>@Html.ActionLink("របាយការណ៍ប្រៀបធៀបសលាកប័ត្រចំណាយ និងអាណត្តិបើកប្រាក់ (តាមអនុគណនី នៃមាតិកាថវិកា)", "FcvCompareMandateByAccounts", new { st = "", et = "" })</li>
+                                        <li>@Html.ActionLink("របាយការណ៍សលាកប័ត្រចំណាយ", "GenericFcvReport", new { st = "", et = "", advanced = false })</li>
+                                        <li>@Html.ActionLink("របាយការណ៍អាណត្តិបើកប្រាក់", "GenericMandateReport", new { st = "", et = "", unitId = -1, type = 0 })</li>
+                                        <li>@Html.ActionLink("របាយការណ៍បុរេប្រទាន", "GenericFcvReport", new { st = "", et = "", advanced = true })</li>
+                                        <li>@Html.ActionLink("របាយការណ៍រជ្ជទេយ្យបុរេប្រទាន", "GenericMandateReport", new { st = "", et = "", unitId = 0, type = 1 })</li>
+                                        <li>@Html.ActionLink("របាយការណ៍ចំណាយថ្លៃទឹក", "GenericMandateReport", new { st = "", et = "", unitId = 0, type = 2 })</li>
+                                        <li>@Html.ActionLink("របាយការណ៍ចំណាយថ្លៃភ្លើង", "GenericMandateReport", new { st = "", et = "", unitId = 0, type = 3 })</li>
+                                        <li>@Html.ActionLink("របាយការណ៍ចំណាយប្រាក់ឧបត្ថម្ភ", "GenericMandateReport", new { st = "", et = "", unitId = 0, type = 4 })</li>
+                                        <li>@Html.ActionLink("របាយការណ៍បង់វិភាគទាន", "GenericMandateReport", new { st = "", et = "", unitId = 0, type = 5 })</li>
+
+                                    }
+                                    @if (User.IsInRole("Data Entry") || User.IsInRole("Management"))
+                                    {
+                                        <li>@Html.ActionLink("របាយការណ៍អាណត្តិបើកប្រាក់បៀវត្ស", "SalaryReport", new { st = "", et = "" })</li>
+                                        <li>@Html.ActionLink("របាយការណ៍ប្រៀបធៀបសលាកប័ត្រចំណាយ និងអាណត្តិបើកប្រាក់ (តាមជំពូក នៃមាតិកាថវិកា)", "FcvCompareMandateByChapter", new { st = "", et = "" })</li>
+                                        <li>@Html.ActionLink("របាយការណ៍ប្រៀបធៀបសលាកប័ត្រចំណាយ និងអាណត្តិបើកប្រាក់ (តាមអនុគណនី នៃមាតិកាថវិកា)", "FcvCompareMandateByAccounts", new { st = "", et = "" })</li>
+                                        <li>@Html.ActionLink("របាយការណ៍សលាកប័ត្រចំណាយ", "GenericFcvReport", new { st = "", et = "", advanced = false })</li>
+                                        <li>@Html.ActionLink("របាយការណ៍អាណត្តិបើកប្រាក់", "GenericMandateReport", new { st = "", et = "", unitId = -1, type = 0 })</li>
+                                        <li>@Html.ActionLink("របាយការណ៍បុរេប្រទាន", "GenericFcvReport", new { st = "", et = "",advanced = true })</li>
+                                        <li>@Html.ActionLink("របាយការណ៍រជ្ជទេយ្យបុរេប្រទាន", "GenericMandateReport", new { st = "", et = "", unitId = 0, type = 1 })</li>
+                                        <li>@Html.ActionLink("របាយការណ៍ចំណាយថ្លៃទឹក", "GenericMandateReport", new { st = "", et = "", unitId = 0, type = 2 })</li>
+                                        <li>@Html.ActionLink("របាយការណ៍ចំណាយថ្លៃភ្លើង", "GenericMandateReport", new { st = "", et = "", unitId = 0, type = 3 })</li>
+                                        <li>@Html.ActionLink("របាយការណ៍ចំណាយប្រាក់ឧបត្ថម្ភ", "GenericMandateReport", new { st = "", et = "", unitId = 0, type = 4 })</li>
+                                        <li>@Html.ActionLink("របាយការណ៍បង់វិភាគទាន", "GenericMandateReport", new { st = "", et = "", unitId = 0, type = 5 })</li>
+                                    }
+                                </ul>
+                                                    
+                                    @*@Html.ActionLink("របាយការណ៍តាមដាន ឥណទានរជ្ជទេយ្យបុរេប្រទាន និងឥណទានធម្មតា", "AdvancedCreditAndNormalCreditReport", new { st = "", et = "" })
+                                    @Html.ActionLink("របាយការណ៍អាណត្តិបើកប្រាក់បៀវត្ស", "SalaryReport", new { st = "", et = "" })
+                                    @Html.ActionLink("របាយការណ៍ប្រៀបធៀបសលាកប័ត្រចំណាយ និងអាណត្តិបើកប្រាក់ (តាមជំពូក នៃមាតិកាថវិកា)", "FcvCompareMandateByChapter", new { st = "", et = "" })
+                                    @Html.ActionLink("របាយការណ៍ប្រៀបធៀបសលាកប័ត្រចំណាយ និងអាណត្តិបើកប្រាក់ (តាមអនុគណនី នៃមាតិកាថវិកា)", "FcvCompareMandateByAccounts", new { st = "", et = "" })
+                                    @Html.ActionLink("របាយការណ៍សលាកប័ត្រចំណាយ", "GenericFcvReport", new { st = "", et = "", advanced = false })
+                                    @Html.ActionLink("របាយការណ៍អាណត្តិបើកប្រាក់", "GenericMandateReport", new { st = "", et = "", unitId = -1, type = 0 })
+                                    @Html.ActionLink("របាយការណ៍បុរេប្រទាន", "GenericFcvReport", new { st = "", et = "", advanced = true })
+                                    @Html.ActionLink("របាយការណ៍រជ្ជទេយ្យបុរេប្រទាន", "GenericMandateReport", new { st = "", et = "", unitId = 0, type = 1 })
+                                    @Html.ActionLink("របាយការណ៍ចំណាយថ្លៃទឹក", "GenericMandateReport", new { st = "", et = "", unitId = 0, type = 2 })
+                                    @Html.ActionLink("របាយការណ៍ចំណាយថ្លៃភ្លើង", "GenericMandateReport", new { st = "", et = "", unitId = 0, type = 3 })
+                                    @Html.ActionLink("របាយការណ៍ចំណាយប្រាក់ឧបត្ថម្ភ", "GenericMandateReport", new { st = "", et = "", unitId = 0, type = 4 })
+                                    @Html.ActionLink("របាយការណ៍បង់វិភាគទាន", "GenericMandateReport", new { st = "", et = "", unitId = 0, type = 5 })*@
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/Scripts/chosen.jquery.min.js"></script>
+}
+
+<script>
+    $(function () {
+        $('#Acc_no').chosen({});
+        $('#Unit_id').chosen({});
+    });
+</script>

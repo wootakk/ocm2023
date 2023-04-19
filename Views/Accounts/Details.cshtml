@@ -1,0 +1,64 @@
+﻿@model ISFMOCM_Project.Models.AccountModel
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>tbl_Account</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Acc_id)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Acc_id)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Acc_no)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Acc_no)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Acc_code)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Acc_code)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Acc_name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Acc_name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Acc_desc)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Acc_desc)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AccountChapter)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AccountChapter)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Acc_id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

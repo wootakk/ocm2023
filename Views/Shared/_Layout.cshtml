@@ -1,0 +1,121 @@
+﻿@using ISFMOCM_Project.Function
+<!DOCTYPE html>
+<html>
+<head>
+    @{ 
+        ISFMOCM_Project.Entity.ISFMOCM_DBEntities db = new ISFMOCM_Project.Entity.ISFMOCM_DBEntities();
+        string current_year = db.tbl_year.OrderByDescending(o => o.year).Where(s => s.active == true).Select(s => s.year).FirstOrDefault().ToString();
+    }
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@CommonClass.GetKhmerNumber(current_year) - @ViewBag.Title</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    <script src="~/Scripts/jquery-1.12.4.min.js"></script>
+    <link rel="icon" type="image/png" href="~/Content/images/ico.gif">
+    @*<link rel="stylesheet" hr
+        ef="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.7.14/css/bootstrap-datetimepicker.min.css">*@
+    <link rel="stylesheet" type="text/css" href="~/Content/assets/css/bootstrap-datetimepicker.min.css" />
+    <script src="~/Scripts/CustomValidation.js"></script>
+
+    <style type="text/css">
+        .nav > li > a {
+            position: relative;
+            display: block;
+            padding: 16px 5px;
+        }
+
+        p {
+            padding: 20px 0 0 0 !important;
+        }
+    </style>
+
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    @if (User.IsInRole("Admin") || User.IsInRole("Data Entry"))
+                    {
+                        <li>@Html.ActionLink("ទំព័រដើម", "Index", "Home")</li>
+
+                        if (User.IsInRole("Admin"))
+                        {
+                            <li>@Html.ActionLink("ឥណទានអនុម័តដើមឆ្នាំ", "ListInitialBudget", "IB")</li>
+                            <li>@Html.ActionLink("បញ្ចូលអង្គភាព", "UnitList", "Unit")</li>
+                            <li>@Html.ActionLink("បញ្ជីនិយ័តភាពថវិកា", "TransferList", "Transfer")</li>
+
+                        }
+                        <li>@Html.ActionLink("បញ្ជីសលាកប័ត្រចំណាយថវិកា", "ListFcv", "FCV")</li>
+                        <li>@Html.ActionLink("បញ្ជីអាណត្តិបើកប្រាក់", "ListMandate", "Mandate")</li>
+                        if (User.IsInRole("Admin"))
+                        {
+                            <li>@Html.ActionLink("ពិនិត្យរបាយការណ៍", "ReportMenu", "Report")</li>
+                        }
+
+                    }
+                    else if (User.IsInRole("Cabinate"))
+                    {
+                        <li>@Html.ActionLink("ទំព័រដើម", "Index", "Home")</li>
+                        <li>@Html.ActionLink("ឥណទានអនុម័តដើមឆ្នាំ", "ListInitialBudget", "IB")</li>
+                        <li>@Html.ActionLink("បញ្ជីសលាកប័ត្រចំណាយថវិកា", "ListFcv", "FCV")</li>
+                        <li>@Html.ActionLink("បញ្ជីអាណត្តិបើកប្រាក់", "ListMandate", "Mandate")</li>
+                        <li>@Html.ActionLink("ពិនិត្យរបាយការណ៍", "ReportMenu", "Report")</li>
+                        <li>@Html.ActionLink("ការចំណាយរជ្ជទេយ្យបុរេប្រទានរដ្ឋបាលរបស់ទីស្ដីការគណៈរដ្ឋមន្ត្រី", "Index", "Expense")</li>
+                    }
+                    else if (User.IsInRole("Management"))
+                    {
+                        <li>@Html.ActionLink("ទំព័រដើម", "Index", "Home")</li>
+                        <li>@Html.ActionLink("ឥណទានអនុម័តដើមឆ្នាំ", "ListInitialBudget", "IB")</li>
+                        <li>@Html.ActionLink("បញ្ជីសលាកប័ត្រចំណាយថវិកា", "ListFcv", "FCV")</li>
+                        <li>@Html.ActionLink("បញ្ជីអាណត្តិបើកប្រាក់", "ListMandate", "Mandate")</li>
+                        <li>@Html.ActionLink("ពិនិត្យរបាយការណ៍", "ReportMenu", "Report")</li>
+                    }
+                    else
+                    {
+                        <li>@Html.ActionLink("ទំព័រដើម", "Index", "Home")</li>
+                    }
+                </ul>
+                @Html.Partial("_LoginPartial")
+            </div>
+        </div>
+    </div>
+    <div class="container body-content">
+        @RenderBody()
+        <hr />
+    </div>
+
+    <footer class="navbar-fixed-bottom bg-dark">
+        <div class="container">
+            <div class="row">
+
+                <div class="col-md-6">
+                    <p class="m-0 text-center text-white">ទីស្តីការគណរដ្ឋមន្ត្រី | រក្សាសិទ្ធ &copy; &nbsp; @CommonClass.GetKhmerNumber(DateTime.Now.Year.ToString())</p>
+                </div>
+                <div class="col-md-6">
+                    <p class="f-p">
+                        កម្មវិធីនេះរៀបចំដោយៈ បូកគោ តិចណឡជី
+                    </p>
+                </div>
+            </div>
+        </div>
+        <!-- /.container -->
+    </footer>
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/lib")
+    <script src="~/Scripts/jquery.validate.unobtrusive.js"></script>
+    <script src="~/Scripts/customScript.js"></script>
+
+</body>
+</html>

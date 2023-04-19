@@ -1,0 +1,44 @@
+﻿@{
+
+    var controller = HttpContext.Current.Request.RequestContext.RouteData.Values["Controller"].ToString();
+
+    string tmpLayout = "~/Views/Shared/_LoginLayout.cshtml";
+    //string tmpLayout = "~/Views/Shared/Home.cshtml";
+    if (("Home").Equals(controller))
+    {
+        tmpLayout = "~/Views/Shared/Home.cshtml";
+    }
+    if (("Login").Equals(controller))
+    {
+        tmpLayout = "~/Views/Shared/_LoginLayout.cshtml";
+    }
+    if (("IB").Equals(controller))
+    {
+        tmpLayout = "~/Views/Shared/_Layout.cshtml";
+    }
+    else if (("Accounts").Equals(controller))
+    {
+        tmpLayout = "~/Views/Shared/_Layout.cshtml";
+    }
+    else if (("Transfer").Equals(controller))
+    {
+        tmpLayout = "~/Views/Shared/_Layout.cshtml";
+    }
+    else if (("Unit").Equals(controller))
+    {
+        tmpLayout = "~/Views/Shared/_Layout.cshtml";
+    }
+    else if (("InitialPettyCashes").Equals(controller))
+    {
+        tmpLayout = "~/Views/Shared/_Layout.cshtml";
+    }
+    else if (("FCV").Equals(controller))
+    {
+        tmpLayout = "~/Views/Shared/_Layout.cshtml";
+    }
+    else if (("Mandate").Equals(controller))
+    {
+        tmpLayout = "~/Views/Shared/_Layout.cshtml";
+    }
+    Layout = tmpLayout;
+}

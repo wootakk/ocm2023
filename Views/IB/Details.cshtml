@@ -1,0 +1,69 @@
+﻿@model ISFMOCM_Project.Models.InitialBudgetModel
+
+@{
+    ViewBag.Title = "លម្អិតឥណទានអនុម័តដើមឆ្នាំ";
+}
+
+<h2>Details</h2>
+
+<div class="form-horizontal">
+    <div class="bs-example">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4>លម្អិតឥណទានអនុម័តដើមឆ្នាំ</h4>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-2">
+                        @Html.LabelFor(model => model.acc_no, htmlAttributes: new { @class = "control-label" })
+                    </div>
+                    <div class="col-md-3 text-right">
+                        @Html.DisplayFor(model => model.acc_name)
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2">
+                        @Html.LabelFor(model => model.IB_budget, htmlAttributes: new { @class = "control-label" })
+                    </div>
+                    <div class="col-md-3 number">
+                        @Html.DisplayFor(model => model.IB_budget, new { htmlAttributes = new { @class = "form-control pull-right" } })
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2">
+                        @Html.LabelFor(model => model.Direct_Paid, htmlAttributes: new { @class = "control-label" })
+                    </div> 
+                    <div class="col-md-3 number">
+                        @Html.DisplayFor(model => model.Direct_Paid, new { htmlAttributes = new { @class = "form-control" } })
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2">
+                        @Html.LabelFor(model => model.PettyCash, htmlAttributes: new { @class = "control-label" })
+                    </div> 
+                    <div class="col-md-3 number">
+                        @Html.DisplayFor(model => model.PettyCash, new { htmlAttributes = new { @class = "form-control" } })
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        @Html.ActionLink("ត្រលប់", "Index", "IB", new { @class = "btn btn-default" })
+                        @Html.ActionLink("កែប្រែ", "Edit", new { @class = "btn btn-default", id = Model.IB_id })
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script src="~/Scripts/jquery-1.12.4.min.js"></script>
+    <script src="~/Content/assets/numeral/numeral.js"></script>
+}
+<script>
+    $(function() {
+        var budgets = $(".number");
+        for (var i = 0; i < budgets.length; i++) {
+            budgets[i].innerHTML = numeral(budgets[i].innerHTML).format('0,0').split(',').join('.') + " ៛";
+        }
+    });
+</script>

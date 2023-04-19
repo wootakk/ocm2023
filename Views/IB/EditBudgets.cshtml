@@ -1,0 +1,206 @@
+﻿@model ISFMOCM_Project.Models.InitialBudgetModel
+@using ISFMOCM_Project.Models;
+<link href="~/Content/assets/choosen/chosen.min.css" type="text/css" rel="stylesheet" />
+<style>
+    .btn-primary {
+        margin-left: 50px;
+        margin-top: -60px;
+    }
+
+@{
+    ViewBag.Title = "ឥណទានអនុម័តដើមឆ្នាំ";
+}
+    .totalSummary {
+        margin-top: -20px;
+        margin-left: 0px;
+        text-align:right;
+    }
+
+    .btib {
+        margin-left: 35px;
+    }
+    .Budget{
+        text-align:right;
+    }
+</style>
+<br />
+<br />
+<br />
+
+<div class="bs-example">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <div class="row">
+                <h3>ឥណទានអនុម័តដើមឆ្នាំ</h3>
+            </div>
+        </div>
+
+        <div class="panel-body">
+            @using (Html.BeginForm())
+            {    @Html.AntiForgeryToken()
+                <input type="hidden" id="IBYear" name="IBYear" value="@Model.IBYear"/>
+                <div class="row">
+                    <label class="col-md-3">គណនី</label>
+                    <label class="col-md-3">ឥណទានអនុម័ត</label>
+                    <label class="col-md-3">ឥណទានរជ្ជទេយ្យបុរេប្រទាន</label>
+                    <label class="col-md-3">ឥណទានធម្មតា</label>
+                </div>
+                <div id="container">
+                    @for (var i = 0; i < Model.AccoutBudgets.Count; i++)
+                    {
+                        <div class="row">
+                            @Html.HiddenFor(m => m.AccoutBudgets[i].ID, htmlAttributes: new { @Name = "IDs" })
+                            @Html.DropDownListFor(m => m.AccoutBudgets[i].Acc_no, new SelectList(ViewBag.Accounts, "Value", "Display", Model.AccoutBudgets[i].Acc_no + "," + Model.AccoutBudgets[i].Unit_id)
+                                      , htmlAttributes: new { @class = "form-control Acc_no", @Name = "ACCs" })
+                            @Html.TextBoxFor(m => m.AccoutBudgets[i].Budget, htmlAttributes: new { @class = "form-control Budget number", @Name = "BUDGETs" })
+                            @Html.TextBoxFor(m => m.AccoutBudgets[i].PettyCash, htmlAttributes: new { @class = "form-control  number", @Name = "PETTYCASHs" })
+                            @Html.TextBoxFor(m => m.AccoutBudgets[i].Direct_Paid, htmlAttributes: new { @class = "form-control number", @Name = "DIRECT_PAIDs" })
+                            <a class="btn btn-danger" id="removeRow">-</a>
+                        </div>
+                    }
+                </div>
+                <div class="row">
+                    <div class="col-md-6"></div>
+                    <div class="col-md-5"></div>
+                    <div class="col-md-1">
+                        <a id="addRow" class="btn btn-primary">+</a>
+                    </div>
+                </div>
+                <div class="row">
+                    <input type="text" class="form-control totalSummary" disabled="disabled" placeholder="សរុប" style="border-style: none; background-color: white; cursor: default; color: black"/>
+                    <input type="text" class="form-control number totalSummary" id="totalBudget" />
+                    <input type="text" class="form-control number totalSummary" id="totalPettycash" />
+                    <input type="text" class="form-control number totalSummary" id="totalDirectcash" />
+                </div>
+                <div class="row">
+                    <div class="col-md-5">
+                    </div>
+                    <div class="col-md-2">
+                        <input type="submit" value="រក្សាទុក" id="btnSubmit" class="btn btib btn-success" />
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryui")
+    <script src="~/Scripts/chosen.jquery.min.js"></script>
+    <script src="~/Scripts/jquery-1.12.4.min.js"></script>
+    <script src="~/Scripts/chosen.jquery.min.js"></script>
+    <script src="~/Content/assets/numeral/numeral.js"></script>
+    <script src="~/Scripts/IB.js"></script>
+}
+
+<script>
+    $(document).ready(function () {
+        $('.Acc_no').chosen({
+        });
+        CalculateTotalSummary();
+        AddCurrencyFormat(".number");
+        $(".number").each(function (index, obj) {
+            obj.value = numeral(obj.value).format('0,0').split(',').join('.') + " ៛";
+        });
+
+
+        $("#addRow").click(function () {
+            var header = '<select class="form-control Acc_no" id="NewAcc" name="ACCs">'
+            var body = "";
+            var options = $(".Acc_no")[0];
+            if (options != null) {
+                options = options.options;
+                for (var i = 0; i < options.length; i++) {
+                    body = body + '<option value=' + options[i].value + '>' + options[i].textContent + '</option> ';
+                }
+            }
+            var footer = '</select>';
+            var dropDown = header + body + footer;
+
+            var newRow = '<div class="row"> <input name="IDs" data-val="true" data-val-number="The field ID must be a number." data-val-required="The ID field is required." id="" type="hidden" value="0"> ' + dropDown + ' <input name="BUDGETs" class="form-control number Budget" data-val="true" data-val-number="The field Budget must be a number." id="" type="text" value="0"> <input name="PETTYCASHs" class="form-control Budget number" type="text" value=""> <input name="DIRECT_PAIDs" class="form-control Budget number" type="text" value=""> <a class="btn btn-danger" id="removeRow">-</a></div>';
+
+
+
+
+            $("#container").append(newRow);
+            $('.Acc_no').chosen({
+            });
+
+            $(".Budget").keyup(function () {
+                CalculateTotalSummary();
+            });
+            AddCurrencyFormat(".number");
+        });
+
+        $("#container").on('click', '#removeRow', function () {
+            if (window.confirm("Are you sure you want to delete this?")) {
+                var parentDiv = $(this).parent('div');
+                var ID = parseInt(this.parentNode.childNodes[1].value);
+                $.ajax({
+                    type: "GET",
+                    url: '@Url.Action("RemoveIB")',
+                    contentType: "application/json; charset=utf-8",
+                    dataType: 'json',
+                    data: { ID: ID },
+                    success: function (result) {
+                        parentDiv.remove();
+
+                    },
+                    error: function (result) {
+                        alert("Fail");
+                    }
+                });
+            } else {
+                alert("បោះបង់")
+            }
+        });
+
+        $(".Budget").keyup(function () {
+            CalculateTotalSummary();
+        });
+
+        function AddCurrencyFormat(className) {
+            $(className).focusout(function () {
+                if (this.value.indexOf('.') === -1)
+                    this.value = numeral(this.value).format('0,0').split(',').join('.') + " ៛";
+            });
+            $(className).click(function () {
+                this.value = this.value.replace(" ៛", "").split('.').join('');
+            });
+        }
+
+        $("#btnSubmit").click(function () {
+            var data = $(".number");
+            data.each(function (index, obj) {
+                obj.value = obj.value.replace(" ៛", "").split('.').join('');
+            });
+        });
+
+
+        CalculateTotalSummary();
+        function CalculateTotalSummary() {
+            // Select all choosen
+            var totalBudget = 0;
+            var totalDirect = 0;
+            var totalPettycash = 0;
+            $(".Acc_no option:selected").each(function () {
+                var title = $(this).val().split(',');
+                if (title[1] == "0") {
+                    var thisSelect = $(this);
+                    var initialBudget = thisSelect[0].parentElement.parentElement.childNodes[6].value.replace(" ៛", "").split('.').join('');
+                    var normanBudget = thisSelect[0].parentElement.parentElement.childNodes[8].value.replace(" ៛", "").split('.').join('');
+                    var pettyCash = thisSelect[0].parentElement.parentElement.childNodes[10].value.replace(" ៛", "").split('.').join('');
+                    totalBudget += parseFloat(initialBudget);
+                    totalDirect += parseFloat(normanBudget);
+                    totalPettycash += parseFloat(pettyCash);
+
+                }
+                $("#totalBudget").val(numeral(totalBudget).format('0,0').split(',').join('.') + " ៛");
+                $("#totalPettycash").val(numeral(totalPettycash).format('0,0').split(',').join('.') + " ៛");
+                $("#totalDirectcash").val(numeral(totalDirect).format('0,0').split(',').join('.') + " ៛");
+
+            });
+
+        }
+    });
+</script>

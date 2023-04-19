@@ -1,0 +1,130 @@
+﻿@using Microsoft.AspNet.Identity
+@using ISFMOCM_Project.Function
+@model IEnumerable<ISFMOCM_Project.Models.ExpenseDetail>
+@{
+    ViewBag.Title = "Search Expense";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+
+<h2>SearchExpense</h2>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3>ចំណាយរជ្ជទេយ្យបុរេប្រទានរដ្ឋបាល</h3>
+    </div>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-md-4">
+                <p class="pull-left">
+                    @if (User.Identity.GetUserName() == "Sanset")
+                    {
+                        @Html.ActionLink("បង្កើតថ្មី", "CreateExpense", null, htmlAttributes: new { @Class = "new" })
+                    }
+                </p>
+            </div>
+            <div class="col-md-8 text-right">
+                @using (Html.BeginForm("ListExpense", "Expense", FormMethod.Get))
+                {
+                    <div class="form-group" , style="display: inline !important">
+                        @*@Html.DropDownList("អនុគណនី", ExpenseFunctions.អនុគណនី(),new {@class = "form-control"})*@
+                        <input type="text" name="Acc_no" class="form-control" placeholder="អនុគណនី" />
+                        <input type="text" name="Amount" class="form-control" placeholder="ចំនួនទឹកប្រាក់" />
+                        <input type="submit" name="name" class="btn btn-primary" value="ស្វែងរក" />
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="row">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="tableExpense">
+                    <thead>
+                        <tr>
+                            <th>អនុគណនី</th>
+                            <th>សេចក្ដីពិពណ៌នា</th>
+                            <th>ចំនួនទឹកប្រាក់</th>
+                            <th>កាលបរិច្ឆេទ</th>
+                            <th>ជំរើស</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var expense in Model)
+                        {
+                            <tr>
+                                <td>@expense.Account</td>
+                                <td>@expense.Description</td>
+                                <td class="number">@expense.Amount</td>
+                                <td class="text-center">@expense.ExpenseDate.ToString("dd/MM/yyyy")</td>
+                                @if (User.Identity.GetUserName() == "Sanset")
+                                {
+                                    <td class="text-center">
+                                        @Html.ActionLink(" ", "EditExpense", new { id = expense.ExpenseId }, new { @class = "glyphicon glyphicon-pencil" })
+                                        @Html.ActionLink(" ", "Details", new { id = expense.ExpenseId }, new { @class = "glyphicon glyphicon-eye-open" })
+                                        @Html.ActionLink(" ", "DeleteExpenseDetail", new { id = expense.Id }, new { @class = "glyphicon glyphicon-trash", onclick = "return onDelete()" })
+                                    </td>
+                                }
+                                else
+                                {
+                                    <td class="text-center">
+                                        @Html.ActionLink(" ", "Details", new { id = expense.ExpenseId }, new { @class = "glyphicon glyphicon-eye-open" })
+                                    </td>
+                                }
+                            </tr>
+                        }
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script src="~/Scripts/moment.min.js"></script>
+    <script src="~/Scripts/bootstrap-datetimepicker.js"></script>
+    <script src="~/Scripts/chosen.jquery.min.js"></script>
+    <script src="~/Content/assets/numeral/numeral.js"></script>
+}
+
+
+<script>
+
+    $(function () {
+
+        var number = $(".number");
+        for (var i = 0; i < number.length; i++) {
+            number[i].textContent = numeral(number[i].textContent).format('0,0').split(',').join('.') + " ៛";
+        }
+
+        $.fn.dataTable.moment("DD/MM/YYYY");
+        $('#tableExpense').DataTable(
+            {
+                "bFilter": false,
+                "oLanguage": {
+                    "sSearch": "ស្វែងរក"
+                },
+                sPaginationType: "full_numbers",
+                "bLengthChange": false,
+                "fnDrawCallback": function (oSettings) {
+                    var totalRows = parseInt(oSettings.aiDisplay.length);
+                    //var rowPerPage = parseInt(oSettings.nTBody.children.length);
+                    reversedPaginationNumbers(totalRows, 10);
+                }
+            }
+        );
+
+        function reversedPaginationNumbers(totalRowsParam, displayRowsParams) {
+            var totalRows = totalRowsParam;
+            var displayRows = displayRowsParams;
+            var paginations = $(".paginate_button a");
+            var totalPaginations = Math.ceil(totalRows / displayRows);
+            for (var i = 0; i < paginations.length; i++) {
+                var pageNumber = paginations[i].textContent;
+                if (parseInt(pageNumber)) {
+                    paginations[i].textContent = totalPaginations + 1 - parseInt(pageNumber);
+                }
+            }
+
+        }
+    });
+</script>

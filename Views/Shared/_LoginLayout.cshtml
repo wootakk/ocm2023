@@ -1,0 +1,50 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="stylesheet" href="~/Content/bootstrap.min.css">
+    <link rel="stylesheet" href="~/Content/assets/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="~/Content/assets/css/form-elements.css">
+    <link rel="icon" type="image/png" href="~/Content/images/ico.gif">
+    <link rel="stylesheet" href="~/Content/assets/css/style.css">
+    <link rel="shortcut icon" href="~/Content/images/ico.gif">
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="~/Content/assets/ico/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="~/Content/assets/ico/apple-touch-icon-114-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="~/Content/assets/ico/apple-touch-icon-72-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" href="~/Content/assets/ico/apple-touch-icon-57-precomposed.png">
+    <title>@ViewBag.Title</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    <style>
+        .inner-bg {
+            padding: 0;
+        }
+
+        .form-box {
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <header class="py-5 bg-image-full">
+        <img class="img-fluid d-block mx-auto img-responsive" src="../Content/images/OCM.png" alt="">
+    </header>
+    <div class="inner-bg">
+        <div class="container">
+            @RenderBody()
+    </div>
+</div>
+<footer class="navbar-fixed-bottom bg-dark">
+    <div class="container">
+        <p class="m-0 text-center text-white">Office of the Council of Ministers | Copyright &copy; &nbsp;@DateTime.Now.Year</p>
+    </div>
+</footer>
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/bootstrap")
+@RenderSection("scripts", required: false)
+<script src="~/Scripts/customScript.js"></script>
+</body>
+</html>

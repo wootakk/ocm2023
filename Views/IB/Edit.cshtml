@@ -1,0 +1,106 @@
+﻿@model ISFMOCM_Project.Models.InitialBudgetModel
+
+@{
+    ViewBag.Title = "កែប្រែឥណទានអនុម័តដើមឆ្នាំ";
+}
+<link href="~/Content/assets/choosen/chosen.min.css" rel="stylesheet" />
+
+<h2>Edit</h2>
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <div class="form-horizontal">
+        <div class="bs-example">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4>កែប្រែឥណទានអនុម័តដើមឆ្នាំ</h4>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-2">
+                            @Html.LabelFor(model => model.acc_no, htmlAttributes: new { @class = "control-label" })<strong class="red"> *</strong>:
+                        </div>
+                        <div class="col-md-10">
+                            @Html.DropDownList("acc_no",null,htmlAttributes: new {@class = "form-control"})
+                            @Html.ValidationMessageFor(model => model.acc_no, "", new {@class = "text-danger"})
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-2">
+                            @Html.LabelFor(model => model.IB_budget, htmlAttributes: new { @class = "control-label" })<strong class="red"> *</strong>:
+                        </div>
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.IB_budget, new { htmlAttributes = new { @class = "form-control number" } })
+                            @Html.ValidationMessageFor(model => model.IB_budget, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-2">
+                            @Html.LabelFor(model => model.Direct_Paid, htmlAttributes: new { @class = "control-label" })<strong class="red"> *</strong>:
+                        </div>
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.Direct_Paid, new { htmlAttributes = new { @class = "form-control number" } })
+                            @Html.ValidationMessageFor(model => model.Direct_Paid, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-2">
+                            @Html.LabelFor(model => model.PettyCash, htmlAttributes: new { @class = "control-label" })<strong class="red"> *</strong>:
+                        </div>
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.PettyCash, new { htmlAttributes = new { @class = "form-control number" } })
+                            @Html.ValidationMessageFor(model => model.PettyCash, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            @Html.ActionLink("ត្រលប់", "ListInitialBudget", "IB", new { @class = "btn btn-default" })
+                            <input type="submit" value="រក្សាទុក" id="btnSubmit" class="btn btn-default" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+<script src="~/Scripts/chosen.jquery.min.js"></script>
+<script src="~/Content/assets/numeral/numeral.js"></script>
+
+<script>
+    $(document).ready(function ($) {
+        $('#acc_no').chosen({
+
+        });
+
+        var budgets = $(".number");
+        for (var i = 0; i < budgets.length; i++) {
+            budgets[i].value = numeral(budgets[i].value).format('0,0').split(',').join('.') + " ៛";
+        }
+
+        AddCurrencyFormat(".number");
+
+        function AddCurrencyFormat(className) {
+            $(className).focusout(function () {
+                if (this.value.indexOf('.') === -1)
+                    this.value = numeral(this.value).format('0,0').split(',').join('.') + " ៛";
+            });
+            $(className).click(function () {
+                this.value = this.value.replace(" ៛", "").split('.').join('');
+            });
+        }
+
+
+        $("#btnSubmit").click(function () {
+            var data = $(".number");
+            data.each(function (index, obj) {
+                obj.value = obj.value.replace(" ៛", "").split('.').join('');
+            });
+        });
+    });
+</script>

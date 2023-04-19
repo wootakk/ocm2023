@@ -1,0 +1,27 @@
+﻿@using ReportViewerForMvc;
+@{
+    ViewBag.Title = "ដីកាអមបញ្ចេញអាណត្តិបើកប្រាក់";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+<br /><br /><br />
+<div class="form-horizontal">
+    <div class="bs-example">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-md-10">
+                        <h4 class="pull-left">ដីកាអមបញ្ចេញអាណត្តិបើកប្រាក់</h4></div>
+                    <div class="col-md-2">@Html.ActionLink("ត្រលប់", "ListMandate", "Mandate", new { @class = "pull-right btn btn-primary btn-search" })</div>
+                    
+                </div>
+            </div>
+            <div class="panel-body">
+                <div class="text-center">
+                    @Html.ReportViewer(ViewBag.ReportViewer as Microsoft.Reporting.WebForms.ReportViewer, htmlAttributes: new { @style = "border: inset; padding: 0; margin: 0; height: 8.27in !important; width: 11.69in !important; " })
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

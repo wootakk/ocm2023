@@ -1,0 +1,111 @@
+﻿@model ISFMOCM_Project.Models.InitialPettyCashViewModel
+@using ISFMOCM_Project.Models;
+@{
+    ViewBag.Title = "ឥណទានអនុម័តរជ្ជទេយ្យបុរេប្រទាន";
+}
+<br />
+<br />
+<br />
+<div class="form-horizontal">
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <div class="bs-example">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4>ឥណទានអនុម័តរជ្ជទេយ្យបុរេប្រទាន</h4>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="col-md-4">
+                            <label class="control-label">ឈ្មោះអង្គភាព ឬអាជ្ញាធរ</label>
+                        </div>
+                        <div class="col-md-8">
+                            @Html.DisplayFor(model => model.Unit.Unit_name)
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <table class="table table-bordered">
+                        <tr>
+                            <th>
+                                ឈ្មោះគណនី
+                            </th>
+                            <th>
+                                @Html.LabelFor(model => model.Budget, htmlAttributes: new { @class = "control-label" })
+                            </th>
+                        </tr>
+                        @{
+                            for (var i = 0; i < Model.Budget.Length; i++)
+                            {
+                                foreach (AccountModel acc in ViewBag.Acc_no)
+                                {
+                                    if (acc.Acc_no == Model.Acc_no[i])
+                                    {
+                                        <tr>
+                                            <td>@acc.CodeAndName </td>
+                                            <td>@Model.Budget[i]</td>
+                                        </tr>
+                                    }
+
+                                }
+                            }
+                        }
+                    </table>
+                </div>
+                <div class="col-md-5"></div>
+            </div>
+
+            @Html.HiddenFor(model => model.InitialPettyCashID)
+            @for (int i = 0; i < Model.InitialPettyCashDetailID.Length; i++)
+            {
+                @:<input name="InitialPettyCashDetailID" type="hidden" value="@Model.InitialPettyCashDetailID[i]" />
+                }
+
+            <input type="hidden" name="NumberOfNewRowAdded" value="0" />
+            <div class="row">
+                @Html.ActionLink("ត្រលប់", "Index", "InitialPettyCashes", new { @class = "btn btn-default" })
+                @*<input type="submit" value="រក្សាទុក" class="btn btn-default" />*@
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@*<h2>Detail</h2>
+
+    <div>
+        <h4>InitialPettyCash</h4>
+        <hr />
+        <dl class="dl-horizontal">
+            <dt>
+                <label>អង្គភាព ឬ អាជ្ញាធរ</label>
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Unit.Unit_name)
+            </dd>
+            @{
+                for (var i = 0; i < Model.Budget.Length; i++)
+                {
+                    <dt>
+                        <label>លេខគណនី</label>
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.Acc_no[i])
+                    </dd>
+                    <dt>
+                        <label>ទឹកប្រាក់</label>
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.Budget[i])
+                    </dd>
+                }
+            }
+        </dl>
+    </div>
+    <p>
+        @Html.ActionLink("Edit", "Edit", new { id = Model.InitialPettyCashID }) |
+        @Html.ActionLink("Back to List", "Index")
+    </p>*@

@@ -1,0 +1,81 @@
+﻿@model IEnumerable<ISFMOCM_Project.Models.InitialBudgetModel>
+
+@{
+    ViewBag.Title = "ឥណទានអនុម័តដើមឆ្នាំ";
+}
+<h2>Index</h2>
+<div class="bs-example">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3>ឥណទានអនុម័តដើមឆ្នាំ</h3>
+        </div>
+        <div class="panel-body">
+
+            @*<p​ class="pull-left">
+                    @Html.ActionLink("បង្កើតថ្មី", "Create")
+                </p​>*@
+            @*@Html.ActionLink("ឥណទានអនុម័តនៅឆ្នាំបន្ទាប់", "CreateBudgets", null, htmlAttributes: new { @class = "btn btn-primary pull-right" })*@
+            @Html.ActionLink("កែប្រែឥណទានអនុម័តនៅឆ្នាំ " + DateTime.Now.Year, "EditBudgets", null, htmlAttributes: new { @class = "btn btn-primary pull-right" })<br /><br />
+            @{ WebGrid gridIB = new WebGrid(Model, rowsPerPage: 200);}
+
+            @gridIB.GetHtml(
+          fillEmptyRows: false,
+          mode: WebGridPagerModes.All,
+          firstText: "<< First",
+          nextText: "Next >",
+          previousText: "< Previous",
+          lastText: "Last >>",
+          tableStyle: "table table-bordered",
+          footerStyle: "text-center",
+          columns: new[]{
+             //gridIB.Column("acc_type","ប្រភេទ",style:"width-20-per font-12"),
+             gridIB.Column("acc_chap_code","ជំពូក",style:"width-20-per font-12"),
+             gridIB.Column("acc_no","គណនី",style:"number width-20-per font-12"),
+             gridIB.Column("sub_acc_no","អនុគណនី",style:"number width-20-per font-12"),
+             gridIB.Column("acc_name","ឈ្មោះគណនី",style:"width-20-per font-12"),
+             gridIB.Column("IB_date","ឆ្នាំ",style:"text-uppercase fs12 ",format:(item) => (item.IB_date != null ? Convert.ToDateTime(item.IB_date).ToString(@"yyyy") : "")),
+             //gridIB.Column("IB_date","កាលបរិច្ឆេទ",style:"text-uppercase fs12",format:(item) => (item.IB_date != null ? Convert.ToDateTime(item.IB_date).ToString(@"dd/MM/yyyy") : "")),
+             //gridIB.Column("IB_date","កាលបរិច្ឆេទ",style:"width-20-per font-12"),
+             //gridIB.Column("IB_budget","ឥណទានអនុម័ត",style:"width-10-per number font-12"),
+             gridIB.Column("IB_budget","ឥណទានអនុម័ត",style:"text-right budgets",format:(item) => (item.IB_budget !=null ?  string.Format("{0:0,0 ៛}", item.IB_budget) : "")),
+
+             gridIB.Column(header:"ជម្រើស",style:"width-10-per font-12",format:(item) =>
+             new HtmlString(
+                                User.IsInRole("Admin") ? (
+                                    Html.ActionLink("    ", "Edit", new { id = item.IB_id}, new{@class="glyphicon glyphicon-pencil gray-icon" }).ToHtmlString()
+
+                                    +" " + "|" + " " +
+
+                                    Html.ActionLink("    ", "Details", new { id = item.IB_id}, new{@class="glyphicon glyphicon-eye-open gray-icon" }).ToHtmlString()
+
+                                    +" " + "|" + " " +
+
+                                    Html.ActionLink("    ", "Delete", new { id = item.IB_id}, new{@class="glyphicon glyphicon-trash gray-icon",onclick="return onDelete()" }).ToHtmlString()
+
+                                )
+                                : (
+                                    Html.ActionLink("    ", "Edit", new { id = item.IB_id}, new{@class="glyphicon glyphicon-pencil gray-icon" }).ToHtmlString()
+
+                                    +" " + "|" + " " +
+
+                                    Html.ActionLink("    ", "Details", new { id = item.IB_id}, new{@class="glyphicon glyphicon-eye-open gray-icon" }).ToHtmlString()
+                                    
+                                )
+                            )
+                        )
+
+          }
+          )
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="~/Content/assets/numeral/numeral.js"></script>
+    <script>
+        var budgets = $(".budgets");
+        for (var i = 0; i < budgets.length; i++) {
+            budgets[i].textContent = numeral(budgets[i].textContent).format('0,0').split(',').join('.') + " ៛";
+        }        
+    </script>
+}

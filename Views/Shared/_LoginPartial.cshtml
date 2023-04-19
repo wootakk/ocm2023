@@ -1,0 +1,23 @@
+﻿@using Microsoft.AspNet.Identity
+@if (Request.IsAuthenticated)
+{
+    using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+    {
+    @Html.AntiForgeryToken()
+
+    <ul class="manage navbar-right mglog">
+        <li>
+            @Html.ActionLink("សួស្តី " + User.Identity.GetUserName() + "!", "Index", "Manage", routeValues: null, htmlAttributes: new { @class= "manage", title = "Manage" })
+        </li>
+        <li><a class="manage" href="javascript:document.getElementById('logoutForm').submit()">ចាកចេញ</a></li>
+    </ul>
+    }
+}
+else
+{
+    <ul class="manage navbar-right">
+
+        @*<li>@Html.ActionLink("Register", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>*@
+        <li>@Html.ActionLink("ចូលប្រើប្រាស់", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
+    </ul>
+}

@@ -1,0 +1,104 @@
+﻿@model IEnumerable<ISFMOCM_Project.Models.UnitModel>
+
+@{
+    ViewBag.Title = "អង្គភាព ឬអាជ្ញាធរ";
+}
+
+<br /><br /><br />
+
+<div class="bs-example">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4>អង្គភាព ឬអាជ្ញាធរ</h4>
+        </div>
+
+        <div class="panel-body" style="font-family: Khmer ">
+            <p class="pull-left"> 
+                @Html.ActionLink("បង្កើតថ្មី", "Create", "Unit", new { @Class = "new" })
+            </p>
+
+            <table class="table table-responsive" id="unitTable" width="100%" >
+                <thead>
+                <tr>
+                    <th>លរ</th>
+                    <th>លេខកូដអង្គភាព</th>
+                    <th>ឈ្មោះអង្គភាព ឬអាជ្ញាធរ</th>
+                    <th>ពណ៌នា</th>
+                    <th>អង្ភភាពទទួលបន្ទុក</th>
+                    <th style="width: 12%;">ជម្រើស</th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.unit_id</td>
+                        <td>@item.unit_number</td>
+                        <td>@item.unit_name</td>
+                        <td>@item.unit_desc</td>
+                        <td>@item.responsible_unit_name</td>
+                        <td class="text-center">
+                            @if (!User.IsInRole("Admin"))
+                            {
+                                @Html.ActionLink("    ", "Edit", new {id = item.unit_id}, new {@class = "glyphicon glyphicon-pencil"})
+                                @:&nbsp;
+                                @Html.ActionLink("    ", "Details", new {id = item.unit_id}, new {@class = "btn btn-info glyphicon glyphicon-eye-open"})
+                            }
+                            else
+                            {
+                                @Html.ActionLink("    ", "Edit", new {id = item.unit_id}, new {@class = "glyphicon glyphicon-pencil"})
+                                @:&nbsp;
+                                @Html.ActionLink("    ", "Details", new {id = item.unit_id}, new {@class = "glyphicon glyphicon-eye-open"})
+                                @:&nbsp;
+                                @Html.ActionLink("    ", "Delete", new {id = item.unit_id}, new {@class = "glyphicon glyphicon-trash", onclick = "return onDelete()" })
+                            }
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+
+
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        $(function () {
+
+            var table = $('#unitTable').DataTable(
+                {"bFilter": false ,
+                    "oLanguage": {
+                        "sSearch": "ស្វែងរក"
+                    },
+                    sPaginationType: "full_numbers",
+                    "bLengthChange": false,
+                    "fnDrawCallback": function (oSettings) {
+                        var totalRows = parseInt(oSettings.aiDisplay.length);
+                        //var rowPerPage = parseInt(oSettings.nTBody.children.length);
+                        reversedPaginationNumbers(totalRows, 10);
+                    }
+                }
+            );
+
+            function reversedPaginationNumbers(totalRowsParam,displayRowsParams) {
+                var totalRows = totalRowsParam;
+                var displayRows = displayRowsParams;
+                console.log(displayRows);
+                console.log(totalRows);
+                var paginations = $(".paginate_button a");
+                var totalPaginations = Math.ceil(totalRows / displayRows);
+                for (var i = 0; i < paginations.length; i++) {
+                    var pageNumber = paginations[i].textContent;
+                    if (parseInt(pageNumber)) {
+                        paginations[i].textContent = totalPaginations + 1 - parseInt(pageNumber);
+                    }
+                }
+
+            }
+        });
+
+
+    </script>
+}

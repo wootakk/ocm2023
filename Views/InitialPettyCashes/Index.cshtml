@@ -1,0 +1,101 @@
+﻿@*@model IEnumerable<ISFMOCM_Project.Entity.tbl_Account>*@
+@model IEnumerable<ISFMOCM_Project.Models.InitialPettyCashViewModel>
+@{
+    ViewBag.Title = "ឥណទានអនុម័តរជ្ជទេយ្យបុរេប្រទាន";
+}
+<style>
+    p {
+        padding: 0;
+    }
+</style>
+<h2>Index</h2>
+<div class="bs-example">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3>ឥណទានអនុម័តរជ្ជទេយ្យបុរេប្រទាន</h3>
+        </div>
+
+        <div class="panel-body">
+            <p class="pull-left">
+                @if (User.IsInRole("Admin") || User.IsInRole("Data Entry"))
+                {
+                    @Html.ActionLink("បង្កើតថ្មី", "Create", "InitialPettyCashes", new { @Class = "new" })
+                }
+            </p>
+            @{ WebGrid grid_IPC = new WebGrid(Model, rowsPerPage: 10);}
+            @grid_IPC.GetHtml(
+                fillEmptyRows: false,
+                mode: WebGridPagerModes.All,
+                firstText: "<< First",
+                nextText: "Next >",
+                previousText: "< Previous",
+                lastText: "Last >>",
+                tableStyle: "table table-bordered table-responsive",
+                footerStyle: "text-center",
+                columns: new[]{
+                    grid_IPC.Column("Unit.Unit_name","ឈ្មោះអង្គភាព ឬ អាជ្ញាធរ",style:"width-20-per font-12"),
+                    grid_IPC.Column("Accounts","គណនី",style:"number" ,format:(item)=>
+                    {
+                        string temp2 = string.Empty;
+                        foreach (var member in item.Accounts)
+                        {
+                            temp2 += member.Acc_no+"<br/>";
+                            //temp2 += member.Acc_no+" - " + member.Acc_name+"<br/>";
+                        }
+                        return new HtmlString(temp2);
+
+                    }),
+                    grid_IPC.Column("Budget","ទឹកប្រាក់",style:"number budget",format:(item)=>
+                    {
+                        string temp2 = string.Empty;
+                        foreach (var member in item.Budget)
+                        {
+                            temp2 += "<span>"+member.ToString("0,0 ៛")+"</span>"+"<br/>";
+                        }
+                        return new HtmlString(temp2);
+
+                    }),
+                    grid_IPC.Column(header:"ជម្រើស",style:"text-center p0 width-10-per font-12",format:(item) =>  new HtmlString(
+                        (
+                            ((User.IsInRole("Admin") || User.IsInRole("Data Entry")) && item.InitialPettyCashDate.Year == DateTime.Now.Year ? (Html.ActionLink("    ", "Edit", new { id = item.InitialPettyCashID}, new{@class="glyphicon glyphicon-pencil gray-icon" }).ToHtmlString()) : "") + " " + " | " +
+                            (User.IsInRole("Admin") ? (
+                                Html.ActionLink("    ", "Details", new { id = item.InitialPettyCashID}, new{@class="glyphicon glyphicon-eye-open gray-icon" }).ToHtmlString()
+
+                                +" " + "|" + " " +
+
+                                Html.ActionLink("    ", "Delete", new { id = item.InitialPettyCashID}, new{@class="glyphicon glyphicon-trash gray-icon",onclick="return onDelete()" }).ToHtmlString()
+                                )
+                                :
+                                "") +
+                            (
+                                User.IsInRole("Data Entry") ? (
+                                    Html.ActionLink("    ", "Details", new { id = item.InitialPettyCashID}, new{@class="glyphicon glyphicon-eye-open gray-icon" }).ToHtmlString()
+
+                                    ) :
+                                    "") +
+                            (
+                                User.IsInRole("Cabinet") ? (
+                                    Html.ActionLink("    ", "Details", new { id = item.InitialPettyCashID}, new{@class="glyphicon glyphicon-eye-open gray-icon" }).ToHtmlString()
+                                    ) : ""
+                                )
+
+                            )
+                        )
+                        )
+
+                }
+                )
+
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="~/Content/assets/numeral/numeral.js"></script>
+    <script>
+        var budgets = $(".budget span");
+        for (var i = 0; i < budgets.length; i++) {
+            budgets[i].textContent = numeral(budgets[i].textContent).format('0,0').split(',').join('.') + " ៛";
+        }
+    </script>
+}

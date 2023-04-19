@@ -1,0 +1,62 @@
+﻿@using ReportViewerForMvc;
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/Content/Site.css" type="text/css" rel="stylesheet" />
+<link rel="stylesheet" href="~/Content/style/ReportStyle.css" />
+<br />
+<br />
+<br />
+@using (Html.BeginForm("SalaryReport", "Report", FormMethod.Get))
+{
+    <div class="form-horizontal">
+        <div class="bs-example">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-8 col-md-offset-2 right">
+                                    <div class="col-md-1 text-center"><label> ចាប់ពីថ្ងៃទី </label></div>
+                                    <div class="col-md-3">@Html.Editor("st", new { htmlAttributes = new { @class = "form-control" } })</div>
+                                    <div class="col-md-1 text-center"><label> ដល់​ថ្ងៃទី </label></div>
+                                    <div class="col-md-3">@Html.Editor("et", new { htmlAttributes = new { @class = "form-control" } })</div>
+                                    <div class="col-md-2"><button type="submit" class="btn-search btn btn-primary" id="btnSubmit">ស្វែងរក</button></div>
+                                    <div class="col-md-2">@Html.ActionLink("ត្រលប់", "ReportMenu", "Report", new {@class = "btn-search btn btn-primary pull-left btn btn-default"})</div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-8 col-md-offset-2 right">
+                                    <div class="col-md-3 col-md-offset-1"><span id="startDateError" class="text-danger"></span></div>
+                                    <div class="col-md-3 col-md-offset-1"><span id="endDateError" class="text-danger"></span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel-body">
+                    <div class="text-center">
+                        @Html.ReportViewer(ViewBag.ReportViewer as Microsoft.Reporting.WebForms.ReportViewer)
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+}
+@section Scripts {
+    <script src="~/Scripts/moment.js"></script>
+    <script src="~/Scripts/bootstrap-datetimepicker.js"></script>
+    <script src="~/Scripts/report-validation.js"></script>
+    <script>
+        $('#st').datetimepicker({
+            format: 'DD-MM-YYYY'
+        });
+        $('#et').datetimepicker({
+            format: 'DD-MM-YYYY'
+        });
+    </script>
+}

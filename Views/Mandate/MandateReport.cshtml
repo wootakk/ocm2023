@@ -1,0 +1,26 @@
+﻿@using ReportViewerForMvc;
+
+@{
+    ViewBag.Title = "បោះពុម្ភអាណត្តិ";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+<br /><br /><br />
+<div class="form-horizontal">
+    <div class="bs-example">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="row">
+                    <h4 class="pull-left">បោះពុម្ភអាណត្តិ</h4>
+                    @Html.ActionLink("ត្រលប់", "Index", "Mandate", new { @class = "pull-right btn btn-default" })
+                </div>
+            </div>
+            <div class="panel-body">
+                <div class="text-center">
+                    @Html.ReportViewer(ViewBag.ReportViewer as Microsoft.Reporting.WebForms.ReportViewer, htmlAttributes: new { @style = "border: inset; padding: 0; margin: 0; height: 8.27in !important; width: 11.69in !important; " })
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

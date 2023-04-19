@@ -1,0 +1,64 @@
+﻿@*@model IEnumerable<ISFMOCM_Project.Entity.tbl_Account>*@
+@model IEnumerable<ISFMOCM_Project.Models.AccountModel>
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("បង្កើតថ្មី", "Create")
+</p>
+<table class="table table-bordered table-responsive">
+    <tr class="bg-warning">
+        <th>
+            លរ
+        </th>
+        <th>
+            លេខគណនី
+        </th>
+        <th>
+            លេខកូដគណនី
+        </th>
+        <th>
+            ឈ្មោះគណនី
+        </th>
+        <th>
+            សេចក្តីពន្យល់
+        </th>
+        <th>
+            ជំពូក
+        </th>
+        <th>ជម្រើស</th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Acc_id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Acc_no)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Acc_code)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Acc_name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Acc_desc)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AccountChapter)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.Acc_no }) |
+                @Html.ActionLink("Details", "Details", new { id = item.Acc_no }) |
+                @Html.ActionLink("Delete", "DeleteConfirmed", new { id = item.Acc_no },new { onClick = "onDelete()" })
+            </td>
+        </tr>
+    }
+
+</table>

@@ -1,0 +1,218 @@
+﻿@using ISFMOCM_Project.Function
+@using ISFMOCM_Project.Models
+@model ISFMOCM_Project.Models.ExpenseViewModel
+<link href="~/Content/assets/choosen/chosen.min.css" type="text/css" rel="stylesheet" />
+
+@{
+    ViewBag.Title = "កែប្រែ";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+<style>
+    .btn-primary {
+        margin-left: 0px;
+    }
+</style>
+<br />
+<br />
+<br />
+<br />
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <div class="form-horizontal">
+        <div class="bs-example">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3>កែប្រែកំណត់ត្រាចំណាយរជ្ជទេយ្យបុរេប្រទានរដ្ឋបាល</h3>
+                </div>
+                <div class="panel-body">
+                    <div class="row" style="position: relative">
+                        <div class="col-md-4" style="position: absolute">
+                            <label>កាលបរិច្ឆេទ</label>
+                            <div class="row">
+                                <div class="col-md-10">
+                                    @Html.EditorFor(model => model.ExpenseDate, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.ExpenseDate, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-8" style="margin-top: 100px;">
+                            <div class="row">
+                                <label class="col-md-4">អនុគណនី</label>
+                                <label class="col-md-3">ចំនួនទឹកប្រាក់</label>
+                                <label class="col-md-4" style="margin-left: 10px;">សេចក្ដីពិពណ៌នា</label>
+                                <a id="btnAddParent" href="#" class="btn btn-success">ថែម</a>
+                            </div>
+                            <div id="container">
+                                @{
+                                    var totalLength = Model.Accounts.Length;
+                                    var index = 0;
+                                    var isParentNode = true;
+                                    var previousAccount = "";
+                                    ParentTop:
+                                }
+                                <div class="subContainer">
+                                    <div class="row">
+                                        @do
+                                        {
+                                            if (isParentNode)
+                                            {
+                                                <div class="col-md-4"> 
+                                                    <select class="form-control required-select Accounts" id="Accounts" name="Accounts">
+                                                        <option value="">ជ្រើសរើសគណនី</option>
+                                                        @foreach (var acc in CommonClass.GetAllSubAccounts().Where(c => c.AccChapter.AccChapter_code == "60" || c.AccChapter.AccChapter_code == "61"))
+                                                        {
+                                                            if (acc.Acc_no == Model.Accounts[index])
+                                                            {
+                                                                @:
+                                                                <option value="@acc.Acc_no" selected="selected"> @acc.CodeAndName </option>
+                                                            }
+                                                            else
+                                                            {
+                                                                @:
+                                                                <option value="@acc.Acc_no"> @acc.CodeAndName </option>
+                                                            }
+
+                                                        }
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <input type="text" value="@Model.Amount[index]" class="form-control text-right" name="Amount"/>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <textarea class="form-control" style="margin-left: 10px;" name="Description">@Model.Description[index]</textarea>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <a id="btnAddSub" href="#" class="btn btn-primary">+</a>
+                                                    <a id="btnRemoveParent" href="#" class="btn btn-danger" style="margin-top: 5px;">-</a>
+
+                                                </div>
+                                                isParentNode = false;
+                                                previousAccount = Model.Accounts[index];
+                                                index++;
+                                            }
+                                            else
+                                            {
+                                                if (previousAccount == Model.Accounts[index])
+                                                {
+                                                    <div class="row">
+                                                        <div class="col-md-4" style="visibility: hidden;">
+                                                            <select class="form-control required-select" id="Accounts" name="Accounts">
+                                                                <option value="">ជ្រើសរើសគណនី</option>
+                                                                @foreach (var acc in CommonClass.GetAllSubAccounts())
+                                                                {
+                                                                    @:
+                                                                    <option value="@acc.Acc_no"> @acc.CodeAndName </option>
+                                                                }
+                                                            </select>
+                                                        </div>
+                                                        <div class="col-md-3">
+                                                            <input type="text" value="@Model.Amount[index]" class="form-control text-right" name="Amount">
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <textarea class="form-control" style="margin-left: 10px;" name="Description">@Model.Description[index]</textarea>
+                                                        </div>
+                                                        <div class="col-md-1">
+                                                            <a id="btnRemoveSub" href="#" class="btn btn-danger">-</a>
+                                                        </div>
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                 
+                                                    isParentNode = true;
+                                                    break;
+                                                }
+                                                index++;
+                                            }
+                                        } while (index != totalLength);
+                                    </div>
+                                </div>
+                                @if (index != totalLength) { goto ParentTop; }
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-10">
+                            <input type="submit" value="កែប្រែ" class="btn btn-default" />
+                            @Html.ActionLink("ត្រលប់","Index",null,new {@class = "btn btn-default"})
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+@section scripts{
+    <script src="~/Scripts/moment.min.js"></script>
+    <script src="~/Scripts/bootstrap-datetimepicker.js"></script>
+    <script src="~/Scripts/chosen.jquery.min.js"></script>
+    <script src="~/Content/assets/numeral/numeral.js"></script>
+}
+
+
+<script>
+    $(function () {
+        //Init Form
+        $("input[data-val-date]").removeAttr("data-val-date");
+        $('#ExpenseDate').datetimepicker({ format: 'DD/MM/YYYY' });
+        $('.Accounts').chosen({});
+
+        //Init Dynamic Rows
+        var header = '<select class="form-control" id="Accounts" name="Accounts">';
+        var body = "";
+        var options = document.getElementById("Accounts");
+        if (options != null) {
+            options = options.options;
+            for (var i = 0; i < options.length; i++) {
+                body = body + '<option value=' + options[i].value + '>' + options[i].textContent + '</option> ';
+            }
+        }
+        var footer = '</select>';
+        var dropDown = header + body + footer;
+
+
+        var hiddneDropDown = '<select class="form-control" id="Accounts" name="Accounts"> ';
+
+
+        var row = '<div class="subContainer"><div class="row"><div class="col-md-4"> ' + dropDown + '</div><div class="col-md-3"><input type="text" value="" class="form-control text-right" name="Amount"></div><div class="col-md-4"><textarea class="form-control" style="margin-left: 10px;" name="Description"></textarea></div><div class="col-md-1" ><a id="btnAddSub" href="#" class="btn btn-primary btnAddSub">+</a> <a id="btnRemoveParent" href="#" class="btn btn-danger" style="margin-top:5px;">-</a></div></div></div> ';
+        var subRow = '<div class="row"><div class="col-md-4"  style="visibility: hidden;" > ' + dropDown + '  </div><div class="col-md-3"><input type="text" value="" class="form-control text-right" name="Amount"></div><div class="col-md-4"><textarea class="form-control" style="margin-left: 10px;" name="Description"></textarea></div><div class="col-md-1" ><a id="btnRemoveSub" href="#" class="btn btn-danger">-</a></div></div>';
+
+        dynamicRow();
+        function dynamicRow() {
+            $('#btnAddParent').click(function (e) {
+                $("#container").append(row);
+                $('[name="Accounts"]').chosen({});
+                $('.subContainer').on('click', '#btnAddSub', function (event) {
+                    $(this).parent('div').parent('div').append(subRow);
+                    event.stopPropagation();
+                    event.stopImmediatePropagation();
+                });
+
+                $('.subContainer').on('click', '#btnRemoveSub', function (event) {
+                    $(this).parent('div').parent('div').remove();
+                    event.stopPropagation();
+                    event.stopImmediatePropagation();
+                });
+            });
+
+            $("#container").on('click', '#btnRemoveParent', function () {
+                $(this).parent('div').parent('div').remove();
+            });
+
+            $(".subContainer").on('click', '#btnRemoveSub', function () {
+                $(this).parent('div').parent('div').remove();
+            });
+
+            $('.subContainer').on('click', '#btnAddSub', function (event) {
+                $(this).parent('div').parent('div').append(subRow);
+                event.stopPropagation();
+                event.stopImmediatePropagation();
+            });
+        }
+    });
+</script>

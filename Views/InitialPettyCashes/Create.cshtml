@@ -1,0 +1,146 @@
+﻿@model ISFMOCM_Project.Models.InitialPettyCashDetailModel
+
+@{
+    ViewBag.Title = "បង្កើតឥណទានអនុម័តរជ្ជទេយ្យបុរេប្រទាន";
+}
+
+<h2>Create</h2>
+
+<link href="~/Content/Site.css" type="text/css" rel="stylesheet" />
+<link href="~/Content/assets/choosen/chosen.min.css" rel="stylesheet" />
+<script src="~/Scripts/CustomValidation.js"></script>
+
+@using (Html.BeginForm("Create","InitialPettyCashes",FormMethod.Post,new { @onsubmit = "validateAllInputBoxes(event);" , @id = "my_form"}))
+{
+    @Html.AntiForgeryToken()
+    <div class="form-horizontal">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger"})
+        <div class="bs-example">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4>បង្កើតឥណទានអនុម័តរជ្ជទេយ្យបុរេប្រទាន</h4>
+                </div>
+
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="col-md-4">
+                                <label class="control-label">ឈ្មោះអង្គភាព ឬអាជ្ញាធរ <strong class="red"> *</strong></label>:
+                            </div>
+                            <div class="col-md-8">
+                                @*@Html.DropDownList("Unit_id", (IEnumerable<SelectListItem>)ViewData["UnitList"], new { id = "Acc_no", @class = "form-control" })*@
+                                @Html.DropDownListFor(model => model.Unit_id, null, "ជ្រើសរើសអង្គភាព ឬអាជ្ញាធរ", htmlAttributes: new { @class = "form-control required-select" })
+                                <span class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="row">
+                        <div class="col-md-7">
+                            <div id="container">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <label class="control-label">ឈ្មោះគណនី <strong class="red"> *</strong></label>
+                                    </div>
+                                    <div class="col-md-4">
+                                        @Html.LabelFor(model => model.Budget, htmlAttributes: new { @class = "control-label" }) <strong class="red"> *</strong>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <a class="btn-grid btn btn-primary" id="add">+</a>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        @Html.DropDownListFor(model => model.Acc_no, null,"ជ្រើសរើសគណនី", new { id = "Acc_no", @class = "form-control required-select" })
+                                        @*@Html.ValidationMessageFor(model => model.Acc_no, "", new { @class = "text-danger" })*@
+                                        <span class="text-danger"></span>
+                                    </div>
+                                    <div class="col-md-4">
+                                        @Html.TextBoxFor(model => model.Budget, new { data_bind = "value: Budget", @class = "form-control number required-input" })
+                                        <span class="text-danger"></span>
+                                        @*@Html.ValidationMessageFor(model => model.Budget, "", new { @class = "text-danger" })*@
+                                    </div>
+                                    <div class="col-md-4">
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="col-md-5"></div>
+                </div>
+                <div class="row">
+                    @Html.ActionLink("ត្រលប់", "Index", "InitialPettyCashes", new { @class = "btn btn-default" })
+                    <input type="submit" value="រក្សាទុក" id="btnSubmit" class="btn btn-default" />
+                </div>
+            </div>
+        </div>
+    </div>
+}
+ 
+@section Scripts{
+    <script src="~/Scripts/chosen.jquery.min.js"></script>
+    <script src="~/Content/assets/numeral/numeral.js"></script>
+<script>
+    $(document).ready(function ($) {
+
+        AddCurrencyFormat(".number");
+        $('#Unit_id').chosen({
+
+        });
+        $('#Acc_no').chosen({
+
+        });
+        ///* Change the default jquery setting allow validate on the hidden fields*/
+        //$.validator.setDefaults({
+        //    ignore: []
+        //});
+        var header = '<select class="form-control required-select" id="Acc_no" name="Acc_no">';
+        var body = "";
+        var options = document.getElementById("Acc_no");
+        if (options != null) {
+            options = options.options;
+            for (var i = 0; i < options.length; i++) {
+                body = body + '<option value=' + options[i].value + '>' + options[i].textContent + '</option> ';
+            }
+        }
+
+        var footer = '</select>';
+        var dropDown = header + body + footer;
+
+        var html = '<div class="row"><div class="col-md-4">' + dropDown + '<span class="text-danger"></span></div><div class="col-md-4"><input class="form-control number text-box single-line required-input" id="Budget" name="Budget" type="text" value=""><span class="text-danger"></span></div><div class="col-md-4" id="remove"><a class="btn-grid btn btn-danger">-</a></div></div></div>';
+        $("#add").click(function (e) {
+            $("#container").append(html);
+            $('[name="Acc_no"]').chosen({
+
+            });
+            AddCurrencyFormat(".number");
+        });
+        //Remove
+        $("#container").on('click', '#remove', function () {
+            $(this).parent('div').remove();
+        });
+
+
+        function AddCurrencyFormat(className) {
+            $(className).focusout(function () {
+                if (this.value.indexOf('.') === -1)
+                    this.value = numeral(this.value).format('0,0').split(',').join('.') + " ៛";
+            });
+            $(className).click(function () {
+                this.value = this.value.replace(" ៛", "").split('.').join('');
+            });
+        }
+
+
+        $("#btnSubmit").click(function () {
+            var data = $(".number");
+            data.each(function (index, obj) {
+                obj.value = obj.value.replace(" ៛", "").split('.').join('');
+            });
+        });
+    });
+</script>
+
+
+}

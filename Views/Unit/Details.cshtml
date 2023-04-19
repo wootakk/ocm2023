@@ -1,0 +1,42 @@
+﻿@model ISFMOCM_Project.Models.UnitModel
+
+@{
+    ViewBag.Title = "លម្អិតអង្គភាព ឬអាជ្ញាធរ";
+}
+
+<h2>Details</h2>
+<div class="form-horizontal">
+    <div class="bs-example">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+
+                <h4>លម្អិតអង្គភាព ឬអាជ្ញាធរ</h4>
+            </div>
+
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-2">
+                        @Html.LabelFor(model => model.unit_name, htmlAttributes: new { @class = "control-label" })
+                    </div>
+                    <div class="col-md-10">
+                        @Html.DisplayFor(model => model.unit_name, new { htmlAttributes = new { @class = "" } })
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2">
+                        @Html.LabelFor(model => model.unit_desc, htmlAttributes: new { @class = "control-label" })
+                    </div>
+                    <div class="col-md-10">
+                        @Html.DisplayFor(model => model.unit_desc, new { htmlAttributes = new { @class = "" } })
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        @Html.ActionLink("ត្រលប់", "Index", "Unit", new { @class = "btn btn-default" })
+                        @*<input type="submit" value="រក្សាទុក" class="btn btn-default" />*@
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
